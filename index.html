@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">
+  <title>🎮 Bonitu Play</title>
+  <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+
+<!-- ===== SHARED: star field (populated by Engine) ===== -->
+<div id="stars-bg"></div>
+
+<!-- ===== SHARED: global stars badge ===== -->
+<div id="stars-badge">★ <span id="badge-count">0</span></div>
+
+<!-- ============================================================
+     SCREEN: HOME
+============================================================ -->
+<div class="screen" id="screen-home">
+
+  <!-- Scrolling themed scene bands -->
+  <div class="home-scene">
+    <div class="home-band home-band-top">
+      <div class="home-band-track">
+        🚀&nbsp;1+2=?&nbsp;🌙&nbsp;🇪🇸&nbsp;🌍&nbsp;5×3&nbsp;🇫🇷&nbsp;🪐&nbsp;🗺️&nbsp;🇩🇪&nbsp;☂️&nbsp;⭐&nbsp;🇯🇵&nbsp;🫖&nbsp;7+8=?&nbsp;🇺🇸&nbsp;🎡&nbsp;🌟&nbsp;🇮🇹&nbsp;9−4&nbsp;🇧🇷&nbsp;🎩&nbsp;🔭&nbsp;🇨🇳&nbsp;3×3&nbsp;&emsp;
+        🚀&nbsp;1+2=?&nbsp;🌙&nbsp;🇪🇸&nbsp;🌍&nbsp;5×3&nbsp;🇫🇷&nbsp;🪐&nbsp;🗺️&nbsp;🇩🇪&nbsp;☂️&nbsp;⭐&nbsp;🇯🇵&nbsp;🫖&nbsp;7+8=?&nbsp;🇺🇸&nbsp;🎡&nbsp;🌟&nbsp;🇮🇹&nbsp;9−4&nbsp;🇧🇷&nbsp;🎩&nbsp;🔭&nbsp;🇨🇳&nbsp;3×3
+      </div>
+    </div>
+    <div class="home-band home-band-bot">
+      <div class="home-band-track rev">
+        🇰🇷&nbsp;📚&nbsp;🏰&nbsp;🌈&nbsp;🎒&nbsp;✏️&nbsp;🇦🇷&nbsp;🏆&nbsp;☁️&nbsp;🇬🇧&nbsp;🎓&nbsp;🌎&nbsp;📐&nbsp;🎪&nbsp;🇮🇳&nbsp;🌂&nbsp;⭐&nbsp;🇦🇺&nbsp;🎯&nbsp;🔢&nbsp;🇸🇪&nbsp;🧭&nbsp;🎉&nbsp;&emsp;
+        🇰🇷&nbsp;📚&nbsp;🏰&nbsp;🌈&nbsp;🎒&nbsp;✏️&nbsp;🇦🇷&nbsp;🏆&nbsp;☁️&nbsp;🇬🇧&nbsp;🎓&nbsp;🌎&nbsp;📐&nbsp;🎪&nbsp;🇮🇳&nbsp;🌂&nbsp;⭐&nbsp;🇦🇺&nbsp;🎯&nbsp;🔢&nbsp;🇸🇪&nbsp;🧭&nbsp;🎉
+      </div>
+    </div>
+  </div>
+
+  <!-- Adventurer characters -->
+  <div class="home-girl-wrap">
+    <div class="home-girl-char">
+      <div class="hgc-row">
+        <span class="hgc-hat">🎩</span>
+        <span class="hgc-main">👧</span>
+        <span class="hgc-side">🎒</span>
+      </div>
+      <div class="hgc-sub">🧭&nbsp;🗺️</div>
+    </div>
+    <div class="home-girl-char">
+      <div class="hgc-row">
+        <span class="hgc-hat">🧢</span>
+        <span class="hgc-main">👦</span>
+        <span class="hgc-side">🎒</span>
+      </div>
+      <div class="hgc-sub">🔭&nbsp;⭐</div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="home-content">
+    <h1 class="game-title">Bonitu Play</h1>
+
+    <!-- Name input (visible until submitted) -->
+    <div class="home-name-section" id="home-name-section">
+      <p class="home-name-label">¿Cómo te llamas, aventurera/o? 🌟</p>
+      <div class="home-name-row">
+        <input class="home-name-input" id="player-name-input" type="text"
+               placeholder="Tu nombre..." maxlength="20" autocomplete="off"
+               onkeydown="if(event.key==='Enter')_submitName()">
+        <button class="home-name-btn" onclick="_submitName()">¡Vamos! 🚀</button>
+      </div>
+    </div>
+
+    <!-- Greeting + start button (revealed after name) -->
+    <div class="home-greeting hidden" id="home-greeting"></div>
+    <button class="btn-play hidden" id="home-start-btn"
+            onclick="Engine.startGame()" style="z-index:2">
+      ¡Empezar la aventura! 🚀
+    </button>
+
+    <div class="home-btns-row" style="z-index:2;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-secondary" onclick="Engine.showModal()">📖 Instrucciones</button>
+      <button class="btn-secondary" onclick="Engine.showLeaderboard()">🏆 Clasificación</button>
+    </div>
+  </div>
+
+  <div class="home-signature">✨ Una producción de Bonitu Play</div>
+</div>
+
+<!-- ============================================================
+     MODAL: INSTRUCTIONS
+============================================================ -->
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal-card">
+    <h2 class="modal-title">¿Cómo jugar? 🎯</h2>
+    <ul class="instr-list">
+      <li><span>🗺️</span><span>Completa los 4 niveles en orden: 🚀 Mates → 🇬🇧 Inglés → 🌍 Banderas → 🎴 Memoria</span></li>
+      <li><span>⏱️</span><span>30 segundos por pregunta — ¡cuanto más rápido respondas, más puntos consigues!</span></li>
+      <li><span>⭐</span><span>Cuantas más respuestas aciertes, más estrellas consigues — ¡llega a las 3 estrellas!</span></li>
+      <li><span>🎴</span><span>En el nivel Memoria, encuentra las 3 parejas en el tablero — ¡los fallos restan puntos!</span></li>
+      <li><span>🏆</span><span>Al final se suma todo: guarda tu puntuación y escala en la clasificación</span></li>
+    </ul>
+    <button class="btn-ok" onclick="Engine.hideModal()">¡Entendido! 🚀</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN: GAME  (shared — themed by each level)
+============================================================ -->
+<div class="screen hidden" id="screen-game">
+  <div class="top-bar">
+    <button class="btn-home" onclick="Engine.goHome()">← Inicio</button>
+    <div class="q-counter" id="q-counter">Pregunta 1/10</div>
+    <div class="game-score">⭐ <span id="score-display">0</span></div>
+    <div class="timer-wrap">
+      <svg class="timer-svg" viewBox="0 0 58 58">
+        <circle class="t-bg"   cx="29" cy="29" r="24.5"/>
+        <circle class="t-ring" id="t-ring" cx="29" cy="29" r="24.5"/>
+      </svg>
+      <div class="timer-num" id="timer-num">30</div>
+    </div>
+  </div>
+  <div class="game-main">
+    <div id="game-sidebar"></div>
+    <div class="q-area">
+      <div class="q-card" id="q-card">
+        <div id="q-content"></div>
+      </div>
+      <div class="feedback"     id="feedback"></div>
+      <div class="answers-grid" id="answers-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN: MIDPOINT  (shared — themed by each level)
+============================================================ -->
+<div class="screen hidden" id="screen-midpoint">
+  <div style="font-size:4.5rem;z-index:2">🌟</div>
+  <h2 class="mid-title" id="mid-title" style="z-index:2">¡Vas genial!</h2>
+  <div class="mid-pts"  style="z-index:2">Llevas <span id="mid-score">0</span> puntos</div>
+  <div class="mid-sub"  style="z-index:2">¡Ya llevas 5 preguntas! Sigue así 💪</div>
+  <button class="btn-continue" style="z-index:2" onclick="Engine.continuePlaying()">¡Continuar! 🚀</button>
+</div>
+
+<!-- ============================================================
+     SCREEN: RESULT  (shared — themed + animated by each level)
+============================================================ -->
+<div class="screen hidden" id="screen-result">
+  <div id="result-level-extra"></div>
+  <div class="res-content">
+    <div class="res-title"     id="res-title">¡Resultado!</div>
+    <div class="res-stars">
+      <span class="res-star" id="star-1">⭐</span>
+      <span class="res-star" id="star-2">⭐</span>
+      <span class="res-star" id="star-3">⭐</span>
+    </div>
+    <div class="res-score-big" id="res-score-big">0</div>
+    <div class="res-detail"    id="res-detail">0/1000 puntos • 0%</div>
+    <div class="res-motivator" id="res-motivator"></div>
+    <div class="res-btns"      id="res-btns"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN: LEVEL COMPLETE  (transition between levels)
+============================================================ -->
+<div class="screen hidden" id="screen-level-complete">
+  <div class="lc-emoji" style="z-index:2">🎉</div>
+  <h2 class="lc-title" id="lc-title" style="z-index:2">¡Nivel completado!</h2>
+  <div class="lc-score"  style="z-index:2">Puntuación: <span id="lc-score-val">0</span>/1000</div>
+  <p  class="lc-sub"    style="z-index:2" id="lc-sub"></p>
+  <button class="btn-next-level" style="z-index:2" id="lc-btn-next">Siguiente nivel →</button>
+  <button class="btn-secondary"  style="z-index:2;margin-top:-4px"
+          onclick="Engine.startLevel(Engine.state.level.id)">↩ Repetir nivel</button>
+</div>
+
+<!-- ============================================================
+     SCREEN: ALL COMPLETE  (shown when all levels are beaten)
+============================================================ -->
+<div class="screen hidden" id="screen-all-complete">
+  <div class="ac-trophy" style="z-index:2">🏆</div>
+  <h2 class="ac-title" id="ac-title" style="z-index:2">¡Lo lograste!</h2>
+  <p class="ac-label" style="z-index:2">Puntuación total de la aventura</p>
+  <div class="ac-score-big" id="ac-score" style="z-index:2">0</div>
+  <div class="ac-stars-row" style="z-index:2">⭐ <span id="ac-stars-val">0</span> estrellas conseguidas</div>
+
+  <!-- Save score section -->
+  <div class="ac-save-section" id="ac-save-section" style="z-index:2">
+    <p class="ac-save-label">¿Quieres guardar tu puntuación? 🏅</p>
+    <div class="ac-save-row">
+      <input class="ac-save-input" id="ac-save-name" type="text"
+             placeholder="Tu nombre..." maxlength="20" autocomplete="off"
+             onkeydown="if(event.key==='Enter')Engine.submitScore()">
+      <button class="ac-save-btn" onclick="Engine.submitScore()">Guardar</button>
+    </div>
+  </div>
+
+  <button class="btn-secondary" style="z-index:2" onclick="Engine.showLeaderboard()">🏆 Clasificación</button>
+  <button class="btn-play" style="z-index:2" onclick="Engine.startGame()">¡Volver a empezar! 🚀</button>
+  <button class="btn-secondary" style="z-index:2;margin-top:-4px" onclick="Engine.goHome()">🏠 Inicio</button>
+</div>
+
+<!-- ============================================================
+     SCREEN: LEADERBOARD
+============================================================ -->
+<div class="screen hidden" id="screen-leaderboard">
+  <div class="lb-header" style="z-index:2">
+    <div class="lb-trophy">🏆</div>
+    <h2 class="lb-title">Clasificación</h2>
+  </div>
+  <div class="lb-list-wrap" style="z-index:2">
+    <div class="lb-list" id="lb-list"></div>
+  </div>
+  <div class="lb-actions" style="z-index:2">
+    <button class="btn-secondary" onclick="Engine.goHome()">🏠 Inicio</button>
+    <button class="btn-play" style="font-size:1rem;padding:12px 28px" onclick="Engine.startGame()">¡Jugar! 🚀</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     To add a new level: create js/levels/foo.js and add it below.
+============================================================ -->
+<!-- ===== BACKGROUND MUSIC ===== -->
+<audio id="bg-music" src="src/bg-music.mp3" loop preload="auto"></audio>
+<script>
+(function () {
+  const audio = document.getElementById('bg-music');
+  audio.volume = 0.35;
+
+  function tryPlay() {
+    audio.play().catch(() => {});
+  }
+
+  // Try immediately (works if browser allows it)
+  tryPlay();
+
+  // Fallback: start on first user interaction
+  function onFirstInteraction() {
+    tryPlay();
+    ['click','keydown','touchstart'].forEach(function(e) {
+      document.removeEventListener(e, onFirstInteraction);
+    });
+  }
+  ['click','keydown','touchstart'].forEach(function(e) {
+    document.addEventListener(e, onFirstInteraction, { once: true });
+  });
+})();
+</script>
+
+<script src="js/engine.js"></script>
+<script src="js/levels/math.js"></script>
+<script src="js/levels/english.js"></script>
+<script src="js/levels/flags.js"></script>
+<script src="js/levels/memory.js"></script>
+
+<script>
+  Engine.init([MathLevel, EnglishLevel, FlagsLevel, MemoryLevel]);
+
+  function _revealHome() {
+    document.getElementById('home-name-section').classList.add('hidden');
+    const greeting = document.getElementById('home-greeting');
+    greeting.textContent = `¡Hola, ${Engine.playerName}! ¿Lista para la aventura? 🌍`;
+    greeting.classList.remove('hidden');
+    document.getElementById('home-start-btn').classList.remove('hidden');
+  }
+
+  function _submitName() {
+    const input = document.getElementById('player-name-input');
+    const name  = input.value.trim();
+    if(!name) {
+      input.style.animation = 'none';
+      void input.offsetHeight;
+      input.style.animation = 'shake .4s ease';
+      return;
+    }
+    Engine.setPlayerName(name);
+    _revealHome();
+  }
+</script>
+
+<!-- ============================================================
+     DEBUG PANEL  —  Pulsa ` (acento grave) para abrir/cerrar
+============================================================ -->
+<script>
+(function () {
+  const style = document.createElement('style');
+  style.textContent = `
+    #dbg-toggle {
+      position:fixed; bottom:14px; right:14px; z-index:9999;
+      background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18);
+      border-radius:8px; padding:5px 9px; font-size:13px;
+      color:rgba(255,255,255,.45); cursor:pointer; user-select:none;
+      transition:opacity .2s;
+    }
+    #dbg-toggle:hover { opacity:.75; }
+    #dbg-panel {
+      position:fixed; bottom:50px; right:14px; z-index:9999;
+      background:rgba(10,15,26,.96); border:1px solid rgba(255,255,255,.14);
+      border-radius:12px; padding:12px 14px;
+      display:none; flex-direction:column; gap:9px; min-width:178px;
+      font-family:monospace; font-size:12px; color:#ccc;
+      box-shadow:0 6px 28px rgba(0,0,0,.6);
+    }
+    #dbg-panel.open { display:flex; }
+    .dbg-label { font-size:10px; color:rgba(255,255,255,.35); text-transform:uppercase; letter-spacing:1px; }
+    .dbg-row   { display:flex; gap:6px; flex-wrap:wrap; }
+    .dbg-btn {
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+      border-radius:6px; padding:5px 9px; color:#ddd; cursor:pointer;
+      font-size:11px; font-family:monospace; transition:background .15s;
+    }
+    .dbg-btn:hover  { background:rgba(255,255,255,.17); }
+    .dbg-btn.green  { border-color:rgba(78,205,196,.45); color:#4ecdc4; }
+    .dbg-btn.yellow { border-color:rgba(255,215,0,.4);   color:#ffd700; }
+    .dbg-btn.red    { border-color:rgba(255,100,100,.4);  color:#ff7070; }
+  `;
+  document.head.appendChild(style);
+
+  const toggle = document.createElement('div');
+  toggle.id = 'dbg-toggle';
+  toggle.textContent = '🔧';
+  toggle.title = 'Debug (` para abrir)';
+
+  const panel = document.createElement('div');
+  panel.id = 'dbg-panel';
+  panel.innerHTML = `
+    <div class="dbg-label">🔧 Debug — iniciar</div>
+    <div class="dbg-row">
+      <button class="dbg-btn" onclick="Engine.startGame()">🎲 Aleatorio</button>
+    </div>
+    <div class="dbg-row">
+      <button class="dbg-btn" onclick="Engine.startLevel('math')">🚀 Math</button>
+      <button class="dbg-btn" onclick="Engine.startLevel('english')">🇬🇧 Inglés</button>
+      <button class="dbg-btn" onclick="Engine.startLevel('flags')">🌍 Flags</button>
+      <button class="dbg-btn" onclick="Engine.startLevel('memory')">🎴 Memoria</button>
+    </div>
+    <div class="dbg-label">pantallas</div>
+    <div class="dbg-row">
+      <button class="dbg-btn yellow" onclick="Engine.showScreen('screen-midpoint')">🌟 Mitad</button>
+      <button class="dbg-btn green"  onclick="Engine.skipToResult(true)">🏆 Victoria</button>
+      <button class="dbg-btn red"    onclick="Engine.skipToResult(false)">💀 Derrota</button>
+    </div>
+    <div class="dbg-label">en partida</div>
+    <div class="dbg-row">
+      <button class="dbg-btn" onclick="_dbgAutoAnswer()">✅ Auto-responder</button>
+    </div>
+  `;
+
+  document.body.appendChild(toggle);
+  document.body.appendChild(panel);
+
+  toggle.addEventListener('click', () => panel.classList.toggle('open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === '`') panel.classList.toggle('open');
+  });
+
+  window._dbgAutoAnswer = function () {
+    const q = Engine.state.questions[Engine.state.currentQ];
+    if (!q) return;
+    const btn = [...document.querySelectorAll('.ans-btn')]
+      .find(b => b.textContent.trim() == q.correct);
+    if (btn && !btn.disabled) btn.click();
+  };
+})();
+</script>
+
+</body>
+</html>
