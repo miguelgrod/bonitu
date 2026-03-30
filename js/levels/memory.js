@@ -136,12 +136,9 @@ const MemoryLevel = (() => {
     // Navigation buttons
     const ni     = st.playlistIdx + 1;
     const nextId = (st.playlist.length && ni < st.playlist.length) ? st.playlist[ni] : null;
-    Engine.el('res-btns').innerHTML = [
-      `<button class="btn-retry" onclick="Engine.startLevel('memory')">¡Jugar de nuevo!</button>`,
-      nextId
-        ? `<button class="btn-next-level" onclick="Engine.showLevelComplete(${score},'${nextId}')">${Engine.getLevelName(nextId)} →</button>`
-        : `<button class="btn-next-level" onclick="Engine.showAllComplete()">🏆 ¡Ver resultados!</button>`,
-    ].join('');
+    Engine.el('res-btns').innerHTML = nextId
+      ? `<button class="btn-next-level" onclick="Engine.showLevelComplete(${score},'${nextId}')">${Engine.getLevelName(nextId)} →</button>`
+      : `<button class="btn-next-level" onclick="Engine.showAllComplete()">🏆 ¡Ver resultados!</button>`;
 
     // Win animation
     Engine.el('result-level-extra').innerHTML =

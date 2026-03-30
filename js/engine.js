@@ -331,10 +331,7 @@ const Engine = (() => {
     const nextBtn = nextLv
       ? `<button class="btn-next-level" onclick="Engine.showLevelComplete(${score},'${nextId}')">${nextLv.name} →</button>`
       : `<button class="btn-next-level" onclick="Engine.showAllComplete()">🏆 ¡Ver resultados!</button>`;
-    el('res-btns').innerHTML = [
-      `<button class="btn-retry" onclick="Engine.startLevel('${state.level.id}')">¡Jugar de nuevo!</button>`,
-      nextBtn,
-    ].join('');
+    el('res-btns').innerHTML = nextBtn;
 
     // Let the level add its win/lose animation
     el('result-level-extra').innerHTML = '';
