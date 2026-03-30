@@ -429,7 +429,12 @@ const Engine = (() => {
   let _lastGrandTotal = 0;
 
   async function _fetchScores() {
-    const r = await fetch(`${_SB_URL}/rest/v1/scores?order=score.desc&limit=100`, { headers: _SB_HDR });
+    const now   = new Date();
+    const month = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+    const r = await fetch(
+      `${_SB_URL}/rest/v1/scores?order=score.desc&limit=100&created_at=gte.${month}`,
+      { headers: _SB_HDR }
+    );
     if(!r.ok) throw new Error('fetch failed');
     return r.json();
   }
@@ -471,6 +476,10 @@ const Engine = (() => {
     const list = el('lb-list');
     if(!list) return;
     showScreen('screen-leaderboard');
+    const now = new Date();
+    const monthLabel = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+    const titleEl = el('lb-title');
+    if(titleEl) titleEl.textContent = `Clasificación — ${monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}`;
     list.innerHTML = '<div class="lb-empty">⏳ Cargando clasificación...</div>';
     try {
       const scores = await _fetchScores();
