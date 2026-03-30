@@ -216,7 +216,7 @@ const MemoryLevel = (() => {
 
       .mem-hint {
         margin: 0 0 6px;
-        font-size: clamp(.7rem, 2.5vw, .85rem);
+        font-size: clamp(1rem, 4vw, 1.4rem);
         color: rgba(255,255,255,.55);
         text-align: center;
         line-height: 1.3;
