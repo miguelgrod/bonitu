@@ -311,6 +311,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 ============================================================ -->
 <script>
 (function () {
+  if(new URLSearchParams(location.search).get('debug') !== 'bonitu2025') return;
   const style = document.createElement('style');
   style.textContent = `
     #dbg-toggle {
