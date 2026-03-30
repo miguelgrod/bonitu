@@ -266,12 +266,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script src="js/engine.js"></script>
 <script src="js/levels/math.js"></script>
+<script src="js/levels/frases_traduccion.js"></script>
 <script src="js/levels/english.js"></script>
 <script src="js/levels/flags.js"></script>
+<script src="js/levels/patterns.js"></script>
 <script src="js/levels/memory.js"></script>
 
 <script>
-  Engine.init([MathLevel, EnglishLevel, FlagsLevel, MemoryLevel]);
+  Engine.init([MathLevel, EnglishLevel, FlagsLevel, PatternsLevel, MemoryLevel]);
 
   function _revealHome() {
     document.getElementById('home-name-section').classList.add('hidden');

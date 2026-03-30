@@ -185,66 +185,23 @@ const EnglishLevel = {
     }
   },
 
-  /* ---------- QUESTION BANK ---------- */
-  _bank: {
-    words: [
-      { es:'ventana',  correct:'window',  distractors:['door','table','chair','wall'] },
-      { es:'puerta',   correct:'door',    distractors:['window','wall','floor','chair'] },
-      { es:'lápiz',    correct:'pencil',  distractors:['pen','book','ruler','eraser'] },
-      { es:'libro',    correct:'book',    distractors:['pen','paper','notebook','ruler'] },
-      { es:'gato',     correct:'cat',     distractors:['dog','fish','bird','rabbit'] },
-      { es:'perro',    correct:'dog',     distractors:['cat','fish','bird','horse'] },
-      { es:'mesa',     correct:'table',   distractors:['chair','door','window','desk'] },
-      { es:'silla',    correct:'chair',   distractors:['table','sofa','floor','bench'] },
-      { es:'agua',     correct:'water',   distractors:['milk','juice','tea','coffee'] },
-      { es:'casa',     correct:'house',   distractors:['flat','school','shop','park'] },
-    ],
-    phrases: [
-      { es:'mi coche es verde',     correct:'my car is green',    distractors:['my house is green','the car is blue','my car is red'] },
-      { es:'el gato es grande',     correct:'the cat is big',     distractors:['the dog is big','the cat is small','a cat is big'] },
-      { es:'me gusta el chocolate', correct:'I like chocolate',   distractors:['she likes chocolate','I eat chocolate','I love chocolate'] },
-      { es:'ella tiene un libro',   correct:'she has a book',     distractors:['he has a book','she has a pen','they have a book'] },
-      { es:'el cielo es azul',      correct:'the sky is blue',    distractors:['the sea is blue','the sky is grey','the sky is clear'] },
-      { es:'mi casa es grande',     correct:'my house is big',    distractors:['my house is small','her house is big','the house is big'] },
-    ],
-    sentences: [
-      { es:'voy a la escuela',           correct:'I go to school',     distractors:['I go to the park','she goes to school','we go to school'] },
-      { es:'ella come una manzana',      correct:'she eats an apple',  distractors:['she eats a pear','he eats an apple','they eat an apple'] },
-      { es:'jugamos al fútbol',          correct:'we play football',   distractors:['they play football','we play tennis','I play football'] },
-      { es:'mi madre cocina bien',       correct:'my mum cooks well',  distractors:['my dad cooks well','my mum eats well','her mum cooks well'] },
-      { es:'tengo un perro marrón',      correct:'I have a brown dog', distractors:['I have a black dog','she has a brown dog','I have a brown cat'] },
-    ],
-  },
-
-  _tiers: [
-    { key:'words',     count:4, label:'Traduce la palabra',  emoji:['🪟','🚪','✏️','📚','🐱','🐶','🪑','💺','💧','🏠'] },
-    { key:'phrases',   count:3, label:'Traduce la frase',    emoji:['🚗','🐱','🍫','📖','☁️','🏡'] },
-    { key:'sentences', count:3, label:'Traduce la oración',  emoji:['🏫','🍎','⚽','👩‍🍳','🐕'] },
-  ],
-
   /* ---------- QUESTION GENERATION ---------- */
   generateQuestions() {
-    const {shuffle} = Engine;
-    const all = [];
-    this._tiers.forEach(tier => {
-      const pool = shuffle([...this._bank[tier.key]]).slice(0, tier.count);
-      pool.forEach(q => {
-        const wrong = shuffle([...q.distractors]).slice(0, 3);
-        all.push({ es: q.es, correct: q.correct, options: shuffle([q.correct, ...wrong]), _tier: tier });
-      });
-    });
-    return all;
+    return getRandomPhrases(Engine.TOTAL_Q).map(p => ({
+      en:      p.en,
+      correct: p.es,
+      options: p.options,
+      emoji:   p.emoji,
+    }));
   },
 
   /* ---------- RENDER QUESTION CARD ---------- */
   renderCard(q, idx) {
-    const tier  = q._tier;
-    const emoji = tier.emoji[idx % tier.emoji.length];
     Engine.el('q-content').innerHTML = `
-      <div class="eng-card-label">${tier.label}</div>
-      <div class="eng-card-word">${q.es}</div>
+      <div class="eng-card-label">¿Cómo se dice en español?</div>
+      <div class="eng-card-word">${q.en}</div>
       <div class="eng-card-arrow">↓</div>
-      <div class="eng-card-emoji">${emoji} 🇬🇧</div>`;
+      <div class="eng-card-emoji">${q.emoji} 🇬🇧</div>`;
   },
 
   /* ---------- RESULT ANIMATION ---------- */

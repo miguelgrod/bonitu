@@ -10,7 +10,7 @@ const FlagsLevel = {
   /* ---------- METADATA ---------- */
   id:          'flags',
   name:        '🌍 Banderas',
-  nextLevelId: null,
+  nextLevelId: 'patterns',
   answerClass: 'ans-btn',
 
   winTitle:   '🎉 ¡Vuelta al mundo completada! ✈️',
