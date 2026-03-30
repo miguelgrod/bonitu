@@ -464,6 +464,7 @@ const Engine = (() => {
     try {
       await _persistScore(name, _lastGrandTotal, state.totalStars);
       if(section) section.innerHTML = '<div class="ac-saved">✅ ¡Puntuación guardada!</div>';
+      setTimeout(() => showLeaderboard(), 1000);
     } catch(e) {
       if(section) section.innerHTML = '<div class="ac-saved" style="color:#ff6b6b">❌ Error al guardar. Inténtalo de nuevo.</div>';
     }

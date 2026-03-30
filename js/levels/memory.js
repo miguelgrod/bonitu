@@ -21,6 +21,7 @@ const MemoryLevel = (() => {
   let _matched = [];   // pairIds that have been matched
   let _fails   = 0;    // count of non-matching flip pairs
   let _lock    = false;
+  let _resizeObs = null;
 
   /* ── Helpers ─────────────────────────────────────── */
   function _sh(arr) {
@@ -176,7 +177,8 @@ const MemoryLevel = (() => {
 
       /* q-card expands to fill the available flex space */
       .mem-theme .q-area {
-        padding: 0 4px; overflow: visible; justify-content: stretch;
+        padding: 0 4px; overflow: hidden; justify-content: center;
+        align-items: center; min-height: 0;
       }
       .mem-theme #q-card {
         flex: 1; flex-shrink: 1; min-height: 0;
@@ -187,8 +189,8 @@ const MemoryLevel = (() => {
         padding: 0 !important;
         animation: none !important;
         border-radius: 0 !important;
-        display: flex; align-items: stretch; justify-content: stretch;
-        overflow: visible;
+        display: flex !important; align-items: center; justify-content: center;
+        overflow: hidden; width: 100%;
       }
       .mem-theme .game-main { align-items: stretch; }
 
@@ -215,19 +217,18 @@ const MemoryLevel = (() => {
       }
       .mems-found { opacity: 1; filter: none; transform: scale(1.2); }
 
-      /* 4×4 memory grid */
+      /* 4×4 memory grid — size set explicitly by JS for cross-browser safety */
       .mem-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(4, 1fr);
         gap: clamp(4px, 1vw, 7px);
-        width: 100%;
-        height: 100%;
+        flex-shrink: 0;
       }
 
-      /* Individual card */
+      /* Individual card — fills its square grid cell */
       .mem-card {
-        aspect-ratio: 1 / 1; position: relative;
+        position: relative;
         cursor: pointer; perspective: 500px; user-select: none;
         container-type: size;
       }
@@ -337,6 +338,17 @@ const MemoryLevel = (() => {
     });
 
     qCard.appendChild(grid);
+
+    // Size grid as a square that fits the container — works on all mobile browsers
+    function _fitGrid() {
+      const { width, height } = qCard.getBoundingClientRect();
+      const size = Math.floor(Math.min(width, height));
+      if (size > 0) { grid.style.width = size + 'px'; grid.style.height = size + 'px'; }
+    }
+    _fitGrid();
+    if (_resizeObs) _resizeObs.disconnect();
+    _resizeObs = new ResizeObserver(_fitGrid);
+    _resizeObs.observe(qCard);
 
     // Clear Q&A elements (answers-grid already hidden via CSS)
     Engine.el('answers-grid').innerHTML = '';
