@@ -91,6 +91,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                onkeydown="if(event.key==='Enter')_submitName()">
         <button class="home-name-btn" onclick="_submitName()">¡Vamos! 🚀</button>
       </div>
+      <p style="font-size:.75rem;color:rgba(255,255,255,.45);margin-top:8px">
+        Si guardas tu puntuación, este nombre será visible en el marcador público.
+        Usa un alias si prefieres no usar tu nombre real.
+      </p>
     </div>
 
     <!-- Greeting + start button (revealed after name) -->
@@ -108,6 +112,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="home-signature">✨ Una producción de Bonitu Play</div>
   <div class="home-legal">
+    <a href="aviso-legal.html">Aviso legal</a>
+    <span>·</span>
     <a href="privacidad.html">Privacidad</a>
     <span>·</span>
     <a href="cookies.html">Cookies</a>
@@ -215,10 +221,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="ac-save-label">¿Quieres guardar tu puntuación? 🏅</p>
     <div class="ac-save-row">
       <input class="ac-save-input" id="ac-save-name" type="text"
-             placeholder="Tu nombre..." maxlength="20" autocomplete="off"
+             placeholder="Tu nombre o alias..." maxlength="20" autocomplete="off"
              onkeydown="if(event.key==='Enter')Engine.submitScore()">
       <button class="ac-save-btn" onclick="Engine.submitScore()">Guardar</button>
     </div>
+    <p style="font-size:.75rem;color:rgba(255,255,255,.45);margin-top:8px;z-index:2">
+      El nombre que introduzcas será visible públicamente en el marcador.
+      Usa un alias si prefieres no usar tu nombre real.
+    </p>
   </div>
 
   <button class="btn-secondary" style="z-index:2" onclick="Engine.showLeaderboard()">🏆 Clasificación</button>
