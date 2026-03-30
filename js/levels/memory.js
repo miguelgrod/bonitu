@@ -215,11 +215,12 @@ const MemoryLevel = (() => {
       .mems-found { opacity: 1; filter: none; transform: scale(1.2); }
 
       .mem-hint {
-        margin: 0 0 8px;
+        margin: 0 0 6px;
         font-size: clamp(.7rem, 2.5vw, .85rem);
         color: rgba(255,255,255,.55);
         text-align: center;
         line-height: 1.3;
+        width: 100%;
       }
 
       /* 4×4 memory grid — size set explicitly by JS for cross-browser safety */
@@ -342,10 +343,12 @@ const MemoryLevel = (() => {
       grid.appendChild(el);
     });
 
+    document.getElementById('mem-hint')?.remove();
     const hint = document.createElement('p');
+    hint.id        = 'mem-hint';
     hint.className = 'mem-hint';
     hint.textContent = 'Encuentra las 3 parejas: vaca 🐄, pingüino 🐧 y unicornio 🦄';
-    qCard.appendChild(hint);
+    qCard.insertAdjacentElement('beforebegin', hint);
     qCard.appendChild(grid);
 
     // Size grid as a square that fits the container — works on all mobile browsers
