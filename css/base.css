@@ -25,6 +25,8 @@ html, body {
   overflow: hidden;
 }
 .screen.hidden { display: none !important; }
+@keyframes screen-fade { from { opacity: 0; } to { opacity: 1; } }
+.screen-fadein { animation: screen-fade .35s ease; }
 
 /* ============================
    STAR BACKGROUND

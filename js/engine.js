@@ -138,7 +138,11 @@ const Engine = (() => {
   /* ---------- SCREEN MANAGEMENT ---------- */
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    el(id).classList.remove('hidden');
+    const screen = el(id);
+    screen.classList.remove('hidden');
+    screen.classList.remove('screen-fadein');
+    void screen.offsetWidth;
+    screen.classList.add('screen-fadein');
   }
   function showModal() { el('modal').classList.remove('hidden'); }
   function hideModal() { el('modal').classList.add('hidden');    }
