@@ -170,10 +170,17 @@ html, body {
 
 /* ── Bonitu Play signature ───────────────────────────── */
 .home-signature {
-  position:absolute; bottom:12px; left:0; right:0;
+  position:absolute; bottom:30px; left:0; right:0;
   font-size:.76rem; font-weight:600; letter-spacing:1.2px;
   color:rgba(255,215,0,.45); text-align:center; z-index:2;
 }
+.home-legal {
+  position:absolute; bottom:12px; left:0; right:0;
+  font-size:.72rem; color:rgba(255,255,255,.3); text-align:center; z-index:2;
+  display:flex; justify-content:center; gap:8px;
+}
+.home-legal a { color:rgba(255,255,255,.35); text-decoration:none; }
+.home-legal a:hover { color:rgba(255,255,255,.7); }
 
 /* CSS Rocket (kept for math.js result animation — do not remove) */
 .rocket-wrap { position: relative; animation: float 3.5s ease-in-out infinite; z-index: 2; }
