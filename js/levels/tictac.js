@@ -501,7 +501,7 @@ const TicTacLevel = (() => {
     setTimeout(() => {
       const msg = Engine.el('ttt-cf-msg');
       if (msg) msg.textContent = _userFirst
-        ? '¡EMPIEZA MARIO! 🍄'
+        ? `¡EMPIEZA ${(Engine.playerName||'MARIO').toUpperCase()}! 🍄`
         : '¡EMPIEZA BOWSER! 👾';
     }, 1200);
 
@@ -524,7 +524,7 @@ const TicTacLevel = (() => {
       _setStatus('BOWSER PIENSA... 👾', 'cpu-turn');
       setTimeout(_cpuMove, 800);
     } else {
-      _setStatus('¡TU TURNO, MARIO! 🍄', 'user-turn');
+      _setStatus(`¡TU TURNO, ${(Engine.playerName||'MARIO').toUpperCase()}! 🍄`, 'user-turn');
     }
   }
 
@@ -590,7 +590,7 @@ const TicTacLevel = (() => {
     const result = _checkResult();
     if (result) { _handleGameEnd(result); return; }
     _userTurn = true;
-    _setStatus('¡TU TURNO, MARIO! 🍄', 'user-turn');
+    _setStatus(`¡TU TURNO, ${(Engine.playerName||'MARIO').toUpperCase()}! 🍄`, 'user-turn');
   }
 
   /* ── AI ─────────────────────────────────────────────────── */
@@ -698,7 +698,7 @@ const TicTacLevel = (() => {
 
     if (result.winner === 'X') {
       _userWins++;
-      _setStatus('¡MARIO GANA! 🎉', 'game-end');
+      _setStatus(`¡${(Engine.playerName||'MARIO').toUpperCase()} GANA! 🎉`, 'game-end');
       Engine.playCorrect();
     } else if (result.winner === 'O') {
       _cpuWins++;
