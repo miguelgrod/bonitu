@@ -189,8 +189,12 @@ const Engine = (() => {
     const lv = _levels[levelId];
     if(!lv) return console.error('[Engine] Unknown level:', levelId);
 
-    // Clean up any level-specific theme classes from previous level
-    el('screen-game').classList.remove('mem-theme');
+    // Clean up any level-specific theme classes and scenery from previous level
+    el('screen-game').classList.remove('mem-theme', 'ttt-theme', 'hang-theme');
+    ['ttt-scenery', 'hang-scenery'].forEach(id => {
+      const old = document.getElementById(id);
+      if (old) old.remove();
+    });
 
     state.level      = lv;
     state.currentQ   = 0;
