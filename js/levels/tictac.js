@@ -262,39 +262,32 @@ const TicTacLevel = (() => {
       }
 
       /* =====================================================
-         MARIO MARK  (user — red M badge)
+         CHARACTER IMAGES  (Mario / Bowser PNGs)
       ===================================================== */
-      .ttt-mark-x {
-        width: 58cqmin; height: 58cqmin;
-        border-radius: 50%;
-        background: radial-gradient(circle at 38% 32%,#ff6e6e,#c80000);
-        display: flex; align-items: center; justify-content: center;
-        font-family: 'Press Start 2P', monospace;
-        font-size: 22cqmin; color: #fff;
-        box-shadow: 0 0 14px rgba(200,0,0,.65),
-                    inset 0 3px 6px rgba(255,255,255,.35),
-                    0 3px 0 rgba(0,0,0,.4);
-        border: 2px solid rgba(255,180,180,.3);
+      .ttt-cell.taken {
+        background: rgba(0,0,0,.18) !important;
+        border-color: rgba(255,255,255,.18) !important;
+        box-shadow: inset 0 0 12px rgba(0,0,0,.3), 0 3px 0 rgba(0,0,0,.3) !important;
       }
-      /* BOWSER MARK  (cpu — green spiky badge) */
-      .ttt-mark-o {
-        width: 58cqmin; height: 58cqmin;
-        border-radius: 30% 55% 30% 55% / 55% 30% 55% 30%;
-        background: radial-gradient(circle at 38% 32%,#55cc44,#1a7a1a);
-        display: flex; align-items: center; justify-content: center;
-        font-family: 'Press Start 2P', monospace;
-        font-size: 19cqmin; color: #ffd700;
-        box-shadow: 0 0 14px rgba(30,130,30,.65),
-                    inset 0 3px 6px rgba(255,255,255,.2),
-                    0 3px 0 rgba(0,0,0,.4);
-        border: 2px solid rgba(100,220,100,.25);
+      .ttt-char {
+        width: 88cqmin; height: 88cqmin;
+        object-fit: contain; pointer-events: none;
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,.55));
       }
-      .ttt-mark-x.is-new, .ttt-mark-o.is-new {
-        animation: ttt-mark-pop .3s cubic-bezier(.34,1.56,.64,1);
+      .ttt-char.mario-char {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,.55))
+                drop-shadow(0 0 8px rgba(255,80,80,.4));
+      }
+      .ttt-char.bowser-char {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,.55))
+                drop-shadow(0 0 8px rgba(255,165,0,.45));
+      }
+      .ttt-char.is-new {
+        animation: ttt-mark-pop .32s cubic-bezier(.34,1.56,.64,1);
       }
       @keyframes ttt-mark-pop {
-        0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
-        65%  { transform: scale(1.3) rotate(5deg); }
+        0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+        65%  { transform: scale(1.25) rotate(4deg); }
         100% { transform: scale(1) rotate(0); opacity: 1; }
       }
 
@@ -350,7 +343,10 @@ const TicTacLevel = (() => {
       .ttt-hud-name {
         font-size: .48rem; letter-spacing: .5px; line-height: 1.3;
       }
-      .ttt-hud-icon { font-size: 1.1rem; line-height: 1; }
+      .ttt-hud-char {
+        width: 52px; height: 52px; object-fit: contain;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,.5));
+      }
       .ttt-hud-score {
         font-size: 1.75rem; line-height: 1; font-weight: 400;
       }
@@ -439,13 +435,13 @@ const TicTacLevel = (() => {
     Engine.el('game-sidebar').innerHTML = `
       <div class="ttt-hud">
         <div class="ttt-hud-player ttt-hud-mario">
-          <div class="ttt-hud-icon">🍄</div>
+          <img src="src/mario.png" class="ttt-hud-char" alt="Mario">
           <div class="ttt-hud-name">MARIO</div>
           <div class="ttt-hud-score" id="ttt-uw">${_userWins}</div>
         </div>
         <div class="ttt-hud-sep">VS</div>
         <div class="ttt-hud-player ttt-hud-bowser">
-          <div class="ttt-hud-icon">👾</div>
+          <img src="src/bowser.png" class="ttt-hud-char" alt="Bowser">
           <div class="ttt-hud-name">BOWSER</div>
           <div class="ttt-hud-score" id="ttt-cw">${_cpuWins}</div>
         </div>
@@ -549,9 +545,11 @@ const TicTacLevel = (() => {
       cell.className = 'ttt-cell' + (val ? ' taken' : '');
       if (val) {
         const isNew = (i === _lastMove);
-        const cls   = val === 'X' ? 'ttt-mark-x' : 'ttt-mark-o';
-        const lbl   = val === 'X' ? 'M' : 'B';
-        cell.innerHTML = `<div class="${cls}${isNew ? ' is-new' : ''}">${lbl}</div>`;
+        const src   = val === 'X' ? 'src/mario.png'  : 'src/bowser.png';
+        const alt   = val === 'X' ? 'Mario'           : 'Bowser';
+        const cls   = val === 'X' ? 'mario-char'      : 'bowser-char';
+        cell.innerHTML =
+          `<img src="${src}" alt="${alt}" class="ttt-char ${cls}${isNew ? ' is-new' : ''}">`;
       }
       cell.addEventListener('click', () => _handleClick(i));
       boardEl.appendChild(cell);
