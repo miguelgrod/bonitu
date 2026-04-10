@@ -378,7 +378,7 @@ const MemoryLevel = (() => {
   return {
     id:               'memory',
     name:             '🎴 Memoria',
-    nextLevelId:      null,
+    nextLevelId:      'tictac',
     answerClass:      'ans-btn',
     winTitle:         '<span style="color:#ffd700">🎉 ¡Encontraste las 3 parejas!</span>',
     loseTitle:        '',
