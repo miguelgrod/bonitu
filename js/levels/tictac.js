@@ -806,7 +806,7 @@ const TicTacLevel = (() => {
   return {
     id:               'tictac',
     name:             '❌ 3 en Raya',
-    nextLevelId:      null,
+    nextLevelId:      'hangman',
     answerClass:      'ans-btn',
     winTitle:         '<span style="color:#ffd700">🎉 ¡MARIO GANA!</span>',
     loseTitle:        '<span style="color:#ff6060">👾 ¡BOWSER GANA!</span>',

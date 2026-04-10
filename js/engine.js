@@ -537,7 +537,7 @@ const Engine = (() => {
     showLeaderboard, submitScore,
     // Start game with random level order
     startGame() {
-      state.playlist         = ['math', 'english', 'flags', 'patterns', 'memory', 'tictac'];
+      state.playlist         = ['math', 'english', 'flags', 'patterns', 'memory', 'tictac', 'hangman'];
       state.playlistIdx      = 0;
       state.grandTotalScore  = 0;
       state.totalStars       = 0;
