@@ -191,6 +191,19 @@ const TicTacLevel = (() => {
       .ttt-theme .game-main { align-items: stretch; }
 
       /* =====================================================
+         GOAL LABEL
+      ===================================================== */
+      .ttt-goal {
+        font-family: 'Press Start 2P', monospace;
+        font-size: clamp(.38rem, 1.1vw, .6rem);
+        color: #ffd700;
+        text-align: center;
+        letter-spacing: .4px;
+        line-height: 1.5;
+        text-shadow: 0 2px 6px rgba(0,0,0,.6);
+      }
+
+      /* =====================================================
          STATUS BAR (Mario text box style)
       ===================================================== */
       .ttt-status {
@@ -435,13 +448,13 @@ const TicTacLevel = (() => {
     Engine.el('game-sidebar').innerHTML = `
       <div class="ttt-hud">
         <div class="ttt-hud-player ttt-hud-mario">
-          <img src="src/mario.png" class="ttt-hud-char" alt="Mario">
+          <img src="src/mario.webp" class="ttt-hud-char" alt="Mario">
           <div class="ttt-hud-name">MARIO</div>
           <div class="ttt-hud-score" id="ttt-uw">${_userWins}</div>
         </div>
         <div class="ttt-hud-sep">VS</div>
         <div class="ttt-hud-player ttt-hud-bowser">
-          <img src="src/bowser.png" class="ttt-hud-char" alt="Bowser">
+          <img src="src/bowser.webp" class="ttt-hud-char" alt="Bowser">
           <div class="ttt-hud-name">BOWSER</div>
           <div class="ttt-hud-score" id="ttt-cw">${_cpuWins}</div>
         </div>
@@ -519,6 +532,7 @@ const TicTacLevel = (() => {
   function _buildBoard() {
     const qCard = Engine.el('q-card');
     qCard.innerHTML = `
+      <div class="ttt-goal">Gana el primero que llegue a 3 victorias</div>
       <div class="ttt-status" id="ttt-status"></div>
       <div class="ttt-board"  id="ttt-board"></div>
     `;
@@ -545,7 +559,7 @@ const TicTacLevel = (() => {
       cell.className = 'ttt-cell' + (val ? ' taken' : '');
       if (val) {
         const isNew = (i === _lastMove);
-        const src   = val === 'X' ? 'src/mario.png'  : 'src/bowser.png';
+        const src   = val === 'X' ? 'src/mario.webp'  : 'src/bowser.webp';
         const alt   = val === 'X' ? 'Mario'           : 'Bowser';
         const cls   = val === 'X' ? 'mario-char'      : 'bowser-char';
         cell.innerHTML =
