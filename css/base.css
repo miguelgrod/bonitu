@@ -70,6 +70,21 @@ html, body {
 /* ============================
    HOME SCREEN
 ============================ */
+.new-levels-badge {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 10;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff; font-weight: 800; font-size: clamp(.7rem, 2.2vw, .85rem);
+  padding: 6px 18px; border-radius: 50px;
+  border: 2px solid rgba(255,255,255,.35);
+  box-shadow: 0 3px 14px rgba(124,58,237,.55);
+  white-space: nowrap;
+  animation: badge-float 3s ease-in-out infinite alternate;
+}
+@keyframes badge-float {
+  0%   { transform: translateX(-50%) translateY(0);    }
+  100% { transform: translateX(-50%) translateY(-6px); }
+}
 #screen-home {
   background: linear-gradient(175deg, #050a1a 0%, #0d1940 40%, #1a2b5e 100%);
   gap: 0; padding: 16px 20px 40px; overflow-y: auto;
