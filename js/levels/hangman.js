@@ -48,16 +48,27 @@ const HangmanLevel = (() => {
   function _renderTrack() {
     const wrap = document.getElementById('hang-track');
     if (!wrap) return;
-    let html = '';
+
+    // Row 1: Mario sprite (sits above tiles, no absolute positioning)
+    let marioRow = '<div class="hang-mario-row">';
     for (let i = 0; i <= MAX_FAILS; i++) {
-      const isLava   = i === MAX_FAILS;
-      const hasMario = i === _fails;
-      html += `<div class="hang-tile${isLava ? ' hang-lava-tile' : ''}${hasMario && !isLava ? ' hang-mario-tile' : ''}">`;
-      if (isLava)   html += `<span class="hang-fire-icon">🔥</span>`;
-      if (hasMario) html += `<img src="src/mario.webp" class="hang-mario-img" alt="Mario">`;
-      html += `</div>`;
+      marioRow += `<div class="hang-mario-cell">${i === _fails
+        ? '<img src="src/mario.webp" class="hang-mario-img" alt="Mario">'
+        : ''}</div>`;
     }
-    wrap.innerHTML = html;
+    marioRow += '</div>';
+
+    // Row 2: Stone + lava tiles
+    let tilesRow = '<div class="hang-tiles-row">';
+    for (let i = 0; i <= MAX_FAILS; i++) {
+      const isLava = i === MAX_FAILS;
+      tilesRow += `<div class="hang-tile${isLava ? ' hang-lava-tile' : ''}">`;
+      if (isLava) tilesRow += `<span class="hang-fire-icon">🔥</span>`;
+      tilesRow += '</div>';
+    }
+    tilesRow += '</div>';
+
+    wrap.innerHTML = marioRow + tilesRow;
   }
 
   function _renderKeyboard() {
@@ -269,19 +280,21 @@ const HangmanLevel = (() => {
         box-shadow: 0 0 6px rgba(255,60,60,.6);
       }
 
-      /* ── Hide engine Q&A chrome ─────────────────────────────── */
+      /* ── Hide engine Q&A chrome (display:none frees layout space) ── */
       .hang-theme .timer-wrap,
-      .hang-theme .game-score { visibility: hidden; }
+      .hang-theme .game-score { display: none !important; }
       .hang-theme #feedback,
       .hang-theme .answers-grid { display: none !important; }
       .hang-theme #q-counter {
-        font-size: clamp(.65rem,1.6vw,.82rem); font-weight: 800;
-        color: rgba(255,200,100,.8);
+        font-size: clamp(.72rem, 2vw, .88rem); font-weight: 800;
+        color: rgba(255,200,100,.85);
         font-family: 'Press Start 2P', cursive;
+        padding: 4px 0 2px;
       }
       .hang-theme .q-area {
         padding: 0 4px; overflow: hidden;
         justify-content: center; align-items: center; min-height: 0;
+        flex: 1;
       }
       .hang-theme #q-card {
         flex: 1; flex-shrink: 1; min-height: 0;
@@ -356,39 +369,57 @@ const HangmanLevel = (() => {
 
       /* ── Mario walk track ──────────────────────────────────── */
       .hang-track {
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        gap: clamp(2px, .8vw, 5px);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: flex-end;
         width: 100%;
         flex-shrink: 0;
+        gap: 0;
       }
-      .hang-tile {
-        position: relative;
+      /* Row 1: Mario sprite row */
+      .hang-mario-row {
+        display: flex; justify-content: center;
+        gap: clamp(2px, .8vw, 5px);
+        width: 100%;
+      }
+      .hang-mario-cell {
         flex: 1;
         max-width: clamp(34px, 11vw, 52px);
-        aspect-ratio: 1 / 1.25;
+        height: clamp(24px, 6vw, 40px);
+        display: flex; align-items: flex-end; justify-content: center;
+      }
+      .hang-mario-img {
+        width: 100%;
+        max-width: clamp(26px, 7vw, 42px);
+        image-rendering: crisp-edges;
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+        animation: hang-mario-bob .7s ease-in-out infinite alternate;
+      }
+      @keyframes hang-mario-bob {
+        0%   { transform: translateY(0);    }
+        100% { transform: translateY(-3px); }
+      }
+      /* Row 2: Stone + lava tiles */
+      .hang-tiles-row {
+        display: flex; justify-content: center;
+        gap: clamp(2px, .8vw, 5px);
+        width: 100%;
+      }
+      .hang-tile {
+        flex: 1;
+        max-width: clamp(34px, 11vw, 52px);
+        aspect-ratio: 1 / 1;
         border-radius: 5px 5px 3px 3px;
         background: linear-gradient(180deg, #5a3a1a 0%, #3d2408 70%, #2a1600 100%);
         border: 1.5px solid rgba(255,160,40,.25);
         border-bottom: 3px solid #1a0c00;
         display: flex; align-items: center; justify-content: center;
-        overflow: visible;
-        transition: transform .15s;
-      }
-      /* Step number dots below each tile */
-      .hang-tile::after {
-        content: '';
-        position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
-        width: 5px; height: 5px; border-radius: 50%;
-        background: rgba(255,120,40,.35);
+        overflow: hidden;
       }
       .hang-lava-tile {
         background: linear-gradient(180deg, #ff5500 0%, #cc2200 50%, #990000 100%);
         border-color: rgba(255,80,0,.7);
         border-bottom-color: #660000;
-        box-shadow: 0 0 12px rgba(255,80,0,.55),
-                    0 0 24px rgba(255,40,0,.25);
+        box-shadow: 0 0 12px rgba(255,80,0,.55), 0 0 24px rgba(255,40,0,.25);
         animation: hang-lava-tile-pulse 1.5s ease-in-out infinite alternate;
       }
       @keyframes hang-lava-tile-pulse {
@@ -396,7 +427,7 @@ const HangmanLevel = (() => {
         100% { box-shadow: 0 0 16px rgba(255,100,0,.8), 0 0 30px rgba(255,60,0,.45); }
       }
       .hang-fire-icon {
-        font-size: clamp(1rem, 3.5cqmin, 1.4rem);
+        font-size: clamp(.9rem, 5cqw, 1.3rem);
         filter: drop-shadow(0 0 4px rgba(255,80,0,.8));
         animation: hang-fire-flicker .6s ease-in-out infinite alternate;
       }
@@ -404,37 +435,18 @@ const HangmanLevel = (() => {
         0%   { transform: scale(1)    rotate(-3deg); }
         100% { transform: scale(1.15) rotate(3deg);  }
       }
-      .hang-mario-img {
-        position: absolute;
-        bottom: 105%;
-        left: 50%; transform: translateX(-50%);
-        width: 200%;
-        max-width: clamp(28px, 8vw, 48px);
-        image-rendering: crisp-edges;
-        filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
-        animation: hang-mario-bob .7s ease-in-out infinite alternate;
-        z-index: 5;
-      }
-      @keyframes hang-mario-bob {
-        0%   { transform: translateX(-50%) translateY(0);    }
-        100% { transform: translateX(-50%) translateY(-3px); }
-      }
-      /* Flash tile red when Mario lands on it as a mistake */
-      .hang-mario-tile:not(.hang-lava-tile) {
-        background: linear-gradient(180deg, #7a4a2a 0%, #5a3010 70%, #3a1e06 100%);
-        border-color: rgba(255,200,80,.4);
-      }
 
       /* ── A-Z Keyboard ──────────────────────────────────────── */
       .hang-keyboard {
         display: grid;
         grid-template-columns: repeat(9, 1fr);
-        gap: clamp(3px, .9vw, 5px);
+        gap: clamp(2px, .7vw, 4px);
         width: 100%;
         flex-shrink: 0;
+        container-type: inline-size;
       }
       .hang-key {
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1 / 0.85;
         border: none; border-radius: 5px;
         background: linear-gradient(180deg, #6b3acc 0%, #4a2299 100%);
         border-bottom: 3px solid #2a1266;
