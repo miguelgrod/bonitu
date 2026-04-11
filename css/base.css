@@ -506,18 +506,167 @@ html, body {
 }
 
 /* ============================
-   RESPONSIVE
+   RESPONSIVE — MOBILE SMALL (≤ 420px)
 ============================ */
 @media (max-width: 420px) {
-  .moon-deco { width: 64px; height: 64px; top: 14px; right: 14px; }
-  .q-card    { padding: 14px 12px; }
-  .ans-btn   { min-height: 66px; font-size: 1.5rem; }
+  .moon-deco  { width: 64px; height: 64px; top: 14px; right: 14px; }
+  .q-card     { padding: 14px 12px; }
+  .ans-btn    { min-height: 66px; font-size: 1.5rem; }
   .modal-card { padding: 22px 18px; }
-  .r-body { width: 46px; height: 54px; }
-  .r-nose { width: 38px; height: 44px; }
+  .r-body     { width: 46px; height: 54px; }
+  .r-nose     { width: 38px; height: 44px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .rocket-wrap  { display: none; }
   .home-content { gap: 10px; }
   .game-title   { font-size: 2rem; }
+}
+
+/* ============================
+   RESPONSIVE — DESKTOP (≥ 1024px)
+============================ */
+@media (min-width: 1024px) {
+  html { font-size: 18px; }
+
+  /* Layout */
+  #screen-game  { padding: 16px 32px 20px; gap: 14px; }
+  .top-bar,
+  .game-main    { max-width: 900px; }
+  .game-main    { gap: 16px; }
+
+  /* Game elements */
+  .q-card       { padding: 24px 22px; border-radius: 32px; }
+  .ans-btn      { min-height: 88px; }
+  .answers-grid { gap: 13px; }
+  .timer-wrap,
+  .timer-svg    { width: 64px; height: 64px; }
+
+  /* Home */
+  #screen-home        { padding: 28px 40px 60px; }
+  .home-girl-wrap     { display: flex; gap: 24px; align-items: flex-end; }
+  .hgc-main           { font-size: 4.2rem; }
+  .hgc-hat            { font-size: 2.4rem; }
+  .hgc-side           { font-size: 2.2rem; }
+  .hgc-sub            { font-size: 1.8rem; }
+  .btn-play           { padding: 20px 80px; }
+  .home-name-input    { width: clamp(160px, 24vw, 240px); }
+
+  /* Result */
+  .res-content    { max-width: 620px; gap: 16px; }
+  .res-motivator  { max-width: 480px; }
+
+  /* Leaderboard */
+  .lb-list-wrap { width: min(600px, 92vw); }
+}
+
+/* ============================
+   RESPONSIVE — LARGE / TV 1080p (≥ 1440px)
+============================ */
+@media (min-width: 1440px) {
+  html { font-size: 21px; }
+
+  /* Layout */
+  #screen-game  { padding: 24px 48px 30px; gap: 20px; }
+  .top-bar,
+  .game-main    { max-width: 1140px; }
+  .game-main    { gap: 22px; }
+
+  /* Game elements */
+  .q-card       { padding: 30px 28px; border-radius: 38px; }
+  .ans-btn      { min-height: 112px; border-radius: 28px; }
+  .answers-grid { gap: 18px; }
+  .timer-wrap,
+  .timer-svg    { width: 72px; height: 72px; }
+  .timer-num    { font-size: 1.2rem; }
+
+  /* Home */
+  #screen-home        { padding: 40px 72px 80px; }
+  .home-girl-wrap     { gap: 36px; }
+  .hgc-main           { font-size: 5.5rem; }
+  .hgc-hat            { font-size: 3rem; }
+  .hgc-side           { font-size: 2.8rem; }
+  .hgc-sub            { font-size: 2.2rem; }
+  .btn-play           { padding: 24px 100px; }
+  .home-name-input    { width: clamp(200px, 22vw, 320px); }
+  .home-name-btn      { padding: 14px 30px; }
+
+  /* Buttons */
+  .btn-next-level { padding: 22px 60px; }
+  .btn-continue   { padding: 22px 64px; }
+
+  /* Result */
+  .res-content    { max-width: 760px; gap: 20px; }
+  .res-motivator  { max-width: 580px; font-size: 1.2rem; padding: 18px 28px; }
+  .res-stars      { gap: 20px; }
+  .res-star       { font-size: 3.8rem; }
+
+  /* Leaderboard */
+  .lb-list-wrap { width: min(760px, 90vw); }
+  .lb-row       { padding: 14px 22px; }
+  .lb-name,
+  .lb-score,
+  .lb-stars     { font-size: 1.15rem; }
+  .lb-rank      { font-size: 1.5rem; }
+
+  /* Level complete */
+  .lc-emoji { font-size: 6rem; }
+
+  /* Stars badge */
+  #stars-badge { top: 22px; right: 28px; padding: 10px 24px; font-size: 1.1rem; }
+}
+
+/* ============================
+   RESPONSIVE — 4K (≥ 2560px)
+============================ */
+@media (min-width: 2560px) {
+  html { font-size: 28px; }
+
+  /* Layout */
+  #screen-game  { padding: 40px 80px 50px; gap: 30px; }
+  .top-bar,
+  .game-main    { max-width: 1900px; }
+  .game-main    { gap: 36px; }
+
+  /* Game elements */
+  .q-card       { padding: 46px 42px; border-radius: 54px; }
+  .ans-btn      { min-height: 170px; border-radius: 38px; }
+  .answers-grid { gap: 26px; }
+  .timer-wrap,
+  .timer-svg    { width: 104px; height: 104px; }
+  .timer-num    { font-size: 1.6rem; }
+
+  /* Home */
+  #screen-home        { padding: 64px 120px 120px; }
+  .home-girl-wrap     { gap: 56px; }
+  .hgc-main           { font-size: 8rem; }
+  .hgc-hat            { font-size: 4.4rem; }
+  .hgc-side           { font-size: 4rem; }
+  .hgc-sub            { font-size: 3.2rem; }
+  .btn-play           { padding: 32px 140px; }
+  .home-name-input    { width: clamp(260px, 18vw, 480px); }
+  .home-name-btn      { padding: 18px 42px; }
+
+  /* Buttons */
+  .btn-next-level { padding: 30px 90px; }
+  .btn-continue   { padding: 30px 90px; }
+
+  /* Result */
+  .res-content    { max-width: 1200px; gap: 28px; }
+  .res-motivator  { max-width: 900px; font-size: 1.4rem; padding: 22px 36px; }
+  .res-stars      { gap: 28px; }
+  .res-star       { font-size: 5rem; }
+
+  /* Leaderboard */
+  .lb-list-wrap { width: min(1100px, 88vw); }
+  .lb-row       { padding: 20px 32px; }
+  .lb-name,
+  .lb-score,
+  .lb-stars     { font-size: 1.5rem; }
+  .lb-rank      { font-size: 2rem; }
+
+  /* Level complete */
+  .lc-emoji { font-size: 8rem; }
+
+  /* Stars badge */
+  #stars-badge { top: 30px; right: 40px; padding: 14px 32px; font-size: 1.4rem; }
 }

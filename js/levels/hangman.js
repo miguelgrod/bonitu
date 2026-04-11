@@ -477,6 +477,34 @@ const HangmanLevel = (() => {
         color: #aaffcc !important;
       }
 
+      /* ── Large screen / TV overrides ───────────────────────── */
+      @media (min-width: 1024px) {
+        .hang-tile       { max-width: clamp(40px, 5.5vw, 80px); }
+        .hang-mario-cell { max-width: clamp(40px, 5.5vw, 80px); height: clamp(32px, 4.5vw, 68px); }
+        .hang-mario-img  { max-width: clamp(34px, 4.5vw, 66px); }
+        .hang-letter     { width: clamp(24px, 3vw, 52px); height: clamp(32px, 5vh, 62px); font-size: clamp(.75rem, 1.8vw, 1.2rem); }
+        .hang-keyboard   { gap: clamp(4px, .6vw, 8px); }
+        .hangs-count     { font-size: 2.8rem; }
+      }
+      @media (min-width: 1440px) {
+        .hang-tile       { max-width: clamp(52px, 5vw, 100px); }
+        .hang-mario-cell { max-width: clamp(52px, 5vw, 100px); height: clamp(44px, 4vw, 84px); }
+        .hang-mario-img  { max-width: clamp(44px, 4vw, 82px); }
+        .hang-letter     { width: clamp(30px, 2.8vw, 64px); height: clamp(40px, 5vh, 76px); font-size: clamp(.85rem, 1.6vw, 1.4rem); }
+        .hang-keyboard   { gap: clamp(5px, .55vw, 10px); }
+        .hangs-count     { font-size: 3.2rem; }
+        .hang-theme-badge { font-size: clamp(.8rem, 1.4vw, 1.1rem); padding: 6px 20px; }
+      }
+      @media (min-width: 2560px) {
+        .hang-tile       { max-width: clamp(70px, 4vw, 140px); }
+        .hang-mario-cell { max-width: clamp(70px, 4vw, 140px); height: clamp(60px, 3.5vw, 118px); }
+        .hang-mario-img  { max-width: clamp(58px, 3.5vw, 114px); }
+        .hang-letter     { width: clamp(40px, 2.2vw, 88px); height: clamp(54px, 4.5vh, 104px); font-size: clamp(1rem, 1.3vw, 1.8rem); }
+        .hang-keyboard   { gap: clamp(6px, .45vw, 14px); }
+        .hangs-count     { font-size: 4rem; }
+        .hang-theme-badge { font-size: clamp(1rem, 1.2vw, 1.5rem); padding: 8px 28px; }
+      }
+
       /* ── Result screen extras ───────────────────────────────── */
       .hang-win-anim {
         position: absolute; top: 24%; left: 50%; transform: translateX(-50%);
