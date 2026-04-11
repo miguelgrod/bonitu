@@ -560,19 +560,20 @@ html, body {
 }
 
 /* ============================
-   RESPONSIVE — LARGE / TV 1080p (≥ 1440px)
+   RESPONSIVE — TV 1080p (≥ 1440px)
+   max-width en vw para que ocupe ~92% de pantalla
 ============================ */
 @media (min-width: 1440px) {
-  html { font-size: 21px; }
+  html { font-size: 22px; }
 
-  /* Layout */
-  #screen-game  { padding: 24px 48px 30px; gap: 20px; }
+  /* Layout — 92vw → en 1920px = 1766px (92% del ancho) */
+  #screen-game  { padding: 20px 3vw 26px; gap: 20px; }
   .top-bar,
-  .game-main    { max-width: 1140px; }
-  .game-main    { gap: 22px; }
+  .game-main    { max-width: 92vw; }
+  .game-main    { gap: 24px; }
 
   /* Game elements */
-  .q-card       { padding: 30px 28px; border-radius: 38px; }
+  .q-card       { padding: 28px 26px; border-radius: 36px; }
   .ans-btn      { min-height: 112px; border-radius: 28px; }
   .answers-grid { gap: 18px; }
   .timer-wrap,
@@ -580,14 +581,14 @@ html, body {
   .timer-num    { font-size: 1.2rem; }
 
   /* Home */
-  #screen-home        { padding: 40px 72px 80px; }
+  #screen-home        { padding: 40px 5vw 80px; }
   .home-girl-wrap     { gap: 36px; }
   .hgc-main           { font-size: 5.5rem; }
   .hgc-hat            { font-size: 3rem; }
   .hgc-side           { font-size: 2.8rem; }
   .hgc-sub            { font-size: 2.2rem; }
   .btn-play           { padding: 24px 100px; }
-  .home-name-input    { width: clamp(200px, 22vw, 320px); }
+  .home-name-input    { width: clamp(200px, 18vw, 360px); }
   .home-name-btn      { padding: 14px 30px; }
 
   /* Buttons */
@@ -595,13 +596,13 @@ html, body {
   .btn-continue   { padding: 22px 64px; }
 
   /* Result */
-  .res-content    { max-width: 760px; gap: 20px; }
-  .res-motivator  { max-width: 580px; font-size: 1.2rem; padding: 18px 28px; }
+  .res-content    { max-width: min(1100px, 80vw); gap: 20px; }
+  .res-motivator  { max-width: min(800px, 70vw); font-size: 1.2rem; padding: 18px 28px; }
   .res-stars      { gap: 20px; }
   .res-star       { font-size: 3.8rem; }
 
   /* Leaderboard */
-  .lb-list-wrap { width: min(760px, 90vw); }
+  .lb-list-wrap { width: min(900px, 88vw); }
   .lb-row       { padding: 14px 22px; }
   .lb-name,
   .lb-score,
@@ -617,14 +618,15 @@ html, body {
 
 /* ============================
    RESPONSIVE — 4K (≥ 2560px)
+   En TV 4K DPR=1 el viewport CSS es 3840×2160
 ============================ */
 @media (min-width: 2560px) {
-  html { font-size: 28px; }
+  html { font-size: 30px; }
 
-  /* Layout */
-  #screen-game  { padding: 40px 80px 50px; gap: 30px; }
+  /* Layout — 90vw → en 3840px = 3456px (90% del ancho) */
+  #screen-game  { padding: 30px 4vw 44px; gap: 28px; }
   .top-bar,
-  .game-main    { max-width: 1900px; }
+  .game-main    { max-width: 90vw; }
   .game-main    { gap: 36px; }
 
   /* Game elements */
@@ -636,14 +638,14 @@ html, body {
   .timer-num    { font-size: 1.6rem; }
 
   /* Home */
-  #screen-home        { padding: 64px 120px 120px; }
+  #screen-home        { padding: 64px 6vw 120px; }
   .home-girl-wrap     { gap: 56px; }
   .hgc-main           { font-size: 8rem; }
   .hgc-hat            { font-size: 4.4rem; }
   .hgc-side           { font-size: 4rem; }
   .hgc-sub            { font-size: 3.2rem; }
   .btn-play           { padding: 32px 140px; }
-  .home-name-input    { width: clamp(260px, 18vw, 480px); }
+  .home-name-input    { width: clamp(260px, 14vw, 600px); }
   .home-name-btn      { padding: 18px 42px; }
 
   /* Buttons */
@@ -651,13 +653,13 @@ html, body {
   .btn-continue   { padding: 30px 90px; }
 
   /* Result */
-  .res-content    { max-width: 1200px; gap: 28px; }
-  .res-motivator  { max-width: 900px; font-size: 1.4rem; padding: 22px 36px; }
+  .res-content    { max-width: min(1800px, 78vw); gap: 28px; }
+  .res-motivator  { max-width: min(1300px, 68vw); font-size: 1.4rem; padding: 22px 36px; }
   .res-stars      { gap: 28px; }
   .res-star       { font-size: 5rem; }
 
   /* Leaderboard */
-  .lb-list-wrap { width: min(1100px, 88vw); }
+  .lb-list-wrap { width: min(1600px, 85vw); }
   .lb-row       { padding: 20px 32px; }
   .lb-name,
   .lb-score,
