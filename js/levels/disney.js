@@ -97,7 +97,7 @@ const DisneyLevel = (() => {
     _resizeObs.observe(qCard);
 
     Engine.el('answers-grid').innerHTML = '';
-    Engine.el('feedback').textContent   = '';
+    Engine.el('feedback').innerHTML     = '';
   }
 
   /* ── Round lifecycle ─────────────────────────────────── */
@@ -109,7 +109,6 @@ const DisneyLevel = (() => {
     _renderGrid();
     _updateRoundDots();
     _updateCounterText(REVEAL_SECS);
-    Engine.el('feedback').textContent = 'Memoriza dónde está cada uno, te voy a preguntar por uno de ellos dentro de 10 segundos 🧠';
 
     let t = REVEAL_SECS;
     if (_cdID) clearInterval(_cdID);
@@ -203,7 +202,7 @@ const DisneyLevel = (() => {
     if (!el) return;
     if (_phase === 'reveal') {
       const s = countdown !== undefined ? countdown : REVEAL_SECS;
-      el.innerHTML = `Ronda ${_round}/${ROUNDS} &nbsp;·&nbsp; ¡Memoriza! ⏰ <strong>${s}s</strong>`;
+      el.innerHTML = `Memoriza dónde está cada uno, te voy a preguntar por uno de ellos en <strong>${s}s</strong> ⏰`;
     } else if (_phase === 'guess') {
       const t = _cards[_targetIdx];
       el.innerHTML = `¿Dónde estaba <img src="${IMG_BASE}${t.img}" alt="${t.name}" class="dis-q-img"><strong>${t.name}</strong>?`;
