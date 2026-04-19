@@ -25,7 +25,7 @@ const DisneyLevel = (() => {
   const IMG_BASE = 'src/personajes-memoria/';
 
   const ROUNDS        = 3;
-  const REVEAL_SECS   = 10;
+  const REVEAL_SECS   = 20;
   const MAX_ATTEMPTS  = 5;
 
   /* ── Star positions for each correct-round count ───── */
