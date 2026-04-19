@@ -4,23 +4,25 @@ const DisneyLevel = (() => {
 
   /* ── Disney characters (16) ─────────────────────────── */
   const CHARACTERS = [
-    { emoji: '🐭', name: 'Mickey Mouse' },
-    { emoji: '🦆', name: 'Donald Duck'  },
-    { emoji: '🦁', name: 'Simba'        },
-    { emoji: '🧜‍♀️', name: 'Ariel'        },
-    { emoji: '❄️',  name: 'Elsa'         },
-    { emoji: '🐠',  name: 'Nemo'         },
-    { emoji: '🐘',  name: 'Dumbo'        },
-    { emoji: '🧚',  name: 'Campanilla'   },
-    { emoji: '👸',  name: 'Cenicienta'   },
-    { emoji: '🐯',  name: 'Tigger'       },
-    { emoji: '🦌',  name: 'Bambi'        },
-    { emoji: '🧞',  name: 'Genio'        },
-    { emoji: '🌹',  name: 'Bella'        },
-    { emoji: '🐻',  name: 'Baloo'        },
-    { emoji: '🤖',  name: 'Wall·E'       },
-    { emoji: '🌊',  name: 'Moana'        },
+    { img: 'alegria.webp',  name: 'Alegría'  },
+    { img: 'asno.webp',     name: 'Asno'     },
+    { img: 'cazorla.webp',  name: 'Cazorla'  },
+    { img: 'forky.webp',    name: 'Forky'    },
+    { img: 'luigi.webp',    name: 'Luigi'    },
+    { img: 'mario.webp',    name: 'Mario'    },
+    { img: 'merida.webp',   name: 'Mérida'   },
+    { img: 'minion.webp',   name: 'Minion'   },
+    { img: 'olaf.webp',     name: 'Olaf'     },
+    { img: 'rosita.webp',   name: 'Rosita'   },
+    { img: 'rumi.webp',     name: 'Rumi'     },
+    { img: 'shrek.webp',    name: 'Shrek'    },
+    { img: 'stitch.webp',   name: 'Stitch'   },
+    { img: 'tristeza.webp', name: 'Tristeza' },
+    { img: 'vaiana.webp',   name: 'Vaiana'   },
+    { img: 'woody.webp',    name: 'Woody'    },
   ];
+
+  const IMG_BASE = 'src/personajes-memoria/';
 
   const ROUNDS        = 3;
   const REVEAL_SECS   = 10;
@@ -74,7 +76,9 @@ const DisneyLevel = (() => {
             <span class="dis-back-icons">🌟✨</span>
             <span class="dis-back-text">bonitu</span>
           </div>
-          <div class="dis-card-front">${card.emoji}</div>
+          <div class="dis-card-front">
+            <img src="${IMG_BASE}${card.img}" alt="${card.name}" class="dis-char-img" draggable="false">
+          </div>
         </div>`;
       el.addEventListener('click', () => _handleCardClick(i));
       grid.appendChild(el);
@@ -181,7 +185,7 @@ const DisneyLevel = (() => {
         _roundResults.push('lose');
         _updateRoundDots();
         const t = _cards[_targetIdx];
-        Engine.el('feedback').textContent = `Era ${t.emoji} ${t.name} 💪`;
+        Engine.el('feedback').innerHTML = `Era <img src="${IMG_BASE}${t.img}" alt="${t.name}" class="dis-q-img"> ${t.name} 💪`;
         setTimeout(_nextRound, 2200);
       }
     }
@@ -200,7 +204,7 @@ const DisneyLevel = (() => {
       el.innerHTML = `Ronda ${_round}/${ROUNDS} &nbsp;·&nbsp; ¡Memoriza! ⏰ <strong>${s}s</strong>`;
     } else if (_phase === 'guess') {
       const t = _cards[_targetIdx];
-      el.innerHTML = `¿Dónde estaba <strong>${t.emoji} ${t.name}</strong>?`;
+      el.innerHTML = `¿Dónde estaba <img src="${IMG_BASE}${t.img}" alt="${t.name}" class="dis-q-img"><strong>${t.name}</strong>?`;
     }
   }
 
@@ -276,8 +280,11 @@ const DisneyLevel = (() => {
       ? `<button class="btn-next-level" onclick="Engine.showLevelComplete(${score},'${nextId}')">${Engine.getLevelName(nextId)} →</button>`
       : `<button class="btn-next-level" onclick="Engine.showAllComplete()">🏆 ¡Ver resultados!</button>`;
 
+    const winChars = Engine.shuffle([...CHARACTERS]).slice(0, 3);
     Engine.el('result-level-extra').innerHTML =
-      `<div class="dis-win-anim">🐭&nbsp;🦁&nbsp;🧜‍♀️</div>`;
+      `<div class="dis-win-anim">${winChars.map(c =>
+        `<img src="${IMG_BASE}${c.img}" alt="${c.name}" class="dis-win-img">`
+      ).join('')}</div>`;
 
     if (won) {
       Engine.createConfetti(['🐭','🦁','⭐','🎉','✨','🏰']);
@@ -386,13 +393,19 @@ const DisneyLevel = (() => {
         font-size: clamp(.28rem, .78vw, .5rem); font-weight: 900;
         letter-spacing: 1px; color: rgba(255,255,255,.72); text-transform: uppercase;
       }
-      /* Front: dark background, big emoji */
+      /* Front: dark background, character image */
       .dis-card-front {
         transform: rotateY(180deg);          /* visible when inner is at 180deg */
         background: linear-gradient(135deg, #1e1a3a, #2d2060);
         border: 1.5px solid rgba(255,255,255,.18);
-        font-size: 50cqmin;
         box-shadow: 0 3px 8px rgba(0,0,0,.3);
+        padding: 6%;
+      }
+      .dis-char-img {
+        width: 100%; height: 100%;
+        object-fit: contain;
+        border-radius: clamp(3px, 1vw, 6px);
+        user-select: none; pointer-events: none;
       }
       /* Hover only when cards are face-down (guess phase), not yet found */
       .dis-card.dis-flipped:not(.dis-correct):not(.dis-reveal-correct):hover .dis-card-inner {
@@ -490,11 +503,30 @@ const DisneyLevel = (() => {
       /* Earth icon at bottom */
       .dis-sb-earth { font-size: 1.4rem; line-height: 1; }
 
+      /* ── Question image (shown in q-counter during guess) ── */
+      .dis-q-img {
+        width: clamp(1.9rem, 4.5vw, 2.8rem);
+        height: clamp(1.9rem, 4.5vw, 2.8rem);
+        vertical-align: middle;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid rgba(255,215,0,.55);
+        margin: 0 5px 0 3px;
+      }
+
       /* ── Result screen decoration ─────────────────────── */
       .dis-win-anim {
         position: absolute; top: 24%; left: 50%; transform: translateX(-50%);
-        font-size: 3rem; z-index: 3; white-space: nowrap;
+        display: flex; gap: 8px; z-index: 3;
         animation: bounce-in .6s ease-out;
+      }
+      .dis-win-img {
+        width: clamp(2.5rem, 7vw, 3.8rem);
+        height: clamp(2.5rem, 7vw, 3.8rem);
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid rgba(255,215,0,.7);
+        box-shadow: 0 0 12px rgba(255,215,0,.4);
       }
 
       /* ── Space scenery ───────────────────────────────── */
