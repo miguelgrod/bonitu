@@ -496,12 +496,113 @@ const DisneyLevel = (() => {
         font-size: 3rem; z-index: 3; white-space: nowrap;
         animation: bounce-in .6s ease-out;
       }
+
+      /* ── Space scenery ───────────────────────────────── */
+      #dis-scenery {
+        position: absolute; inset: 0;
+        pointer-events: none; overflow: hidden; z-index: 0;
+      }
+      /* Ensure game UI stays above scenery */
+      .dis-theme .top-bar,
+      .dis-theme .game-main { position: relative; z-index: 1; }
+
+      /* Twinkling star dots */
+      .dis-sdot {
+        position: absolute; border-radius: 50%;
+        background: rgba(255,255,255,.9);
+        animation: dis-sdot-twinkle var(--dur,3s) var(--del,0s) ease-in-out infinite;
+      }
+      @keyframes dis-sdot-twinkle {
+        0%,100% { opacity: .07; transform: scale(1);   }
+        50%     { opacity: .80; transform: scale(1.7); }
+      }
+
+      /* Spaceships crossing horizontally */
+      .dis-ship {
+        position: absolute; will-change: transform;
+        filter: drop-shadow(0 0 5px rgba(120,210,255,.55));
+        opacity: .82;
+      }
+      .dis-ship-ltr { animation: dis-fly-ltr linear infinite; }
+      .dis-ship-rtl { animation: dis-fly-rtl linear infinite; }
+      @keyframes dis-fly-ltr {
+        from { transform: translateX(-14vw); }
+        to   { transform: translateX(114vw); }
+      }
+      @keyframes dis-fly-rtl {
+        from { transform: translateX(114vw); }
+        to   { transform: translateX(-14vw); }
+      }
+
+      /* Floating planets / celestial bodies */
+      .dis-planet {
+        position: absolute; pointer-events: none;
+        animation: dis-planet-bob ease-in-out infinite;
+        filter: drop-shadow(0 0 10px rgba(255,255,255,.15));
+      }
+      @keyframes dis-planet-bob {
+        0%,100% { transform: translateY(0)     rotate(0deg);  }
+        50%     { transform: translateY(-13px) rotate(5deg);  }
+      }
+
+      /* Shooting stars (comets) */
+      .dis-comet {
+        position: absolute;
+        width: 2px; height: clamp(45px,9vh,85px);
+        background: linear-gradient(to bottom,
+          transparent 0%, rgba(255,255,255,.88) 45%, transparent 100%);
+        border-radius: 2px;
+        opacity: 0;
+        animation: dis-comet-fly linear infinite;
+      }
+      @keyframes dis-comet-fly {
+        0%  { transform: rotate(-42deg) translateY(-110px); opacity: 0; }
+        7%  { opacity: 1; }
+        33% { transform: rotate(-42deg) translateY(115vh);  opacity: 0; }
+        100%{ transform: rotate(-42deg) translateY(115vh);  opacity: 0; }
+      }
     `;
     document.head.appendChild(s);
   }
 
+  function _buildScenery() {
+    const r = (a, b) => (a + Math.random() * (b - a)).toFixed(1);
+
+    // 20 random twinkling star dots
+    const stars = Array.from({ length: 20 }, () => {
+      const sz = r(1.2, 3.4);
+      return `<div class="dis-sdot" style="top:${r(2,96)}%;left:${r(0,100)}%;width:${sz}px;height:${sz}px;--dur:${r(2,6)}s;--del:-${r(0,6)}s"></div>`;
+    }).join('');
+
+    return `
+      ${stars}
+      <!-- Spaceships -->
+      <div class="dis-ship dis-ship-ltr" style="top:10%;font-size:clamp(.9rem,2.2vw,1.55rem);animation-duration:23s;animation-delay:-4s">🛸</div>
+      <div class="dis-ship dis-ship-rtl" style="top:66%;font-size:clamp(.85rem,2vw,1.3rem);animation-duration:19s;animation-delay:-10s">🛸</div>
+      <div class="dis-ship dis-ship-ltr" style="top:38%;font-size:clamp(.65rem,1.6vw,1rem);animation-duration:34s;animation-delay:-22s">🛰️</div>
+      <div class="dis-ship dis-ship-rtl" style="top:82%;font-size:clamp(.7rem,1.7vw,1.1rem);animation-duration:27s;animation-delay:-15s">🚀</div>
+      <!-- Planets -->
+      <div class="dis-planet" style="top:7%;left:1.5%;animation-duration:10s;animation-delay:0s;font-size:clamp(1.8rem,4vw,3rem);opacity:.38">🪐</div>
+      <div class="dis-planet" style="top:50%;right:1.5%;animation-duration:14s;animation-delay:-6s;font-size:clamp(1.3rem,3vw,2.2rem);opacity:.42">🌙</div>
+      <div class="dis-planet" style="top:78%;left:3%;animation-duration:18s;animation-delay:-9s;font-size:clamp(.9rem,2vw,1.4rem);opacity:.3">🌍</div>
+      <!-- Shooting stars -->
+      <div class="dis-comet" style="top:4%;right:20%;animation-duration:12s;animation-delay:-1s"></div>
+      <div class="dis-comet" style="top:20%;left:52%;animation-duration:19s;animation-delay:-8s"></div>
+      <div class="dis-comet" style="top:9%;right:58%;animation-duration:15s;animation-delay:-13s"></div>
+    `;
+  }
+
   function applyTheme() {
     Engine.el('screen-game').classList.add('dis-theme');
+
+    // Inject space scenery (only once — engine removes it on level change)
+    if (!document.getElementById('dis-scenery')) {
+      const scenery = document.createElement('div');
+      scenery.id        = 'dis-scenery';
+      scenery.innerHTML = _buildScenery();
+      Engine.el('screen-game').insertBefore(scenery, Engine.el('screen-game').firstChild);
+    }
+
     Engine.el('game-sidebar').innerHTML = `
       <div class="dis-sidebar-wrap">
         <div class="dis-sb-space">🌌</div>

@@ -191,7 +191,7 @@ const Engine = (() => {
 
     // Clean up any level-specific theme classes and scenery from previous level
     el('screen-game').classList.remove('mem-theme', 'dis-theme', 'ttt-theme', 'hang-theme');
-    ['ttt-scenery', 'hang-scenery'].forEach(id => {
+    ['dis-scenery', 'ttt-scenery', 'hang-scenery'].forEach(id => {
       const old = document.getElementById(id);
       if (old) old.remove();
     });
