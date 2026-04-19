@@ -379,6 +379,7 @@ const Engine = (() => {
   function showLevelComplete(score, nextLevelId) {
     state.grandTotalScore += score;
     const nextLv = _levels[nextLevelId];
+    if (!nextLv) { startLevel(nextLevelId); return; }   // nivel no registrado: saltar directo
     el('lc-score-val').textContent = score;
     el('lc-title').textContent     = state.playerName
       ? `¡Fantástico, ${state.playerName}!`
@@ -511,7 +512,10 @@ const Engine = (() => {
   /* ---------- INIT ---------- */
   function init(levels = []) {
     buildStars();
-    levels.forEach(registerLevel);
+    levels.forEach(lv => {
+      try { registerLevel(lv); }
+      catch(e) { console.error('[Engine] Error registering level:', lv?.id, e); }
+    });
     showScreen('screen-home');
   }
 
