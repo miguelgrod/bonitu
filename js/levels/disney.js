@@ -109,6 +109,7 @@ const DisneyLevel = (() => {
     _renderGrid();
     _updateRoundDots();
     _updateCounterText(REVEAL_SECS);
+    Engine.el('feedback').textContent = 'Memoriza dónde está cada uno, te voy a preguntar por uno de ellos dentro de 10 segundos 🧠';
 
     let t = REVEAL_SECS;
     if (_cdID) clearInterval(_cdID);
@@ -141,6 +142,7 @@ const DisneyLevel = (() => {
       });
     }, 950);
 
+    Engine.el('feedback').textContent = '';
     _updateCounterText();
     _updateAttemptsUI();
   }
