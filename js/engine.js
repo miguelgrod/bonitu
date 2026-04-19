@@ -69,9 +69,8 @@ const Engine = (() => {
   }
 
   /* ---------- BACKGROUND MUSIC ---------- */
-  const _bgMusic = new Audio('src/bg-music.mp3');
-  _bgMusic.loop   = true;
-  _bgMusic.volume = 0.18;
+  const _bgMusic = document.getElementById('bg-music');
+  _bgMusic.volume = 0.35;
   let _bgStarted  = false;
 
   function _startBgMusic() {

@@ -262,32 +262,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      SCRIPTS
      To add a new level: create js/levels/foo.js and add it below.
 ============================================================ -->
-<!-- ===== BACKGROUND MUSIC ===== -->
+<!-- ===== BACKGROUND MUSIC (controlled entirely by engine.js) ===== -->
 <audio id="bg-music" src="src/bg-music.mp3" loop preload="auto"></audio>
-<script>
-(function () {
-  const audio = document.getElementById('bg-music');
-  audio.volume = 0.35;
-
-  function tryPlay() {
-    audio.play().catch(() => {});
-  }
-
-  // Try immediately (works if browser allows it)
-  tryPlay();
-
-  // Fallback: start on first user interaction
-  function onFirstInteraction() {
-    tryPlay();
-    ['click','keydown','touchstart'].forEach(function(e) {
-      document.removeEventListener(e, onFirstInteraction);
-    });
-  }
-  ['click','keydown','touchstart'].forEach(function(e) {
-    document.addEventListener(e, onFirstInteraction, { once: true });
-  });
-})();
-</script>
 
 <script src="js/engine.js"></script>
 <script src="js/levels/math.js"></script>
