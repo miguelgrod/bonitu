@@ -293,11 +293,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="js/levels/flags.js"></script>
 <script src="js/levels/patterns.js"></script>
 <script src="js/levels/memory.js"></script>
+<script src="js/levels/disney.js"></script>
 <script src="js/levels/tictac.js"></script>
 <script src="js/levels/hangman.js"></script>
 
 <script>
-  Engine.init([MathLevel, EnglishLevel, FlagsLevel, PatternsLevel, MemoryLevel, TicTacLevel, HangmanLevel]);
+  Engine.init([MathLevel, EnglishLevel, FlagsLevel, PatternsLevel, MemoryLevel, DisneyLevel, TicTacLevel, HangmanLevel]);
 
   function _revealHome() {
     document.getElementById('home-name-section').classList.add('hidden');
@@ -388,6 +389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="dbg-btn" onclick="Engine.startLevel('flags')">🌍 Flags</button>
       <button class="dbg-btn" onclick="Engine.startLevel('patterns')">🔷 Patrones</button>
       <button class="dbg-btn" onclick="Engine.startLevel('memory')">🎴 Memoria</button>
+      <button class="dbg-btn" onclick="Engine.startLevel('disney')">🏰 Disney</button>
       <button class="dbg-btn" onclick="Engine.startLevel('tictac')">❌ 3 en Raya</button>
       <button class="dbg-btn" onclick="Engine.startLevel('hangman')">🔤 Ahorcado</button>
     </div>

@@ -190,7 +190,7 @@ const Engine = (() => {
     if(!lv) return console.error('[Engine] Unknown level:', levelId);
 
     // Clean up any level-specific theme classes and scenery from previous level
-    el('screen-game').classList.remove('mem-theme', 'ttt-theme', 'hang-theme');
+    el('screen-game').classList.remove('mem-theme', 'dis-theme', 'ttt-theme', 'hang-theme');
     ['ttt-scenery', 'hang-scenery'].forEach(id => {
       const old = document.getElementById(id);
       if (old) old.remove();
@@ -541,7 +541,7 @@ const Engine = (() => {
     showLeaderboard, submitScore,
     // Start game with random level order
     startGame() {
-      state.playlist         = ['math', 'english', 'flags', 'patterns', 'memory', 'tictac', 'hangman'];
+      state.playlist         = ['math', 'english', 'flags', 'patterns', 'memory', 'disney', 'tictac', 'hangman'];
       state.playlistIdx      = 0;
       state.grandTotalScore  = 0;
       state.totalStars       = 0;
