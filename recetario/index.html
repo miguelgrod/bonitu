@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#eaf7ee" />
+<title>Recetario permitido — app</title>
+<style>
+  /* ---------- tokens ---------- */
+  :root, [data-theme="light"]{
+    --green:#16a34a; --green-2:#22c55e; --green-soft:#e3f6e9; --green-ink:#0f7a39;
+    --orange:#f97316; --orange-2:#fb923c; --orange-soft:#ffedde;
+    --purple:#7b6ef6; --purple-soft:#ece9ff;
+    --teal:#0f9d8f; --teal-soft:#dcf3f0;
+    --amber:#f0a72c; --amber-soft:#fdf0d9;
+    --page:#e9f5ec; --app:#f5fbf6; --card:#ffffff; --card-2:#f4f8f5;
+    --ink:#14261d; --ink-2:#5d7168; --line:#e3ece6;
+    --shadow-s:0 2px 8px rgba(16,48,32,.06);
+    --shadow-m:0 10px 28px rgba(16,48,32,.10);
+    --shadow-l:0 -6px 24px rgba(16,48,32,.08);
+    --r-s:12px; --r-m:18px; --r-l:26px; --r-xl:32px; --r-full:999px;
+    --nav-h:74px;
+  }
+  [data-theme="dark"]{
+    --green:#3ecf7f; --green-2:#2fb96e; --green-soft:#123522; --green-ink:#57d98f;
+    --orange:#fb8b3a; --orange-2:#f97316; --orange-soft:#33210f;
+    --purple:#9b90ff; --purple-soft:#211f3d;
+    --teal:#3fbcae; --teal-soft:#12302d;
+    --amber:#e5b055; --amber-soft:#2e2413;
+    --page:#0e1512; --app:#141b17; --card:#1b241f; --card-2:#212b25;
+    --ink:#e8f0ea; --ink-2:#9db0a5; --line:#2b352e;
+    --shadow-s:0 2px 8px rgba(0,0,0,.35);
+    --shadow-m:0 10px 28px rgba(0,0,0,.45);
+    --shadow-l:0 -6px 24px rgba(0,0,0,.45);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    background:var(--page); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  @media (min-width:560px){
+    body{background:
+      radial-gradient(120% 90% at 0% 0%, #cdeed8 0%, transparent 55%),
+      radial-gradient(120% 90% at 100% 0%, #dcd8fb 0%, transparent 50%),
+      radial-gradient(120% 90% at 100% 100%, #fbe3d2 0%, transparent 50%),
+      var(--page); }
+    [data-theme="dark"] body{background:var(--page)}
+  }
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  ul,ol{margin:0;padding:0;list-style:none}
+  h1,h2,h3,h4,p{margin:0}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------- shell ---------- */
+  .app{
+    max-width:480px; margin-inline:auto; background:var(--app); min-height:100dvh;
+    padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 26px); position:relative;
+  }
+  @media (min-width:560px){
+    .app{min-height:calc(100dvh - 40px); margin-block:20px; border-radius:var(--r-xl); box-shadow:var(--shadow-m)}
+    .topbar{border-radius:var(--r-xl) var(--r-xl) 0 0}
+  }
+  .topbar{
+    position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:12px;
+    padding:calc(env(safe-area-inset-top) + 14px) 18px 12px;
+    background:color-mix(in srgb, var(--app) 88%, transparent); backdrop-filter:blur(14px);
+  }
+  .icon-btn{
+    width:44px;height:44px;flex:none;border-radius:16px;background:var(--card);box-shadow:var(--shadow-s);
+    display:grid;place-items:center;color:var(--ink);
+  }
+  .icon-btn:active{transform:scale(.94)}
+  .topbar-title{flex:1;text-align:center;font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .brand{display:flex;align-items:center;justify-content:center;gap:8px;flex:1}
+  .brand-mark{width:26px;height:26px;color:var(--green)}
+  .brand-name{font-weight:800;letter-spacing:-.02em;font-size:17px}
+  .brand-name span{color:var(--orange)}
+
+  .screen{padding:6px 18px 0;animation:in .22s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------- search ---------- */
+  .searchbar{display:flex;gap:10px;align-items:center;margin:6px 0 22px}
+  .search-field{
+    flex:1;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--r-full);
+    padding:0 18px;height:52px;box-shadow:var(--shadow-s);color:var(--ink-2);
+  }
+  .search-field input{flex:1;border:0;background:none;font:inherit;color:var(--ink);outline:none;min-width:0}
+  .search-field input::placeholder{color:var(--ink-2)}
+  .fab{
+    width:52px;height:52px;flex:none;border-radius:var(--r-full);display:grid;place-items:center;color:#fff;
+    background:linear-gradient(150deg,var(--green-2),var(--green)); box-shadow:0 8px 18px rgba(22,163,74,.30);
+  }
+  .fab[aria-pressed="true"]{background:linear-gradient(150deg,var(--orange-2),var(--orange));box-shadow:0 8px 18px rgba(249,115,22,.32)}
+  .fab:active{transform:scale(.94)}
+
+  /* ---------- section ---------- */
+  .sec{margin-bottom:26px}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .sec-head h2{font-size:19px;font-weight:800;letter-spacing:-.02em}
+  .sec-head p{font-size:13px;color:var(--ink-2)}
+  .link{font-size:13px;font-weight:700;color:var(--green);flex:none}
+
+  /* ---------- featured carousel ---------- */
+  .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 18px 6px;margin:0 -18px;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .feat{
+    flex:none;width:174px;min-height:186px;border-radius:22px;padding:16px;color:#fff;position:relative;overflow:hidden;
+    display:flex;flex-direction:column;gap:8px;text-align:left;scroll-snap-align:start;box-shadow:var(--shadow-s);
+  }
+  .feat:active{transform:scale(.97)}
+  .feat h3{font-size:15px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+  .feat .pill{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;position:relative;z-index:1;
+    background:rgba(255,255,255,.28);padding:5px 10px;border-radius:var(--r-full);width:fit-content;
+    backdrop-filter:blur(3px);
+  }
+  .feat h3{position:relative;z-index:1}
+  .feat .emoji{position:absolute;right:-8px;bottom:-12px;font-size:64px;line-height:1;opacity:.95;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+  .feat::after{content:"";position:absolute;inset:auto -40% -60% auto;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.12)}
+
+  /* ---------- planner ---------- */
+  .planner{background:var(--card);border-radius:var(--r-l);padding:16px;box-shadow:var(--shadow-s)}
+  .days{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .days::-webkit-scrollbar{display:none}
+  .day{
+    flex:none;width:56px;padding:12px 0;border-radius:20px;background:var(--card-2);text-align:center;
+    display:grid;gap:2px;justify-items:center;border:2px solid transparent;position:relative;
+  }
+  .day b{font-size:15px;font-weight:800}
+  .day small{font-size:11px;color:var(--ink-2)}
+  .day .dot{font-size:17px;margin-top:2px}
+  .day[aria-selected="true"]{border-color:var(--orange);background:var(--orange-soft)}
+  .day[aria-selected="true"] small{color:var(--orange)}
+  .day .today{position:absolute;top:-5px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;display:grid;place-items:center;font-weight:700}
+  .plan-list{margin-top:14px;display:grid;gap:2px}
+  .plan-row{display:flex;align-items:center;gap:12px;padding:9px 2px;text-align:left;width:100%;border-radius:14px}
+  .plan-row + .plan-row{border-top:1px solid var(--line)}
+  .plan-row:active{background:var(--card-2)}
+  .plan-row .slot{width:66px;flex:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
+  .plan-row .t{flex:1;font-size:13.5px;font-weight:600;line-height:1.3}
+  .plan-row .e{font-size:20px}
+
+  /* ---------- categories ---------- */
+  .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .cat{
+    display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:var(--card);
+    box-shadow:var(--shadow-s);text-align:left;
+  }
+  .cat:active{transform:scale(.97)}
+  .cat .ball{width:44px;height:44px;flex:none;border-radius:15px;display:grid;place-items:center;font-size:22px}
+  .cat b{display:block;font-size:14px;font-weight:700;letter-spacing:-.01em}
+  .cat small{font-size:12px;color:var(--ink-2)}
+
+  /* ---------- recipe list ---------- */
+  .list{display:grid;gap:12px}
+  .item{
+    display:flex;align-items:center;gap:13px;background:var(--card);border-radius:20px;padding:13px;
+    box-shadow:var(--shadow-s);text-align:left;width:100%;
+  }
+  .item:active{transform:scale(.98)}
+  .thumb{width:60px;height:60px;flex:none;border-radius:17px;display:grid;place-items:center;font-size:28px}
+  .item .body{flex:1;min-width:0}
+  .item h3{font-size:14.5px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
+  .item .meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
+  .item .meta i{font-style:normal;display:inline-flex;align-items:center;gap:4px}
+  .badge-new{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);background:var(--orange-soft);padding:3px 7px;border-radius:var(--r-full)}
+  .item .chev{width:26px;height:26px;flex:none;display:grid;place-items:center;color:var(--ink-2);opacity:.55}
+
+  .chips{display:flex;gap:8px;overflow-x:auto;margin:0 -18px 18px;padding:0 18px 2px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;padding:9px 15px;border-radius:var(--r-full);background:var(--card);font-size:13px;font-weight:600;box-shadow:var(--shadow-s);color:var(--ink-2)}
+  .chip[aria-pressed="true"]{background:linear-gradient(150deg,var(--green-2),var(--green));color:#fff;box-shadow:0 6px 14px rgba(22,163,74,.28)}
+
+  /* ---------- detail ---------- */
+  .hero{
+    height:196px;border-radius:26px;display:grid;place-items:center;position:relative;overflow:hidden;
+    box-shadow:var(--shadow-s);margin-bottom:16px;
+  }
+  .hero .emoji{font-size:96px;filter:drop-shadow(0 10px 16px rgba(0,0,0,.20))}
+  .hero::after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:rgba(255,255,255,.16);right:-70px;top:-80px}
+  .hero .tagline{position:absolute;left:16px;bottom:14px;color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.16);padding:6px 12px;border-radius:var(--r-full);backdrop-filter:blur(4px)}
+  .detail h1{font-size:22px;font-weight:800;letter-spacing:-.025em;line-height:1.22}
+  .stats{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .stat{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2)}
+  .stat svg{color:var(--orange)}
+  .block-title{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:20px 0 10px}
+  .ing{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .ing .dotimg{width:38px;height:38px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:17px}
+  .ing span{font-size:14px;font-weight:600}
+  .steps{display:grid;gap:12px;counter-reset:s}
+  .step{display:flex;gap:12px;align-items:flex-start}
+  .step .n{
+    width:27px;height:27px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:800;
+    background:var(--green-soft);color:var(--green-ink);margin-top:1px;
+  }
+  .step p{font-size:14px;line-height:1.55}
+
+  .detail-foot{
+    display:flex;align-items:center;gap:12px;width:100%;margin:24px 0 6px;padding:15px 16px;
+    background:var(--card);border-radius:var(--r-l);box-shadow:var(--shadow-s);text-align:left;
+  }
+  .detail-foot:active{transform:scale(.98)}
+  .detail-foot .txt{flex:1}
+  .detail-foot small{display:block;font-size:11.5px;color:var(--ink-2)}
+  .detail-foot b{font-size:14.5px;font-weight:800;letter-spacing:-.01em}
+  .detail-foot .go{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff}
+
+  /* ---------- cards / notes ---------- */
+  .card{background:var(--card);border-radius:var(--r-l);padding:16px;box-shadow:var(--shadow-s)}
+  .card + .card{margin-top:12px}
+  .card h3{font-size:14.5px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .card h3 .ball{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:17px;flex:none}
+  .card p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+  .card em{font-style:normal;font-weight:700;color:var(--orange)}
+  .card strong{color:var(--ink)}
+  .warn{background:var(--orange-soft);box-shadow:none;border:1px solid color-mix(in srgb,var(--orange) 30%,transparent)}
+  .warn p{color:var(--ink)}
+  .empty{text-align:center;padding:56px 20px;color:var(--ink-2)}
+  .empty .big{font-size:52px;margin-bottom:10px}
+  .empty p{font-size:14px;max-width:260px;margin-inline:auto}
+
+  /* ---------- bottom nav ---------- */
+  .nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:40;max-width:480px;margin-inline:auto;
+    height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+    background:color-mix(in srgb, var(--card) 94%, transparent);backdrop-filter:blur(16px);
+    border-radius:26px 26px 0 0;box-shadow:var(--shadow-l);
+    display:flex;align-items:center;justify-content:space-around;padding-inline:10px;
+  }
+  @media (min-width:560px){.nav{border-radius:26px 26px var(--r-xl) var(--r-xl);bottom:20px;max-width:480px}}
+  .nav button{
+    width:52px;height:52px;border-radius:20px;display:grid;place-items:center;color:var(--ink-2);position:relative;
+    transition:transform .18s ease,background .18s ease,color .18s ease;
+  }
+  .nav button[aria-current="page"]{
+    background:linear-gradient(150deg,var(--orange-2),var(--orange));color:#fff;
+    transform:translateY(-14px);box-shadow:0 10px 20px rgba(249,115,22,.34);
+  }
+  .nav button:active{transform:scale(.94)}
+  .nav button[aria-current="page"]:active{transform:translateY(-14px) scale(.94)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <main id="screen" class="screen"></main>
+</div>
+<nav class="nav" id="nav" aria-label="Navegación principal"></nav>
+
+<script>
+/* ============================ DATOS ============================ */
+const CATS = {
+  desayunos:{label:"Desayunos", emoji:"🥣", color:"var(--amber)",  soft:"var(--amber-soft)",  grad:"linear-gradient(150deg,#f7bd52,#ef9412)", desc:"Para empezar el día"},
+  tentempies:{label:"Tentempiés", emoji:"🥕", color:"var(--purple)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#8f84f8,#6a5cf0)", desc:"Bocados rápidos"},
+  comidas:{label:"Comidas", emoji:"🍽️", color:"var(--green)", soft:"var(--green-soft)", grad:"linear-gradient(150deg,#34c56f,#15954a)", desc:"Platos principales"},
+  meriendas:{label:"Meriendas", emoji:"🍎", color:"var(--orange)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#fb923c,#f2700c)", desc:"Dulces y cremosas"},
+  cenas:{label:"Cenas", emoji:"🌙", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#2bb9aa,#0d8d80)", desc:"Ligeras para la noche"}
+};
+
+const R = [
+/* ---- DESAYUNOS ---- */
+{id:"de1",cat:"desayunos",n:1,e:"🍞",t:"Tostadas integrales gratinadas con queso descremado y nueces",
+ ing:["Pan integral","Queso descremado o queso light","Nueces","Mermelada, opcional","Pimienta o hierbas"],
+ prep:["Tuesta el pan hasta que quede firme.","Extiende el queso y añade nueces picadas.","Calienta de nuevo unos minutos para que el queso se funda ligeramente.","Termina con pimienta o hierbas y, si quieres, una capa mínima de mermelada."]},
+{id:"de2",cat:"desayunos",n:2,e:"🥛",t:"Bol cremoso de yogur desnatado con ciruelas pasas, dátiles y pipas",
+ ing:["Yogur descremado","Ciruelas pasas","Dátiles","Pipas de girasol sin sal","Albaricoques secos"],
+ prep:["Coloca el yogur en un cuenco.","Trocea la fruta seca en piezas pequeñas.","Añádela sobre el yogur y termina con pipas para dar contraste.","Deja reposar unos minutos antes de servir."]},
+{id:"de3",cat:"desayunos",n:3,e:"🧀",t:"Pan integral tibio con queso light, dátiles y pimienta",
+ ing:["Pan integral","Queso light","Dátiles","Pimienta"],
+ prep:["Tuesta ligeramente el pan para que conserve el centro tierno.","Extiende el queso light sobre la superficie caliente.","Añade los dátiles muy picados.","Remata con un toque de pimienta."]},
+{id:"de4",cat:"desayunos",n:4,e:"🥣",t:"Gachas espesas de cereales con leche desnatada y albaricoques",
+ ing:["Cereales","Leche desnatada","Albaricoques secos","Nueces"],
+ prep:["Calienta la leche desnatada y añade los cereales hasta obtener una textura espesa.","Trocea los albaricoques y las nueces.","Sirve las gachas y reparte la fruta seca por encima.","Deja reposar un minuto para que tome cuerpo."]},
+{id:"de5",cat:"desayunos",n:5,e:"🍮",t:"Parfait de yogur con nueces, albaricoques y ciruelas",
+ ing:["Yogur descremado","Nueces","Albaricoques secos","Ciruelas pasas"],
+ prep:["Coloca una base de yogur en un vaso.","Añade una capa de nueces y fruta seca troceada.","Repite otra capa de yogur y termina con más fruta.","Sirve frío para una textura más definida."]},
+{id:"de6",cat:"desayunos",n:6,e:"🍪",t:"Galletas integrales con crema de queso light y mermelada fina",
+ ing:["Galletas integrales","Queso light","Mermelada"],
+ prep:["Unta el queso light sobre las galletas.","Añade una cantidad pequeña de mermelada encima.","Sirve al momento para mantener el crujiente.","Puedes acompañarlas con leche desnatada o infusión."]},
+{id:"de7",cat:"desayunos",n:7,e:"🍳",nuevo:true,t:"Revuelto de claras con tomate, espinacas y pan integral",
+ ing:["Claras de huevo (2–3)","Tomate fresco","Espinacas frescas","Pan integral","Aceite de oliva, unas gotas","Hierbas y pimienta"],
+ prep:["Calienta unas gotas de aceite de oliva en una sartén antiadherente.","Saltea las espinacas brevemente y añade el tomate troceado.","Incorpora las claras y remueve suavemente hasta que cuajen.","Sirve sobre pan integral tostado con hierbas y pimienta."]},
+{id:"de8",cat:"desayunos",n:8,e:"🍏",nuevo:true,t:"Bol de yogur desnatado con fruta fresca y pipas",
+ ing:["Yogur descremado","Manzana o pera fresca","Naranja (gajos)","Pipas de girasol sin sal","Nueces"],
+ prep:["Sirve el yogur en un cuenco amplio.","Trocea la manzana o pera y pela los gajos de naranja.","Reparte la fruta fresca sobre el yogur.","Termina con pipas y nueces picadas."]},
+
+/* ---- TENTEMPIÉS ---- */
+{id:"te1",cat:"tentempies",n:1,e:"🥪",t:"Mini sándwich integral de salmón ahumado y mostaza",
+ ing:["Pan integral","Salmón ahumado","Mostaza","Hierbas"],
+ prep:["Corta el pan en porciones pequeñas.","Unta una capa fina de mostaza.","Coloca el salmón doblado y termina con hierbas.","Cierra o sirve abierto."]},
+{id:"te2",cat:"tentempies",n:2,e:"🥛",t:"Leche desnatada con galletas integrales y crema rápida de queso light",
+ ing:["Leche desnatada","Galletas integrales","Queso light","Mermelada, opcional"],
+ prep:["Sirve la leche fría o templada.","Mezcla el queso light con una pequeña cantidad de mermelada.","Unta la crema sobre las galletas.","Acompaña con la leche desnatada."]},
+{id:"te3",cat:"tentempies",n:3,e:"🐟",t:"Rollitos de salmón ahumado rellenos de queso descremado y hierbas",
+ ing:["Salmón ahumado","Queso descremado","Hierbas","Pimienta"],
+ prep:["Extiende las lonchas de salmón.","Coloca una pequeña porción de queso en cada una.","Añade hierbas y pimienta.","Enrolla con cuidado y sirve frío."]},
+{id:"te4",cat:"tentempies",n:4,e:"🥜",t:"Barquitas de galleta integral con queso light y nueces",
+ ing:["Galletas integrales","Queso light","Nueces","Mermelada, opcional"],
+ prep:["Unta queso light sobre cada galleta.","Añade nueces picadas.","Incorpora una mínima cantidad de mermelada si quieres una versión más dulce.","Sirve enseguida."]},
+{id:"te5",cat:"tentempies",n:5,e:"🧀",t:"Tacos de queso descremado con dátiles y pipas",
+ ing:["Queso descremado","Dátiles","Pipas de girasol sin sal"],
+ prep:["Corta el queso en porciones pequeñas.","Coloca encima dátiles muy picados.","Termina con pipas para dar un punto crujiente.","Sírvelo como bocado frío."]},
+{id:"te6",cat:"tentempies",n:6,e:"🥫",t:"Pan integral con atún templado y pimienta",
+ ing:["Pan integral","Atún en lata","Aceite de oliva","Pimienta","Hierbas"],
+ prep:["Tuesta el pan.","Templa ligeramente el atún con unas gotas de aceite.","Reparte sobre el pan y añade pimienta y hierbas.","Sirve de inmediato."]},
+{id:"te7",cat:"tentempies",n:7,e:"🥕",nuevo:true,t:"Bastones de zanahoria y pepino con queso light y hierbas",
+ ing:["Zanahoria","Pepino","Queso light","Hierbas","Pimienta"],
+ prep:["Pela y corta la zanahoria y el pepino en bastones finos.","Mezcla el queso light con hierbas y pimienta hasta formar una crema.","Usa la crema como dip para los bastones.","Sirve frío como picoteo ligero."]},
+{id:"te8",cat:"tentempies",n:8,e:"🍐",nuevo:true,t:"Fruta fresca de temporada con nueces",
+ ing:["Manzana, pera o naranja","Nueces","Pipas de girasol sin sal, opcional"],
+ prep:["Lava y trocea la fruta en porciones cómodas.","Acompaña con un puñado pequeño de nueces.","Añade pipas si deseas más variedad de textura.","Ideal para llevar fuera de casa."]},
+
+/* ---- COMIDAS ---- */
+{id:"co1",cat:"comidas",n:1,e:"🍚",t:"Arroz integral meloso con atún, queso light, tomate y hierbas",
+ ing:["Arroz integral","Atún en lata","Queso light o descremado","Tomate fresco","Cebolla","Aceite de oliva","Hierbas y pimienta","Sofrito, moderado"],
+ prep:["Cuece el arroz integral hasta que quede tierno.","Calienta un poco de aceite con cebolla picada y una pequeña cantidad de sofrito.","Añade el tomate troceado y cocina unos minutos.","Incorpora el atún y mezcla con el arroz.","Añade el queso para obtener una textura melosa y termina con pimienta y hierbas."]},
+{id:"co2",cat:"comidas",n:2,e:"🍝",t:"Pasta templada con salmón ahumado, mostaza, espinacas y queso descremado",
+ ing:["Pasta","Salmón ahumado","Espinacas frescas","Mostaza","Queso descremado","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Hierve la pasta y resérvala con un poco de agua de cocción.","Saltea las espinacas brevemente con unas gotas de aceite.","Mezcla la mostaza con el queso y unas gotas de aceite.","Integra la pasta con la salsa y las espinacas.","Añade el salmón al final para mantener la textura."]},
+{id:"co3",cat:"comidas",n:3,e:"🦪",t:"Arroz de marisco bivalvo con pimiento y sofrito suave",
+ ing:["Arroz integral","Mejillones, almejas, chirlas u ostras","Pimiento rojo o verde","Sofrito","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+ prep:["Haz primero el arroz integral hasta dejarlo casi en su punto.","Calienta aceite con pimiento troceado y una pequeña base de sofrito.","Añade el marisco bivalvo y cocina hasta que se integre.","Une el arroz y deja unos minutos para que absorba los aromas.","Sirve con pimienta y hierbas."]},
+{id:"co4",cat:"comidas",n:4,e:"🦃",t:"Pavo a la plancha con ensalada templada de pasta, mostaza y hierbas",
+ ing:["Pavo (máx. 200 g)","Pasta","Lechuga y tomate","Mostaza","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cocina la pasta, escúrrela y déjala templar.","Haz el pavo a la plancha con poco aceite.","Mezcla la pasta con lechuga troceada, tomate, mostaza, aceite y hierbas.","Sirve el pavo fileteado sobre la ensalada de pasta."]},
+{id:"co5",cat:"comidas",n:5,e:"🍗",t:"Pollo a la plancha con arroz integral y calabacín salteado",
+ ing:["Pollo (máx. 200 g)","Arroz integral","Calabacín","Aceite de oliva","Hierbas, pimienta y mostaza"],
+ prep:["Cuece el arroz integral hasta que quede suelto.","Corta el calabacín en rodajas finas y saltéalo con unas gotas de aceite.","Haz el pollo a la plancha con poco aceite.","Mezcla el arroz con hierbas, pimienta y una mínima cantidad de mostaza.","Sirve el pollo fileteado sobre el arroz con el calabacín al lado."]},
+{id:"co6",cat:"comidas",n:6,e:"🌽",t:"Conejo dorado con maíz, judías verdes y hierbas",
+ ing:["Conejo (máx. 200 g)","Maíz","Judías verdes","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Dora el conejo a la plancha o a la brasa con una capa ligera de aceite.","Cuece las judías verdes al vapor o hervidas.","Saltea el maíz aparte con unas gotas de aceite.","Condimenta todo con hierbas y pimienta.","Emplata las judías y el maíz como base y el conejo por encima."]},
+{id:"co7",cat:"comidas",n:7,e:"🍅",t:"Pasta con atún, sofrito suave, tomate y queso descremado",
+ ing:["Pasta","Atún en lata","Tomate fresco","Sofrito","Queso descremado","Aceite de oliva y hierbas"],
+ prep:["Cuece la pasta y reserva un poco de agua.","Calienta el sofrito con unas gotas de aceite y añade el tomate troceado.","Incorpora el atún y después la pasta.","Termina con queso descremado y hierbas."]},
+{id:"co8",cat:"comidas",n:8,e:"🐠",t:"Pescado azul a la plancha con ensalada fresca y mostaza",
+ ing:["Pescado azul (sardina, trucha, caballa…)","Lechuga","Tomate","Pepino","Aceite de oliva","Mostaza, hierbas y pimienta"],
+ prep:["Haz el pescado azul a la plancha con poco aceite.","Prepara una ensalada con lechuga, tomate y pepino.","Aliña la ensalada con aceite de oliva, mostaza, hierbas y pimienta.","Sirve el pescado junto a la ensalada."]},
+{id:"co9",cat:"comidas",n:9,e:"🌶️",t:"Pescado blanco con maíz templado, pimiento y alioli moderado",
+ ing:["Pescado blanco","Maíz","Pimiento","Alioli, poca cantidad","Hierbas, pimienta y aceite de oliva"],
+ prep:["Haz el pescado blanco a la plancha con muy poco aceite.","Saltea el maíz con pimiento troceado como guarnición.","Añade una pequeña cantidad de alioli para dar intensidad.","Termina con hierbas y pimienta."]},
+{id:"co10",cat:"comidas",n:10,e:"🥖",t:"Pan tostado con conejo desmenuzado, lechuga y mostaza ligera",
+ ing:["Conejo (máx. 200 g)","Pan integral","Lechuga","Tomate","Mostaza","Aceite de oliva y hierbas"],
+ prep:["Cocina el conejo y desmenúzalo en trozos pequeños.","Tuesta el pan integral.","Mezcla el conejo con una pequeña cantidad de mostaza y hierbas.","Sirve la mezcla sobre el pan con lechuga y rodajas de tomate."]},
+{id:"co11",cat:"comidas",n:11,e:"🍳",nuevo:true,t:"Tortilla de claras con calabacín, cebolla y queso light",
+ ing:["Claras de huevo (3–4)","Calabacín","Cebolla","Queso light","Aceite de oliva, unas gotas","Hierbas y pimienta"],
+ prep:["Corta el calabacín y la cebolla en trozos pequeños y saltéalos con unas gotas de aceite.","Bate las claras con hierbas y pimienta.","Vierte las claras sobre las verduras y cocina a fuego medio.","Cuando cuaje, añade el queso light rallado, dobla y sirve.","Acompaña con pan integral tostado o ensalada."]},
+{id:"co12",cat:"comidas",n:12,e:"🥗",nuevo:true,t:"Ensalada completa de pasta con atún, tomate, pepino y aceitunas",
+ ing:["Pasta","Atún en lata","Tomate","Pepino","Cebolla","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece la pasta y déjala enfriar.","Trocea el tomate, pepino y cebolla.","Mezcla todo con el atún escurrido.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve frío como plato único."]},
+{id:"co13",cat:"comidas",n:13,e:"🐟",nuevo:true,t:"Pescado blanco al horno con cama de verduras",
+ ing:["Pescado blanco","Calabacín","Pimiento","Cebolla","Tomate","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+ prep:["Corta todas las verduras en rodajas o tiras y distribúyelas en una fuente de horno.","Aliña las verduras con unas gotas de aceite, hierbas y pimienta.","Coloca el pescado encima.","Hornea a 180 °C unos 20–25 minutos hasta que el pescado esté en su punto.","Sirve directamente de la fuente."]},
+{id:"co14",cat:"comidas",n:14,e:"🥬",nuevo:true,t:"Revuelto de claras con salmón ahumado, espinacas y arroz integral",
+ ing:["Claras de huevo (3)","Salmón ahumado","Espinacas frescas","Arroz integral","Aceite de oliva, unas gotas","Pimienta y hierbas"],
+ prep:["Cuece el arroz integral y resérvalo.","Saltea las espinacas brevemente con unas gotas de aceite.","Añade las claras y remueve hasta que cuajen.","Incorpora el salmón ahumado en tiras al final, fuera del fuego.","Sirve el revuelto sobre el arroz con pimienta y hierbas."]},
+
+/* ---- MERIENDAS ---- */
+{id:"me1",cat:"meriendas",n:1,e:"🍮",t:"Flan sin huevo con mermelada y nueces",
+ ing:["Flan sin huevo","Mermelada","Nueces"],
+ prep:["Sirve el flan bien frío.","Añade una pequeña cucharada de mermelada.","Trocea las nueces y espárcelas al final."]},
+{id:"me2",cat:"meriendas",n:2,e:"🥄",t:"Yogur desnatado montado con albaricoques y frutos secos",
+ ing:["Yogur descremado","Albaricoques secos","Ciruelas pasas","Pipas de girasol sin sal","Dátiles"],
+ prep:["Bate ligeramente el yogur.","Trocea la fruta seca.","Reparte encima la mezcla y termina con pipas.","Sírvelo al momento o deja que repose."]},
+{id:"me3",cat:"meriendas",n:3,e:"🍯",t:"Tostaditas integrales con mermelada, queso light y pipas",
+ ing:["Pan integral","Mermelada","Queso light","Pipas de girasol sin sal"],
+ prep:["Tuesta el pan y córtalo en piezas pequeñas.","Extiende primero una capa fina de queso.","Añade un punto de mermelada encima.","Finaliza con pipas."]},
+{id:"me4",cat:"meriendas",n:4,e:"🥛",t:"Copa de leche desnatada con galletas integrales desmigadas y dátiles",
+ ing:["Leche desnatada","Galletas integrales","Dátiles","Nueces"],
+ prep:["Sirve la leche en un vaso o cuenco.","Desmenuza ligeramente las galletas por encima.","Añade dátiles picados y nueces.","Tómalo al momento o deja que se ablande un poco."]},
+{id:"me5",cat:"meriendas",n:5,e:"🧀",t:"Queso light batido con mermelada y albaricoques",
+ ing:["Queso light","Mermelada","Albaricoques secos"],
+ prep:["Bate el queso light hasta que quede más cremoso.","Añade una pequeña cantidad de mermelada.","Termina con albaricoques secos troceados.","Sirve frío."]},
+{id:"me6",cat:"meriendas",n:6,e:"🫐",t:"Yogur con nueces, mermelada fina y ciruelas",
+ ing:["Yogur descremado","Nueces","Mermelada","Ciruelas pasas"],
+ prep:["Sirve el yogur en un vaso.","Añade una pequeña veta de mermelada.","Incorpora nueces y ciruelas troceadas.","Mezcla ligeramente solo al final."]},
+{id:"me7",cat:"meriendas",n:7,e:"🍊",nuevo:true,t:"Macedonia de frutas frescas con zumo de naranja",
+ ing:["Manzana","Pera","Naranja","Zumo de naranja natural"],
+ prep:["Pela y trocea la manzana, la pera y la naranja en dados.","Mezcla en un cuenco y riega con zumo de naranja natural.","Deja reposar unos minutos en frío para que los sabores se integren.","Sirve sola o con un par de nueces picadas por encima."]},
+{id:"me8",cat:"meriendas",n:8,e:"🍎",nuevo:true,t:"Yogur desnatado con manzana rallada, nueces y canela",
+ ing:["Yogur descremado","Manzana","Nueces","Canela (hierba/especia)"],
+ prep:["Ralla la manzana directamente sobre el yogur.","Añade nueces picadas.","Espolvorea un toque de canela.","Mezcla ligeramente y sirve al momento."]},
+
+/* ---- CENAS ---- */
+{id:"ce1",cat:"cenas",n:1,e:"🐟",t:"Pescado blanco a la plancha con arroz aromático y ensalada verde",
+ ing:["Pescado blanco","Arroz integral","Lechuga y pepino","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+ prep:["Cuece el arroz integral.","Haz el pescado a la plancha con poco aceite.","Prepara una ensalada sencilla con lechuga y pepino.","Aliña el arroz con hierbas, pimienta y unas gotas de aceite.","Sirve el pescado junto al arroz y la ensalada."]},
+{id:"ce2",cat:"cenas",n:2,e:"🥒",t:"Pescado azul con calabacín a la plancha y alioli moderado",
+ ing:["Pescado azul","Calabacín","Alioli, poca cantidad","Hierbas, pimienta y aceite de oliva"],
+ prep:["Cocina el pescado azul a la plancha o a la brasa.","Corta el calabacín en rodajas y hazlo a la plancha junto al pescado.","Añade una pequeña cantidad de alioli.","Termina con hierbas y pimienta."]},
+{id:"ce3",cat:"cenas",n:3,e:"🔥",t:"Conejo a la brasa con pan integral tostado, tomate y hierbas",
+ ing:["Conejo (máx. 200 g)","Pan integral","Tomate fresco","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cocina el conejo a la brasa o a la plancha.","Tuesta el pan integral y coloca rodajas de tomate encima.","Adereza el conejo con hierbas y pimienta al final.","Sirve con el pan tostado con tomate."]},
+{id:"ce4",cat:"cenas",n:4,e:"🥫",t:"Atún templado con maíz, tomate cherry y mostaza suave",
+ ing:["Atún en lata","Maíz","Tomate","Mostaza","Hierbas, aceite de oliva y pimienta"],
+ prep:["Templa el maíz con unas gotas de aceite y el tomate troceado.","Añade el atún al final para que solo tome temperatura.","Integra una pequeña cantidad de mostaza.","Finaliza con hierbas y pimienta."]},
+{id:"ce5",cat:"cenas",n:5,e:"🍣",t:"Salmón ahumado templado con arroz integral, espinacas y hierbas",
+ ing:["Salmón ahumado","Arroz integral","Espinacas frescas","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece el arroz integral y mantenlo caliente.","Saltea las espinacas brevemente con unas gotas de aceite.","Mezcla el arroz con las espinacas, hierbas y pimienta.","Templa muy ligeramente el salmón y colócalo encima."]},
+{id:"ce6",cat:"cenas",n:6,e:"🦐",t:"Marisco bivalvo salteado con maíz, pimiento y sofrito",
+ ing:["Mejillones, almejas, chirlas u ostras","Maíz","Pimiento","Sofrito","Aceite de oliva, hierbas y pimienta"],
+ prep:["Calienta el sofrito con unas gotas de aceite y el pimiento troceado.","Incorpora el marisco bivalvo y cocina bien.","Añade el maíz para que absorba parte del sabor.","Termina con hierbas y pimienta."]},
+{id:"ce7",cat:"cenas",n:7,e:"🥬",t:"Pavo fileteado con ensalada de lechuga, tomate, pepino y mostaza",
+ ing:["Pavo (máx. 200 g)","Lechuga","Tomate","Pepino","Mostaza","Aceite de oliva y pimienta"],
+ prep:["Haz el pavo a la plancha con muy poco aceite.","Prepara una ensalada con lechuga, tomate y pepino.","Aliña la ensalada con aceite, mostaza y pimienta.","Sirve el pavo cortado en tiras junto a la ensalada."]},
+{id:"ce8",cat:"cenas",n:8,e:"🥕",t:"Pescado blanco con crema ligera de queso descremado, zanahoria y hierbas",
+ ing:["Pescado blanco","Queso descremado","Zanahoria","Hierbas, pimienta y aceite de oliva"],
+ prep:["Cocina el pescado blanco a la plancha con una mínima cantidad de aceite.","Cuece o ralla la zanahoria como guarnición.","Mezcla el queso descremado con hierbas y pimienta.","Coloca una cucharada de esa crema sobre el pescado y sirve con la zanahoria."]},
+{id:"ce9",cat:"cenas",n:9,e:"🍳",nuevo:true,t:"Tortilla de claras con espinacas, tomate y queso light",
+ ing:["Claras de huevo (3)","Espinacas frescas","Tomate","Queso light","Aceite de oliva, unas gotas","Pimienta y hierbas"],
+ prep:["Saltea las espinacas y el tomate troceado con unas gotas de aceite.","Bate las claras con pimienta y hierbas.","Vierte sobre las verduras y cocina a fuego medio.","Cuando cuaje por abajo, añade el queso light, dobla y sirve.","Acompaña con pan integral si lo deseas."]},
+{id:"ce10",cat:"cenas",n:10,e:"🫛",nuevo:true,t:"Ensalada tibia de judías verdes con atún, tomate y aceite de oliva",
+ ing:["Judías verdes","Atún en lata","Tomate","Cebolla","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece las judías verdes al vapor o hervidas hasta que estén tiernas pero firmes.","Trocea el tomate y la cebolla.","Mezcla las judías tibias con el tomate, la cebolla y el atún.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve templada como cena ligera y nutritiva."]}
+];
+
+const BY_ID = Object.fromEntries(R.map(r => [r.id, r]));
+
+const FREQ = [
+  {e:"🐟", t:"Pescado (blanco y azul)", d:"Todos los días si se desea. El documento recomienda introducirlo <em>frecuentemente</em>, en especial el azul (sardina, trucha, atún, caballa)."},
+  {e:"🦪", t:"Marisco bivalvo", d:"Permitido <em>todos los días</em>. Mejillones, almejas, chirlas y ostras están en la lista diaria."},
+  {e:"🍗", t:"Pollo o pavo", d:"Máximo <em>2 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
+  {e:"🥩", t:"Carnes rojas sin piel o conejo", d:"Máximo <em>2–3 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
+  {e:"🥚", t:"Huevos", d:"Máximo <em>2–3 por semana</em> (enteros). La clara de huevo está permitida sin restricción específica de frecuencia."},
+  {e:"🥛", t:"Lácteos", d:"Desnatados y light <em>todos los días</em>. Evitar lácteos enteros, mantequilla, yogures enteros y quesos grasos."},
+  {e:"🥦", t:"Verduras y frutas", d:"En <em>abundancia</em>, todos los días. Es una de las recomendaciones generales principales del documento."},
+  {e:"💧", t:"Bebidas", d:"Agua mineral como base. Café o té: máx. 3/día. Zumos naturales e infusiones sin límite indicado. Vino: máx. 2/día (desaconsejable con sobrepeso, embarazo o hipertrigliceridemia)."}
+];
+
+const BASES = [
+  {e:"🌾", t:"Ingredientes base", d:"Pan, cereales, arroz integral, maíz, pasta, galletas integrales; frutos secos y frutas secas permitidas; lácteos desnatados y quesos light."},
+  {e:"🐠", t:"Proteínas válidas", d:"Pescado blanco y azul, atún en lata, salmón ahumado, marisco bivalvo, clara de huevo, pollo, pavo, conejo y carnes rojas sin piel."},
+  {e:"🥬", t:"Verduras y frutas", d:"Tomate, lechuga, espinacas, calabacín, pimiento, cebolla, zanahoria, judías verdes, manzana, naranja, pera, etc."},
+  {e:"🫒", t:"Condimentos válidos", d:"Aceite de oliva con moderación, pimienta, mostaza, hierbas, sofrito y alioli."}
+];
+
+/* Plan semanal sugerido, construido respetando la guía de frecuencias:
+   pollo/pavo 2 días · conejo 2 días · pescado o marisco el resto. */
+const PLAN = [
+  {d:"Lu", full:"Lunes",     s:["de1","co5","me1","ce1"]},
+  {d:"Ma", full:"Martes",    s:["de7","co8","me7","ce10"]},
+  {d:"Mi", full:"Miércoles", s:["de2","co6","me2","ce9"]},
+  {d:"Ju", full:"Jueves",    s:["de8","co3","me8","ce5"]},
+  {d:"Vi", full:"Viernes",   s:["de3","co4","me3","ce2"]},
+  {d:"Sá", full:"Sábado",    s:["de4","co13","me5","ce3"]},
+  {d:"Do", full:"Domingo",   s:["de5","co12","me6","ce8"]}
+];
+const SLOTS = ["Desayuno","Comida","Merienda","Cena"];
+
+/* ============================ ICONOS ============================ */
+const I = {
+  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V20h14V9.8"/><path d="M10 20v-5h4v5"/></svg>',
+  book:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h7M8 11h7"/></svg>',
+  cal:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+  chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  info:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.4"/></svg>',
+  back:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  grid:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',
+  search:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>',
+  sliders:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h10M18 8h2M4 16h4M12 16h8"/><circle cx="16" cy="8" r="2.1"/><circle cx="10" cy="16" r="2.1"/></svg>',
+  sun:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M5.2 18.8l1.4-1.4M17.4 6.6l1.4-1.4"/></svg>',
+  moon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.6 8.6 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8z"/></svg>',
+  leaf:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 4 9 4 16c0 2 1 4 1 4s2-8 15-11"/><path d="M5 20c0-6 5-11 12-12"/></svg>',
+  list:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>',
+  steps:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h4v-5h4V8h4V4"/></svg>',
+  tag:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5V5a2 2 0 0 1 2-2h7.5L21 11.5 12.5 20z"/><circle cx="8" cy="8" r="1.4"/></svg>',
+  brand:'<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 6C13 6 6 12 6 21c0 2 .6 4 .6 4s2.6-10 20-16"/><path d="M7 26c0-8 7-14 16-15"/></svg>'
+};
+
+/* ============================ ESTADO ============================ */
+let onlyNew = false;
+let query = "";
+let planDay = (new Date().getDay() + 6) % 7; // 0 = lunes
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const go = h => { location.hash = h; };
+
+/* ============================ PLANTILLAS ============================ */
+function itemCard(r){
+  const c = CATS[r.cat];
+  return `<button class="item" data-go="#/r/${r.id}">
+    <span class="thumb" style="background:${c.soft}">${r.e}</span>
+    <span class="body">
+      <h3>${esc(r.t)}</h3>
+      <span class="meta">
+        <i style="color:${c.color};font-weight:700">${c.label} ${r.n}</i>
+        <i>${I.list} ${r.ing.length}</i>
+        <i>${I.steps} ${r.prep.length} pasos</i>
+        ${r.nuevo ? '<i class="badge-new">nuevo</i>' : ""}
+      </span>
+    </span>
+    <span class="chev">${I.chev}</span>
+  </button>`;
+}
+
+function listOf(rs, emptyMsg){
+  if(!rs.length) return `<div class="empty"><div class="big">🍽️</div><p>${emptyMsg}</p></div>`;
+  return `<div class="list">${rs.map(itemCard).join("")}</div>`;
+}
+
+/* ---------- HOME ---------- */
+function viewHome(){
+  const featured = ["co13","de7","ce10","co11","me7","te7"].map(id => BY_ID[id]);
+  return `
+  <div class="searchbar">
+    <label class="search-field">
+      ${I.search}
+      <input id="q" type="search" placeholder="Buscar receta o ingrediente…" value="${esc(query)}" autocomplete="off" />
+    </label>
+    <button class="fab" id="filter" aria-pressed="${onlyNew}" aria-label="Mostrar solo recetas nuevas">${I.sliders}</button>
+  </div>
+
+  <div id="results"></div>
+
+  <div id="home-sections">
+    <section class="sec">
+      <div class="sec-head"><div><h2>Destacadas</h2><p>Recetas nuevas de la versión 2</p></div></div>
+      <div class="rail">
+        ${featured.map(r => `
+          <button class="feat" style="background:${CATS[r.cat].grad}" data-go="#/r/${r.id}">
+            <span class="pill">${I.leaf} ${CATS[r.cat].label}</span>
+            <h3>${esc(r.t)}</h3>
+            <span class="pill" style="margin-top:auto">${r.ing.length} ingredientes</span>
+            <span class="emoji">${r.e}</span>
+          </button>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><div><h2>Menú de la semana</h2><p>Sugerencia que respeta las frecuencias</p></div></div>
+      <div class="planner">
+        <div class="days" id="days">
+          ${PLAN.map((d,i) => `
+            <button class="day" data-day="${i}" aria-selected="${i===planDay}">
+              <b>${d.d}</b><small>${d.full.slice(0,3)}</small>
+              <span class="dot">${BY_ID[d.s[1]].e}</span>
+              ${i === (new Date().getDay()+6)%7 ? '<span class="today">✓</span>' : ""}
+            </button>`).join("")}
+        </div>
+        <div class="plan-list" id="plan-list">${planRows()}</div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><div><h2>Categorías</h2><p>${R.length} recetas permitidas</p></div></div>
+      <div class="cats">
+        ${Object.entries(CATS).map(([k,c]) => `
+          <button class="cat" data-go="#/cat/${k}">
+            <span class="ball" style="background:${c.soft}">${c.emoji}</span>
+            <span><b>${c.label}</b><small>${R.filter(r=>r.cat===k).length} recetas</small></span>
+          </button>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="card warn">
+        <h3><span class="ball" style="background:rgba(255,255,255,.55)">⚠️</span>Antes de empezar</h3>
+        <p>La dieta debe modificarse en caso de diabetes, obesidad, hiperuricemia o hipertensión. Consulta con tu médico o nutricionista antes de hacer cambios significativos.</p>
+      </div>
+    </section>
+  </div>`;
+}
+
+function planRows(){
+  const day = PLAN[planDay];
+  return day.s.map((id,i) => {
+    const r = BY_ID[id];
+    return `<button class="plan-row" data-go="#/r/${r.id}">
+      <span class="slot">${SLOTS[i]}</span>
+      <span class="t">${esc(r.t)}</span>
+      <span class="e">${r.e}</span>
+    </button>`;
+  }).join("");
+}
+
+function renderResults(){
+  const box = $("#results"), sections = $("#home-sections");
+  if(!box) return;
+  const q = query.trim().toLowerCase();
+  if(!q && !onlyNew){ box.innerHTML = ""; sections.style.display = ""; return; }
+  sections.style.display = "none";
+  let rs = R;
+  if(onlyNew) rs = rs.filter(r => r.nuevo);
+  if(q) rs = rs.filter(r => (r.t + " " + r.ing.join(" ") + " " + CATS[r.cat].label).toLowerCase().includes(q));
+  box.innerHTML = `<div class="sec-head"><div><h2>${rs.length} resultado${rs.length===1?"":"s"}</h2>
+    <p>${onlyNew ? "Solo recetas nuevas" : "Coincidencias en título e ingredientes"}</p></div></div>
+    ${listOf(rs, "Ningún plato coincide con esa búsqueda dentro de la lista permitida.")}`;
+}
+
+/* ---------- CATEGORÍA ---------- */
+function viewCat(key){
+  const rs = R.filter(r => r.cat === key);
+  return `
+  <div class="chips">
+    ${Object.entries(CATS).map(([k,c]) => `<button class="chip" data-go="#/cat/${k}" aria-pressed="${k===key}">${c.emoji} ${c.label}</button>`).join("")}
+  </div>
+  <div class="sec-head"><div><h2>${CATS[key].label}</h2><p>${rs.length} recetas · ${CATS[key].desc}</p></div></div>
+  ${listOf(rs, "No hay recetas en esta categoría.")}`;
+}
+
+/* ---------- DETALLE ---------- */
+function viewRecipe(id){
+  const r = BY_ID[id]; if(!r) return viewHome();
+  const c = CATS[r.cat];
+  return `<div class="detail">
+    <div class="hero" style="background:${c.grad}">
+      <span class="emoji">${r.e}</span>
+      <span class="tagline">${c.label} ${r.n}${r.nuevo ? " · nueva" : ""}</span>
+    </div>
+    <h1>${esc(r.t)}</h1>
+    <div class="stats">
+      <span class="stat">${I.list} ${r.ing.length} ingredientes</span>
+      <span class="stat">${I.steps} ${r.prep.length} pasos</span>
+      <span class="stat">${I.tag} ${c.label}</span>
+    </div>
+    <h2 class="block-title">Ingredientes</h2>
+    <ul>${r.ing.map(x => `<li class="ing"><span class="dotimg" style="background:${c.soft};color:${c.color}">${I.leaf}</span><span>${esc(x)}</span></li>`).join("")}</ul>
+    <h2 class="block-title">Preparación</h2>
+    <ol class="steps">${r.prep.map((x,i) => `<li class="step"><span class="n">${i+1}</span><p>${esc(x)}</p></li>`).join("")}</ol>
+    <button class="detail-foot" data-go="#/cat/${r.cat}">
+      <span class="txt"><small>${c.label} · receta ${r.n} de ${R.filter(x=>x.cat===r.cat).length}</small><b>Ver todas las ${c.label.toLowerCase()}</b></span>
+      <span class="go" style="background:${c.grad}">${I.chev}</span>
+    </button>
+  </div>`;
+}
+
+/* ---------- FRECUENCIAS ---------- */
+function viewFreq(){
+  return `
+  <div class="sec-head"><div><h2>Frecuencias semanales</h2><p>Límites del documento médico</p></div></div>
+  ${FREQ.map(f => `<div class="card"><h3><span class="ball" style="background:var(--green-soft)">${f.e}</span>${f.t}</h3><p>${f.d}</p></div>`).join("")}
+  <div class="card warn" style="margin-top:12px">
+    <h3><span class="ball" style="background:rgba(255,255,255,.55)">⚠️</span>Importante</h3>
+    <p>La dieta debe modificarse en caso de diabetes, obesidad, hiperuricemia o hipertensión. Los alimentos de alta densidad calórica (frutos secos, dulces, repostería) deben limitarse en pacientes con sobrepeso o hipertrigliceridemia. Consulta con tu médico o nutricionista antes de hacer cambios significativos.</p>
+  </div>`;
+}
+
+/* ---------- GUÍA ---------- */
+function viewGuia(){
+  return `
+  <div class="sec-head"><div><h2>Guía</h2><p>Reglas de construcción del recetario</p></div></div>
+  ${BASES.map(b => `<div class="card"><h3><span class="ball" style="background:var(--green-soft)">${b.e}</span>${b.t}</h3><p>${b.d}</p></div>`).join("")}
+  <h2 class="block-title">Más combinaciones útiles</h2>
+  <div class="card">
+    <p>Arroz integral con pescado azul, tomate y hierbas; pasta con atún y ensalada verde; pan integral con salmón ahumado, lechuga y queso light; yogur desnatado con nueces, fruta fresca y albaricoques; galletas integrales con queso descremado y mermelada; maíz templado con atún, pimiento y pimienta; conejo con arroz integral y judías verdes; pavo con ensalada variada; marisco bivalvo con pasta, sofrito suave y calabacín; pescado blanco con pan tostado, tomate y mostaza.</p>
+  </div>
+  <div class="card">
+    <p>Las <strong>verduras</strong> (lechuga, tomate, espinacas, calabacín, zanahoria, pepino, pimiento, cebolla, judías verdes) y las <strong>frutas frescas</strong> (manzana, pera, naranja) pueden añadirse libremente a cualquier receta, ya que la recomendación general las incluye sin restricción. Las <strong>claras de huevo</strong> son versátiles como base de revueltos, tortillas y cremas ligeras.</p>
+  </div>
+  <div class="card">
+    <p>Recuerda siempre respetar la moderación de aceite de oliva y la frecuencia de consumo de las carnes indicada en la sección de frecuencias.</p>
+  </div>
+  <div class="card" style="text-align:center">
+    <p style="font-size:12.5px">Versión 2 del recetario — revisada con verduras, frutas frescas, claras de huevo y guía de frecuencias semanales.</p>
+  </div>`;
+}
+
+/* ============================ RENDER ============================ */
+const NAV = [
+  {k:"home",  hash:"#/",            icon:"home",  label:"Inicio"},
+  {k:"cat",   hash:"#/cat/comidas", icon:"book",  label:"Recetas"},
+  {k:"freq",  hash:"#/frecuencias", icon:"cal",   label:"Frecuencias"},
+  {k:"guia",  hash:"#/guia",        icon:"info",  label:"Guía"}
+];
+
+function route(){
+  const h = location.hash.replace(/^#\/?/, "");
+  if(h.startsWith("cat/"))  return {view:"cat",  key:h.slice(4)};
+  if(h.startsWith("r/"))    return {view:"recipe", key:h.slice(2)};
+  if(h === "frecuencias")   return {view:"freq"};
+  if(h === "guia")          return {view:"guia"};
+  return {view:"home"};
+}
+
+function themeIcon(){
+  return document.documentElement.dataset.theme === "dark" ? I.sun : I.moon;
+}
+
+function render(){
+  const {view, key} = route();
+  const back = view === "recipe" || view === "cat";
+  const titles = {recipe:"Receta", cat:CATS[key]?.label || "Recetas", freq:"Frecuencias", guia:"Guía"};
+
+  $("#topbar").innerHTML = `
+    ${back
+      ? `<button class="icon-btn" id="back" aria-label="Volver">${I.back}</button>`
+      : `<button class="icon-btn" data-go="#/cat/desayunos" aria-label="Ver categorías">${I.grid}</button>`}
+    ${view === "home"
+      ? `<div class="brand"><span class="brand-mark">${I.brand}</span><span class="brand-name">RECE<span>TARIO</span></span></div>`
+      : `<div class="topbar-title">${titles[view]}</div>`}
+    <button class="icon-btn" id="theme" aria-label="Cambiar tema">${themeIcon()}</button>`;
+
+  const screens = {home:viewHome, cat:()=>viewCat(CATS[key]?key:"desayunos"), recipe:()=>viewRecipe(key), freq:viewFreq, guia:viewGuia};
+  $("#screen").innerHTML = screens[view]();
+
+  const activeKey = view === "recipe" ? "cat" : view;
+  $("#nav").innerHTML = NAV.map(n => `
+    <button data-go="${n.hash}" aria-label="${n.label}" ${n.k===activeKey ? 'aria-current="page"' : ""}>
+      ${I[n.icon]}
+    </button>`).join("");
+
+  if(view === "home"){
+    renderResults();
+    const q = $("#q");
+    q.addEventListener("input", e => { query = e.target.value; renderResults(); });
+    $("#filter").addEventListener("click", e => {
+      onlyNew = !onlyNew;
+      e.currentTarget.setAttribute("aria-pressed", onlyNew);
+      renderResults();
+    });
+    $("#days").addEventListener("click", e => {
+      const b = e.target.closest("[data-day]"); if(!b) return;
+      planDay = +b.dataset.day;
+      [...$("#days").children].forEach((el,i) => el.setAttribute("aria-selected", i === planDay));
+      $("#plan-list").innerHTML = planRows();
+    });
+  }
+  if(view === "cat"){
+    const active = $('.chip[aria-pressed="true"]');
+    if(active) active.scrollIntoView({block:"nearest", inline:"center"});
+  }
+  if(back) $("#back").addEventListener("click", () => history.length > 1 ? history.back() : go("#/"));
+  $("#theme").addEventListener("click", toggleTheme);
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme(){
+  const root = document.documentElement;
+  const next = root.dataset.theme === "dark" ? "light" : "dark";
+  root.dataset.theme = next;
+  localStorage.setItem("recetario:tema", next);
+  document.querySelector('meta[name="theme-color"]').content = next === "dark" ? "#0e1512" : "#eaf7ee";
+  $("#theme").innerHTML = themeIcon();
+}
+
+/* delegación global: navegación */
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]");
+  if(g){ e.preventDefault(); go(g.dataset.go); }
+});
+
+window.addEventListener("hashchange", render);
+
+(function init(){
+  const saved = localStorage.getItem("recetario:tema");
+  const theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#0e1512" : "#eaf7ee";
+  render();
+})();
+</script>
+</body>
+</html>

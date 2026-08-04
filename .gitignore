@@ -1,0 +1,5 @@
+.DS_Store
+
+# Materiales de trabajo del recetario: no se publican en el sitio
+recetario/assets/
+recetario/ingredientes/
