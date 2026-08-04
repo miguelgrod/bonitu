@@ -516,6 +516,17 @@ function viewHome(){
 
   <div id="home-sections">
     <section class="sec">
+      <div class="sec-head"><div><h2>Categorías</h2><p>${R.length} recetas permitidas</p></div></div>
+      <div class="cats">
+        ${Object.entries(CATS).map(([k,c]) => `
+          <button class="cat" data-go="#/cat/${k}">
+            <span class="ball" style="background:${c.soft}">${c.emoji}</span>
+            <span><b>${c.label}</b><small>${R.filter(r=>r.cat===k).length} recetas</small></span>
+          </button>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec">
       <div class="sec-head"><div><h2>Destacadas</h2><p>Recetas nuevas de la versión 2</p></div></div>
       <div class="rail">
         ${featured.map(r => `
@@ -540,17 +551,6 @@ function viewHome(){
             </button>`).join("")}
         </div>
         <div class="plan-list" id="plan-list">${planRows()}</div>
-      </div>
-    </section>
-
-    <section class="sec">
-      <div class="sec-head"><div><h2>Categorías</h2><p>${R.length} recetas permitidas</p></div></div>
-      <div class="cats">
-        ${Object.entries(CATS).map(([k,c]) => `
-          <button class="cat" data-go="#/cat/${k}">
-            <span class="ball" style="background:${c.soft}">${c.emoji}</span>
-            <span><b>${c.label}</b><small>${R.filter(r=>r.cat===k).length} recetas</small></span>
-          </button>`).join("")}
       </div>
     </section>
 
