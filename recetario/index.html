@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#eaf7ee" />
-<title>Recetario permitido — app</title>
+<title>ZampiFood</title>
 <style>
   /* ---------- tokens ---------- */
   :root, [data-theme="light"]{
@@ -810,7 +810,7 @@ function viewFreq(){
 /* ---------- GUÍA ---------- */
 function viewGuia(){
   return `
-  <div class="sec-head"><div><h2>Guía</h2><p>Reglas de construcción del recetario</p></div></div>
+  <div class="sec-head"><div><h2>Guía</h2><p>Reglas de construcción de ZampiFood</p></div></div>
   ${BASES.map(b => `<div class="card"><h3><span class="ball" style="background:var(--green-soft)">${b.e}</span>${b.t}</h3><p>${b.d}</p></div>`).join("")}
   <h2 class="block-title">Sobre las calorías</h2>
   <div class="card">
@@ -832,7 +832,7 @@ function viewGuia(){
     <p>Recuerda siempre respetar la moderación de aceite de oliva y la frecuencia de consumo de las carnes indicada en la sección de frecuencias.</p>
   </div>
   <div class="card" style="text-align:center">
-    <p style="font-size:12.5px">Versión 3 del recetario — adaptada a dieta baja en FODMAP con purés, sopas, caldos, recetas frías, cocidos y guisos. Basada en tablas FODMAP de Monash University.</p>
+    <p style="font-size:12.5px">ZampiFood, versión 3 — adaptada a dieta baja en FODMAP con purés, sopas, caldos, recetas frías, cocidos y guisos. Basada en tablas FODMAP de Monash University.</p>
   </div>`;
 }
 
@@ -867,7 +867,7 @@ function render(){
       ? `<button class="icon-btn" id="back" aria-label="Volver">${I.back}</button>`
       : `<button class="icon-btn" data-go="#/cat/desayunos" aria-label="Ver categorías">${I.grid}</button>`}
     ${view === "home"
-      ? `<div class="brand"><span class="brand-mark">${I.brand}</span><span class="brand-name">RECE<span>TARIO</span></span></div>`
+      ? `<div class="brand"><span class="brand-mark">${I.brand}</span><span class="brand-name">ZAMPI<span>FOOD</span></span></div>`
       : `<div class="topbar-title">${titles[view]}</div>`}
     <button class="icon-btn" id="theme" aria-label="Cambiar tema">${themeIcon()}</button>`;
 
