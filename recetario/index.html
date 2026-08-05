@@ -103,7 +103,7 @@
   .link{font-size:13px;font-weight:700;color:var(--green);flex:none}
 
   /* ---------- featured carousel ---------- */
-  .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 18px 6px;margin:0 -18px;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 18px 6px;margin:0 -18px;scroll-snap-type:x mandatory;scroll-padding-inline:18px;scrollbar-width:none}
   .rail::-webkit-scrollbar{display:none}
   .feat{
     flex:none;width:174px;min-height:186px;border-radius:22px;padding:16px;color:#fff;position:relative;overflow:hidden;
@@ -140,7 +140,15 @@
   .plan-row:active{background:var(--card-2)}
   .plan-row .slot{width:66px;flex:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
   .plan-row .t{flex:1;font-size:13.5px;font-weight:600;line-height:1.3}
+  .plan-row .t em{display:block;font-style:normal;font-size:11.5px;font-weight:700;color:var(--orange);margin-top:2px}
   .plan-row .e{font-size:20px}
+  .plan-total{
+    display:flex;align-items:baseline;gap:8px;margin-top:10px;padding:11px 14px;border-radius:16px;
+    background:var(--green-soft);color:var(--green-ink);
+  }
+  .plan-total span{flex:1;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .plan-total b{font-size:17px;font-weight:800;letter-spacing:-.01em}
+  .plan-total small{font-size:11px;opacity:.75}
 
   /* ---------- categories ---------- */
   .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -165,6 +173,7 @@
   .item h3{font-size:14.5px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
   .item .meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
   .item .meta i{font-style:normal;display:inline-flex;align-items:center;gap:4px}
+  .item .meta .kcal{color:var(--orange);font-weight:700}
   .badge-new{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);background:var(--orange-soft);padding:3px 7px;border-radius:var(--r-full)}
   .item .chev{width:26px;height:26px;flex:none;display:grid;place-items:center;color:var(--ink-2);opacity:.55}
 
@@ -185,6 +194,8 @@
   .stats{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
   .stat{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2)}
   .stat svg{color:var(--orange)}
+  .stat-kcal{color:var(--orange);font-weight:800}
+  .kcal-nota{font-size:11.5px;line-height:1.5;color:var(--ink-2);margin-top:12px}
   .block-title{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:20px 0 10px}
   .ing{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .ing .dotimg{width:38px;height:38px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:17px}
@@ -250,169 +261,311 @@
 <nav class="nav" id="nav" aria-label="Navegación principal"></nav>
 
 <script>
+
 /* ============================ DATOS ============================ */
 const CATS = {
   desayunos:{label:"Desayunos", emoji:"🥣", color:"var(--amber)",  soft:"var(--amber-soft)",  grad:"linear-gradient(150deg,#f7bd52,#ef9412)", desc:"Para empezar el día"},
   tentempies:{label:"Tentempiés", emoji:"🥕", color:"var(--purple)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#8f84f8,#6a5cf0)", desc:"Bocados rápidos"},
   comidas:{label:"Comidas", emoji:"🍽️", color:"var(--green)", soft:"var(--green-soft)", grad:"linear-gradient(150deg,#34c56f,#15954a)", desc:"Platos principales"},
   meriendas:{label:"Meriendas", emoji:"🍎", color:"var(--orange)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#fb923c,#f2700c)", desc:"Dulces y cremosas"},
-  cenas:{label:"Cenas", emoji:"🌙", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#2bb9aa,#0d8d80)", desc:"Ligeras para la noche"}
+  cenas:{label:"Cenas", emoji:"🌙", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#2bb9aa,#0d8d80)", desc:"Ligeras para la noche"},
+  sopas:{label:"Sopas y caldos", emoji:"🍲", color:"var(--amber)", soft:"var(--amber-soft)", grad:"linear-gradient(150deg,#e8a848,#c47a10)", desc:"Reconfortantes y calientes"},
+  pures:{label:"Purés", emoji:"🥣", color:"var(--purple)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#a899f9,#7b6ef6)", desc:"Cremosos y suaves"},
+  frias:{label:"Recetas frías", emoji:"🥒", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#4ec9bc,#0f9d8f)", desc:"Frescas y ligeras"},
+  guisos:{label:"Cocidos y guisos", emoji:"🫕", color:"var(--orange)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#f0854a,#d15e1a)", desc:"Platos de cuchara"}
 };
 
 const R = [
 /* ---- DESAYUNOS ---- */
-{id:"de1",cat:"desayunos",n:1,e:"🍞",t:"Tostadas integrales gratinadas con queso descremado y nueces",
- ing:["Pan integral","Queso descremado o queso light","Nueces","Mermelada, opcional","Pimienta o hierbas"],
+{id:"de1",cat:"desayunos",n:1,kcal:330,e:"🍞",t:"Tostadas integrales gratinadas con queso descremado y nueces",
+ ing:["Pan integral","Queso descremado o queso light","Nueces","Mermelada sin fructosa, opcional","Pimienta o hierbas"],
  prep:["Tuesta el pan hasta que quede firme.","Extiende el queso y añade nueces picadas.","Calienta de nuevo unos minutos para que el queso se funda ligeramente.","Termina con pimienta o hierbas y, si quieres, una capa mínima de mermelada."]},
-{id:"de2",cat:"desayunos",n:2,e:"🥛",t:"Bol cremoso de yogur desnatado con ciruelas pasas, dátiles y pipas",
- ing:["Yogur descremado","Ciruelas pasas","Dátiles","Pipas de girasol sin sal","Albaricoques secos"],
- prep:["Coloca el yogur en un cuenco.","Trocea la fruta seca en piezas pequeñas.","Añádela sobre el yogur y termina con pipas para dar contraste.","Deja reposar unos minutos antes de servir."]},
-{id:"de3",cat:"desayunos",n:3,e:"🧀",t:"Pan integral tibio con queso light, dátiles y pimienta",
- ing:["Pan integral","Queso light","Dátiles","Pimienta"],
- prep:["Tuesta ligeramente el pan para que conserve el centro tierno.","Extiende el queso light sobre la superficie caliente.","Añade los dátiles muy picados.","Remata con un toque de pimienta."]},
-{id:"de4",cat:"desayunos",n:4,e:"🥣",t:"Gachas espesas de cereales con leche desnatada y albaricoques",
- ing:["Cereales","Leche desnatada","Albaricoques secos","Nueces"],
- prep:["Calienta la leche desnatada y añade los cereales hasta obtener una textura espesa.","Trocea los albaricoques y las nueces.","Sirve las gachas y reparte la fruta seca por encima.","Deja reposar un minuto para que tome cuerpo."]},
-{id:"de5",cat:"desayunos",n:5,e:"🍮",t:"Parfait de yogur con nueces, albaricoques y ciruelas",
- ing:["Yogur descremado","Nueces","Albaricoques secos","Ciruelas pasas"],
- prep:["Coloca una base de yogur en un vaso.","Añade una capa de nueces y fruta seca troceada.","Repite otra capa de yogur y termina con más fruta.","Sirve frío para una textura más definida."]},
-{id:"de6",cat:"desayunos",n:6,e:"🍪",t:"Galletas integrales con crema de queso light y mermelada fina",
- ing:["Galletas integrales","Queso light","Mermelada"],
- prep:["Unta el queso light sobre las galletas.","Añade una cantidad pequeña de mermelada encima.","Sirve al momento para mantener el crujiente.","Puedes acompañarlas con leche desnatada o infusión."]},
-{id:"de7",cat:"desayunos",n:7,e:"🍳",nuevo:true,t:"Revuelto de claras con tomate, espinacas y pan integral",
+{id:"de2",cat:"desayunos",n:2,kcal:270,e:"🥛",t:"Bol cremoso de yogur desnatado con fresas, arándanos y pipas",
+ ing:["Yogur descremado sin lactosa","Fresas frescas","Arándanos","Pipas de girasol sin sal","Plátano poco maduro"],
+ prep:["Coloca el yogur en un cuenco.","Trocea las fresas y el plátano en rodajas finas.","Añade los arándanos y termina con pipas para dar contraste.","Deja reposar unos minutos antes de servir."]},
+{id:"de3",cat:"desayunos",n:3,kcal:230,e:"🧀",t:"Pan integral tibio con queso light, fresas y pimienta",
+ ing:["Pan integral","Queso light","Fresas frescas","Pimienta"],
+ prep:["Tuesta ligeramente el pan para que conserve el centro tierno.","Extiende el queso light sobre la superficie caliente.","Añade las fresas troceadas finas.","Remata con un toque de pimienta."]},
+{id:"de4",cat:"desayunos",n:4,kcal:390,e:"🥣",t:"Gachas espesas de avena con leche sin lactosa y arándanos",
+ ing:["Copos de avena","Leche desnatada sin lactosa","Arándanos","Nueces"],
+ prep:["Calienta la leche sin lactosa y añade los copos de avena hasta obtener una textura espesa.","Trocea las nueces.","Sirve las gachas y reparte los arándanos y las nueces por encima.","Deja reposar un minuto para que tome cuerpo."]},
+{id:"de5",cat:"desayunos",n:5,kcal:250,e:"🍮",t:"Parfait de yogur con nueces, fresas y arándanos",
+ ing:["Yogur descremado sin lactosa","Nueces","Fresas frescas","Arándanos"],
+ prep:["Coloca una base de yogur en un vaso.","Añade una capa de nueces y fresas troceadas.","Repite otra capa de yogur y termina con arándanos.","Sirve frío para una textura más definida."]},
+{id:"de6",cat:"desayunos",n:6,kcal:250,e:"🍪",t:"Galletas integrales con crema de queso light y mermelada fina",
+ ing:["Galletas integrales sin trigo (de espelta o avena)","Queso light","Mermelada sin fructosa"],
+ prep:["Unta el queso light sobre las galletas.","Añade una cantidad pequeña de mermelada encima.","Sirve al momento para mantener el crujiente.","Puedes acompañarlas con leche sin lactosa o infusión."]},
+{id:"de7",cat:"desayunos",n:7,kcal:270,e:"🍳",nuevo:true,t:"Revuelto de claras con tomate, espinacas y pan integral",
  ing:["Claras de huevo (2–3)","Tomate fresco","Espinacas frescas","Pan integral","Aceite de oliva, unas gotas","Hierbas y pimienta"],
  prep:["Calienta unas gotas de aceite de oliva en una sartén antiadherente.","Saltea las espinacas brevemente y añade el tomate troceado.","Incorpora las claras y remueve suavemente hasta que cuajen.","Sirve sobre pan integral tostado con hierbas y pimienta."]},
-{id:"de8",cat:"desayunos",n:8,e:"🍏",nuevo:true,t:"Bol de yogur desnatado con fruta fresca y pipas",
- ing:["Yogur descremado","Manzana o pera fresca","Naranja (gajos)","Pipas de girasol sin sal","Nueces"],
- prep:["Sirve el yogur en un cuenco amplio.","Trocea la manzana o pera y pela los gajos de naranja.","Reparte la fruta fresca sobre el yogur.","Termina con pipas y nueces picadas."]},
+{id:"de8",cat:"desayunos",n:8,kcal:350,e:"🥝",nuevo:true,t:"Bol de yogur desnatado con kiwi, fresas y pipas",
+ ing:["Yogur descremado sin lactosa","Kiwi verde","Fresas frescas","Naranja (gajos)","Pipas de girasol sin sal","Nueces"],
+ prep:["Sirve el yogur en un cuenco amplio.","Pela y trocea el kiwi, las fresas y los gajos de naranja.","Reparte la fruta fresca sobre el yogur.","Termina con pipas y nueces picadas."]},
+{id:"de9",cat:"desayunos",n:9,kcal:280,e:"🍌",nuevo:true,t:"Tortitas de plátano poco maduro con arándanos y canela",
+ ing:["Plátano poco maduro (1)","Claras de huevo (2)","Copos de avena (2 cucharadas)","Arándanos","Canela","Aceite de oliva, unas gotas"],
+ prep:["Machaca el plátano y mezcla con las claras y los copos de avena hasta hacer una masa.","Calienta una sartén antiadherente con unas gotas de aceite.","Vierte porciones pequeñas y cocina a fuego medio hasta dorar por ambos lados.","Sirve con arándanos por encima y un toque de canela."]},
+{id:"de10",cat:"desayunos",n:10,kcal:190,e:"🥤",nuevo:true,t:"Smoothie de kiwi, piña y espinacas",
+ ing:["Kiwi verde (1)","Piña fresca (2 rodajas)","Espinacas frescas (un puñado)","Leche sin lactosa o agua de coco","Zumo de limón"],
+ prep:["Pela el kiwi y trocea la piña.","Añade todo a la batidora junto con las espinacas, la leche sin lactosa y unas gotas de limón.","Bate hasta obtener una textura suave.","Sirve frío al momento."]},
 
 /* ---- TENTEMPIÉS ---- */
-{id:"te1",cat:"tentempies",n:1,e:"🥪",t:"Mini sándwich integral de salmón ahumado y mostaza",
+{id:"te1",cat:"tentempies",n:1,kcal:220,e:"🥪",t:"Mini sándwich integral de salmón ahumado y mostaza",
  ing:["Pan integral","Salmón ahumado","Mostaza","Hierbas"],
  prep:["Corta el pan en porciones pequeñas.","Unta una capa fina de mostaza.","Coloca el salmón doblado y termina con hierbas.","Cierra o sirve abierto."]},
-{id:"te2",cat:"tentempies",n:2,e:"🥛",t:"Leche desnatada con galletas integrales y crema rápida de queso light",
- ing:["Leche desnatada","Galletas integrales","Queso light","Mermelada, opcional"],
- prep:["Sirve la leche fría o templada.","Mezcla el queso light con una pequeña cantidad de mermelada.","Unta la crema sobre las galletas.","Acompaña con la leche desnatada."]},
-{id:"te3",cat:"tentempies",n:3,e:"🐟",t:"Rollitos de salmón ahumado rellenos de queso descremado y hierbas",
+{id:"te2",cat:"tentempies",n:2,kcal:270,e:"🥛",t:"Leche sin lactosa con galletas integrales y crema rápida de queso light",
+ ing:["Leche desnatada sin lactosa","Galletas integrales","Queso light","Mermelada sin fructosa, opcional"],
+ prep:["Sirve la leche fría o templada.","Mezcla el queso light con una pequeña cantidad de mermelada.","Unta la crema sobre las galletas.","Acompaña con la leche sin lactosa."]},
+{id:"te3",cat:"tentempies",n:3,kcal:170,e:"🐟",t:"Rollitos de salmón ahumado rellenos de queso descremado y hierbas",
  ing:["Salmón ahumado","Queso descremado","Hierbas","Pimienta"],
  prep:["Extiende las lonchas de salmón.","Coloca una pequeña porción de queso en cada una.","Añade hierbas y pimienta.","Enrolla con cuidado y sirve frío."]},
-{id:"te4",cat:"tentempies",n:4,e:"🥜",t:"Barquitas de galleta integral con queso light y nueces",
- ing:["Galletas integrales","Queso light","Nueces","Mermelada, opcional"],
+{id:"te4",cat:"tentempies",n:4,kcal:290,e:"🥜",t:"Barquitas de galleta integral con queso light y nueces",
+ ing:["Galletas integrales","Queso light","Nueces","Mermelada sin fructosa, opcional"],
  prep:["Unta queso light sobre cada galleta.","Añade nueces picadas.","Incorpora una mínima cantidad de mermelada si quieres una versión más dulce.","Sirve enseguida."]},
-{id:"te5",cat:"tentempies",n:5,e:"🧀",t:"Tacos de queso descremado con dátiles y pipas",
- ing:["Queso descremado","Dátiles","Pipas de girasol sin sal"],
- prep:["Corta el queso en porciones pequeñas.","Coloca encima dátiles muy picados.","Termina con pipas para dar un punto crujiente.","Sírvelo como bocado frío."]},
-{id:"te6",cat:"tentempies",n:6,e:"🥫",t:"Pan integral con atún templado y pimienta",
+{id:"te5",cat:"tentempies",n:5,kcal:235,e:"🧀",t:"Tacos de queso descremado con plátano y pipas",
+ ing:["Queso descremado","Plátano poco maduro","Pipas de girasol sin sal"],
+ prep:["Corta el queso en porciones pequeñas.","Coloca encima rodajas finas de plátano poco maduro.","Termina con pipas para dar un punto crujiente.","Sírvelo como bocado frío."]},
+{id:"te6",cat:"tentempies",n:6,kcal:270,e:"🥫",t:"Pan integral con atún templado y pimienta",
  ing:["Pan integral","Atún en lata","Aceite de oliva","Pimienta","Hierbas"],
  prep:["Tuesta el pan.","Templa ligeramente el atún con unas gotas de aceite.","Reparte sobre el pan y añade pimienta y hierbas.","Sirve de inmediato."]},
-{id:"te7",cat:"tentempies",n:7,e:"🥕",nuevo:true,t:"Bastones de zanahoria y pepino con queso light y hierbas",
+{id:"te7",cat:"tentempies",n:7,kcal:120,e:"🥕",nuevo:true,t:"Bastones de zanahoria y pepino con queso light y hierbas",
  ing:["Zanahoria","Pepino","Queso light","Hierbas","Pimienta"],
  prep:["Pela y corta la zanahoria y el pepino en bastones finos.","Mezcla el queso light con hierbas y pimienta hasta formar una crema.","Usa la crema como dip para los bastones.","Sirve frío como picoteo ligero."]},
-{id:"te8",cat:"tentempies",n:8,e:"🍐",nuevo:true,t:"Fruta fresca de temporada con nueces",
- ing:["Manzana, pera o naranja","Nueces","Pipas de girasol sin sal, opcional"],
+{id:"te8",cat:"tentempies",n:8,kcal:190,e:"🥝",nuevo:true,t:"Fruta fresca de temporada con nueces",
+ ing:["Kiwi, fresas o naranja","Nueces","Pipas de girasol sin sal, opcional"],
  prep:["Lava y trocea la fruta en porciones cómodas.","Acompaña con un puñado pequeño de nueces.","Añade pipas si deseas más variedad de textura.","Ideal para llevar fuera de casa."]},
+{id:"te9",cat:"tentempies",n:9,kcal:155,e:"🍅",nuevo:true,t:"Brochetas de tomate cherry, aceitunas y queso light",
+ ing:["Tomates cherry","Aceitunas verdes o negras","Queso light en dados","Hierbas secas (orégano)","Aceite de oliva, unas gotas"],
+ prep:["Ensarta en palillos alternando tomate cherry, aceituna y dado de queso.","Aliña ligeramente con aceite de oliva y orégano.","Sirve frío como picoteo rápido.","Ideal como tentempié para llevar."]},
+{id:"te10",cat:"tentempies",n:10,kcal:170,e:"🥒",nuevo:true,t:"Rollitos de pepino rellenos de atún y queso light",
+ ing:["Pepino grande","Atún en lata","Queso light","Pimienta","Hierbas"],
+ prep:["Corta el pepino en láminas finas con un pelador o mandolina.","Mezcla el atún escurrido con el queso light, pimienta y hierbas.","Coloca una cucharadita de relleno en cada lámina de pepino.","Enrolla y sirve frío, sujeto con un palillo si es necesario."]},
 
 /* ---- COMIDAS ---- */
-{id:"co1",cat:"comidas",n:1,e:"🍚",t:"Arroz integral meloso con atún, queso light, tomate y hierbas",
- ing:["Arroz integral","Atún en lata","Queso light o descremado","Tomate fresco","Cebolla","Aceite de oliva","Hierbas y pimienta","Sofrito, moderado"],
- prep:["Cuece el arroz integral hasta que quede tierno.","Calienta un poco de aceite con cebolla picada y una pequeña cantidad de sofrito.","Añade el tomate troceado y cocina unos minutos.","Incorpora el atún y mezcla con el arroz.","Añade el queso para obtener una textura melosa y termina con pimienta y hierbas."]},
-{id:"co2",cat:"comidas",n:2,e:"🍝",t:"Pasta templada con salmón ahumado, mostaza, espinacas y queso descremado",
- ing:["Pasta","Salmón ahumado","Espinacas frescas","Mostaza","Queso descremado","Aceite de oliva","Hierbas y pimienta"],
+{id:"co1",cat:"comidas",n:1,kcal:540,e:"🍚",t:"Arroz integral meloso con atún, queso light, tomate y hierbas",
+ ing:["Arroz integral","Atún en lata","Queso light o descremado","Tomate fresco","Tallo verde de cebolleta","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece el arroz integral hasta que quede tierno.","Calienta un poco de aceite con el tallo verde de cebolleta picado.","Añade el tomate troceado y cocina unos minutos.","Incorpora el atún y mezcla con el arroz.","Añade el queso para obtener una textura melosa y termina con pimienta y hierbas."]},
+{id:"co2",cat:"comidas",n:2,kcal:540,e:"🍝",t:"Pasta templada con salmón ahumado, mostaza, espinacas y queso descremado",
+ ing:["Pasta sin gluten o de espelta","Salmón ahumado","Espinacas frescas","Mostaza","Queso descremado","Aceite de oliva","Hierbas y pimienta"],
  prep:["Hierve la pasta y resérvala con un poco de agua de cocción.","Saltea las espinacas brevemente con unas gotas de aceite.","Mezcla la mostaza con el queso y unas gotas de aceite.","Integra la pasta con la salsa y las espinacas.","Añade el salmón al final para mantener la textura."]},
-{id:"co3",cat:"comidas",n:3,e:"🦪",t:"Arroz de marisco bivalvo con pimiento y sofrito suave",
- ing:["Arroz integral","Mejillones, almejas, chirlas u ostras","Pimiento rojo o verde","Sofrito","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
- prep:["Haz primero el arroz integral hasta dejarlo casi en su punto.","Calienta aceite con pimiento troceado y una pequeña base de sofrito.","Añade el marisco bivalvo y cocina hasta que se integre.","Une el arroz y deja unos minutos para que absorba los aromas.","Sirve con pimienta y hierbas."]},
-{id:"co4",cat:"comidas",n:4,e:"🦃",t:"Pavo a la plancha con ensalada templada de pasta, mostaza y hierbas",
+{id:"co3",cat:"comidas",n:3,kcal:480,e:"🦪",t:"Arroz de marisco bivalvo con pimiento y aceite de hierbas",
+ ing:["Arroz integral","Mejillones, almejas, chirlas u ostras","Pimiento rojo o verde","Aceite de oliva infusionado con hierbas","Pimienta y sal con moderación"],
+ prep:["Haz primero el arroz integral hasta dejarlo casi en su punto.","Calienta aceite de oliva con pimiento troceado.","Añade el marisco bivalvo y cocina hasta que se abra.","Une el arroz y deja unos minutos para que absorba los aromas.","Sirve con pimienta y hierbas frescas."]},
+{id:"co4",cat:"comidas",n:4,kcal:610,e:"🦃",t:"Pavo a la plancha con ensalada templada de pasta, mostaza y hierbas",
  ing:["Pavo (máx. 200 g)","Pasta","Lechuga y tomate","Mostaza","Aceite de oliva","Hierbas y pimienta"],
  prep:["Cocina la pasta, escúrrela y déjala templar.","Haz el pavo a la plancha con poco aceite.","Mezcla la pasta con lechuga troceada, tomate, mostaza, aceite y hierbas.","Sirve el pavo fileteado sobre la ensalada de pasta."]},
-{id:"co5",cat:"comidas",n:5,e:"🍗",t:"Pollo a la plancha con arroz integral y calabacín salteado",
+{id:"co5",cat:"comidas",n:5,kcal:700,e:"🍗",t:"Pollo a la plancha con arroz integral y calabacín salteado",
  ing:["Pollo (máx. 200 g)","Arroz integral","Calabacín","Aceite de oliva","Hierbas, pimienta y mostaza"],
  prep:["Cuece el arroz integral hasta que quede suelto.","Corta el calabacín en rodajas finas y saltéalo con unas gotas de aceite.","Haz el pollo a la plancha con poco aceite.","Mezcla el arroz con hierbas, pimienta y una mínima cantidad de mostaza.","Sirve el pollo fileteado sobre el arroz con el calabacín al lado."]},
-{id:"co6",cat:"comidas",n:6,e:"🌽",t:"Conejo dorado con maíz, judías verdes y hierbas",
- ing:["Conejo (máx. 200 g)","Maíz","Judías verdes","Aceite de oliva","Hierbas y pimienta"],
- prep:["Dora el conejo a la plancha o a la brasa con una capa ligera de aceite.","Cuece las judías verdes al vapor o hervidas.","Saltea el maíz aparte con unas gotas de aceite.","Condimenta todo con hierbas y pimienta.","Emplata las judías y el maíz como base y el conejo por encima."]},
-{id:"co7",cat:"comidas",n:7,e:"🍅",t:"Pasta con atún, sofrito suave, tomate y queso descremado",
- ing:["Pasta","Atún en lata","Tomate fresco","Sofrito","Queso descremado","Aceite de oliva y hierbas"],
- prep:["Cuece la pasta y reserva un poco de agua.","Calienta el sofrito con unas gotas de aceite y añade el tomate troceado.","Incorpora el atún y después la pasta.","Termina con queso descremado y hierbas."]},
-{id:"co8",cat:"comidas",n:8,e:"🐠",t:"Pescado azul a la plancha con ensalada fresca y mostaza",
+{id:"co6",cat:"comidas",n:6,kcal:590,e:"🥕",t:"Conejo dorado con patata, judías verdes y hierbas",
+ ing:["Conejo (máx. 200 g)","Patata","Judías verdes","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Dora el conejo a la plancha o a la brasa con una capa ligera de aceite.","Cuece las judías verdes al vapor o hervidas.","Cuece la patata aparte y córtala en rodajas.","Condimenta todo con hierbas y pimienta.","Emplata las judías y la patata como base y el conejo por encima."]},
+{id:"co7",cat:"comidas",n:7,kcal:600,e:"🍅",t:"Pasta con atún, tomate fresco, aceitunas y queso descremado",
+ ing:["Pasta","Atún en lata","Tomate fresco","Aceitunas verdes o negras","Queso descremado","Aceite de oliva y hierbas"],
+ prep:["Cuece la pasta y reserva un poco de agua.","Calienta aceite de oliva y añade el tomate troceado.","Incorpora el atún, las aceitunas y después la pasta.","Termina con queso descremado y hierbas."]},
+{id:"co8",cat:"comidas",n:8,kcal:430,e:"🐠",t:"Pescado azul a la plancha con ensalada fresca y mostaza",
  ing:["Pescado azul (sardina, trucha, caballa…)","Lechuga","Tomate","Pepino","Aceite de oliva","Mostaza, hierbas y pimienta"],
  prep:["Haz el pescado azul a la plancha con poco aceite.","Prepara una ensalada con lechuga, tomate y pepino.","Aliña la ensalada con aceite de oliva, mostaza, hierbas y pimienta.","Sirve el pescado junto a la ensalada."]},
-{id:"co9",cat:"comidas",n:9,e:"🌶️",t:"Pescado blanco con maíz templado, pimiento y alioli moderado",
- ing:["Pescado blanco","Maíz","Pimiento","Alioli, poca cantidad","Hierbas, pimienta y aceite de oliva"],
- prep:["Haz el pescado blanco a la plancha con muy poco aceite.","Saltea el maíz con pimiento troceado como guarnición.","Añade una pequeña cantidad de alioli para dar intensidad.","Termina con hierbas y pimienta."]},
-{id:"co10",cat:"comidas",n:10,e:"🥖",t:"Pan tostado con conejo desmenuzado, lechuga y mostaza ligera",
+{id:"co9",cat:"comidas",n:9,kcal:470,e:"🌶️",t:"Pescado blanco con patata, pimiento y mayonesa sin ajo",
+ ing:["Pescado blanco","Patata","Pimiento rojo","Mayonesa sin ajo, poca cantidad","Hierbas, pimienta y aceite de oliva"],
+ prep:["Haz el pescado blanco a la plancha con muy poco aceite.","Cuece la patata y saltea el pimiento troceado como guarnición.","Añade una pequeña cantidad de mayonesa sin ajo para dar intensidad.","Termina con hierbas y pimienta."]},
+{id:"co10",cat:"comidas",n:10,kcal:560,e:"🥖",t:"Pan tostado con conejo desmenuzado, lechuga y mostaza ligera",
  ing:["Conejo (máx. 200 g)","Pan integral","Lechuga","Tomate","Mostaza","Aceite de oliva y hierbas"],
  prep:["Cocina el conejo y desmenúzalo en trozos pequeños.","Tuesta el pan integral.","Mezcla el conejo con una pequeña cantidad de mostaza y hierbas.","Sirve la mezcla sobre el pan con lechuga y rodajas de tomate."]},
-{id:"co11",cat:"comidas",n:11,e:"🍳",nuevo:true,t:"Tortilla de claras con calabacín, cebolla y queso light",
- ing:["Claras de huevo (3–4)","Calabacín","Cebolla","Queso light","Aceite de oliva, unas gotas","Hierbas y pimienta"],
- prep:["Corta el calabacín y la cebolla en trozos pequeños y saltéalos con unas gotas de aceite.","Bate las claras con hierbas y pimienta.","Vierte las claras sobre las verduras y cocina a fuego medio.","Cuando cuaje, añade el queso light rallado, dobla y sirve.","Acompaña con pan integral tostado o ensalada."]},
-{id:"co12",cat:"comidas",n:12,e:"🥗",nuevo:true,t:"Ensalada completa de pasta con atún, tomate, pepino y aceitunas",
- ing:["Pasta","Atún en lata","Tomate","Pepino","Cebolla","Aceite de oliva","Hierbas y pimienta"],
- prep:["Cuece la pasta y déjala enfriar.","Trocea el tomate, pepino y cebolla.","Mezcla todo con el atún escurrido.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve frío como plato único."]},
-{id:"co13",cat:"comidas",n:13,e:"🐟",nuevo:true,t:"Pescado blanco al horno con cama de verduras",
- ing:["Pescado blanco","Calabacín","Pimiento","Cebolla","Tomate","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+{id:"co11",cat:"comidas",n:11,kcal:200,e:"🍳",nuevo:true,t:"Tortilla de claras con calabacín, cebolleta y queso light",
+ ing:["Claras de huevo (3–4)","Calabacín","Tallo verde de cebolleta","Queso light","Aceite de oliva, unas gotas","Hierbas y pimienta"],
+ prep:["Corta el calabacín y el tallo verde de cebolleta en trozos pequeños y saltéalos con unas gotas de aceite.","Bate las claras con hierbas y pimienta.","Vierte las claras sobre las verduras y cocina a fuego medio.","Cuando cuaje, añade el queso light rallado, dobla y sirve.","Acompaña con pan integral tostado o ensalada."]},
+{id:"co12",cat:"comidas",n:12,kcal:520,e:"🥗",nuevo:true,t:"Ensalada completa de pasta con atún, tomate, pepino y aceitunas",
+ ing:["Pasta","Atún en lata","Tomate","Pepino","Tallo verde de cebolleta","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece la pasta y déjala enfriar.","Trocea el tomate, pepino y el tallo verde de cebolleta.","Mezcla todo con el atún escurrido.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve frío como plato único."]},
+{id:"co13",cat:"comidas",n:13,kcal:330,e:"🐟",nuevo:true,t:"Pescado blanco al horno con cama de verduras bajas en FODMAP",
+ ing:["Pescado blanco","Calabacín","Pimiento rojo","Tallo verde de cebolleta","Tomate","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
  prep:["Corta todas las verduras en rodajas o tiras y distribúyelas en una fuente de horno.","Aliña las verduras con unas gotas de aceite, hierbas y pimienta.","Coloca el pescado encima.","Hornea a 180 °C unos 20–25 minutos hasta que el pescado esté en su punto.","Sirve directamente de la fuente."]},
-{id:"co14",cat:"comidas",n:14,e:"🥬",nuevo:true,t:"Revuelto de claras con salmón ahumado, espinacas y arroz integral",
+{id:"co14",cat:"comidas",n:14,kcal:430,e:"🥬",nuevo:true,t:"Revuelto de claras con salmón ahumado, espinacas y arroz integral",
  ing:["Claras de huevo (3)","Salmón ahumado","Espinacas frescas","Arroz integral","Aceite de oliva, unas gotas","Pimienta y hierbas"],
  prep:["Cuece el arroz integral y resérvalo.","Saltea las espinacas brevemente con unas gotas de aceite.","Añade las claras y remueve hasta que cuajen.","Incorpora el salmón ahumado en tiras al final, fuera del fuego.","Sirve el revuelto sobre el arroz con pimienta y hierbas."]},
+{id:"co15",cat:"comidas",n:15,kcal:420,e:"🍆",nuevo:true,t:"Berenjenas rellenas de arroz integral, tomate y queso light",
+ ing:["Berenjenas (2)","Arroz integral cocido","Tomate fresco","Queso light rallado","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+ prep:["Corta las berenjenas por la mitad y vacía parte de la pulpa.","Mezcla la pulpa troceada con arroz integral cocido, tomate picado y hierbas.","Rellena las berenjenas con la mezcla.","Cubre con queso light rallado y hornea a 180 °C unos 20 minutos.","Sirve caliente con un hilo de aceite de oliva."]},
+{id:"co16",cat:"comidas",n:16,kcal:740,e:"🥦",nuevo:true,t:"Salteado de pollo con brócoli, zanahoria y arroz integral",
+ ing:["Pollo (máx. 200 g)","Brócoli","Zanahoria","Arroz integral","Aceite de oliva","Jengibre fresco rallado","Pimienta y hierbas"],
+ prep:["Cuece el arroz integral y resérvalo.","Corta el pollo en tiras y saltéalo con unas gotas de aceite y jengibre rallado.","Añade el brócoli en ramilletes y la zanahoria en rodajas finas.","Cocina a fuego fuerte 4–5 minutos removiendo.","Sirve sobre el arroz con pimienta y hierbas."]},
+{id:"co17",cat:"comidas",n:17,kcal:470,e:"🍝",nuevo:true,t:"Pasta con berenjenas, tomate y aceitunas",
+ ing:["Pasta","Berenjena","Tomate fresco","Aceitunas negras","Aceite de oliva","Albahaca fresca y pimienta"],
+ prep:["Cuece la pasta al dente.","Corta la berenjena en dados y saltéala con aceite hasta que esté dorada.","Añade el tomate troceado y las aceitunas.","Mezcla con la pasta y termina con albahaca fresca y pimienta."]},
+{id:"co18",cat:"comidas",n:18,kcal:390,e:"🍠",nuevo:true,t:"Boniato asado relleno de atún, pimiento y queso light",
+ ing:["Boniato (1 mediano)","Atún en lata","Pimiento rojo","Queso light","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Hornea el boniato entero a 200 °C durante 40–45 minutos hasta que esté tierno.","Mezcla el atún escurrido con pimiento troceado, hierbas y pimienta.","Abre el boniato por la mitad y rellena con la mezcla.","Cubre con queso light y gratina unos minutos.","Sirve caliente."]},
 
 /* ---- MERIENDAS ---- */
-{id:"me1",cat:"meriendas",n:1,e:"🍮",t:"Flan sin huevo con mermelada y nueces",
- ing:["Flan sin huevo","Mermelada","Nueces"],
+{id:"me1",cat:"meriendas",n:1,kcal:265,e:"🍮",t:"Flan sin huevo con mermelada y nueces",
+ ing:["Flan sin huevo","Mermelada sin fructosa","Nueces"],
  prep:["Sirve el flan bien frío.","Añade una pequeña cucharada de mermelada.","Trocea las nueces y espárcelas al final."]},
-{id:"me2",cat:"meriendas",n:2,e:"🥄",t:"Yogur desnatado montado con albaricoques y frutos secos",
- ing:["Yogur descremado","Albaricoques secos","Ciruelas pasas","Pipas de girasol sin sal","Dátiles"],
- prep:["Bate ligeramente el yogur.","Trocea la fruta seca.","Reparte encima la mezcla y termina con pipas.","Sírvelo al momento o deja que repose."]},
-{id:"me3",cat:"meriendas",n:3,e:"🍯",t:"Tostaditas integrales con mermelada, queso light y pipas",
- ing:["Pan integral","Mermelada","Queso light","Pipas de girasol sin sal"],
+{id:"me2",cat:"meriendas",n:2,kcal:270,e:"🥄",t:"Yogur desnatado montado con fresas, arándanos y pipas",
+ ing:["Yogur descremado sin lactosa","Fresas frescas","Arándanos","Pipas de girasol sin sal","Plátano poco maduro"],
+ prep:["Bate ligeramente el yogur.","Trocea las fresas y el plátano.","Reparte encima la fruta y termina con pipas y arándanos.","Sírvelo al momento o deja que repose."]},
+{id:"me3",cat:"meriendas",n:3,kcal:240,e:"🍯",t:"Tostaditas integrales con mermelada, queso light y pipas",
+ ing:["Pan integral","Mermelada sin fructosa","Queso light","Pipas de girasol sin sal"],
  prep:["Tuesta el pan y córtalo en piezas pequeñas.","Extiende primero una capa fina de queso.","Añade un punto de mermelada encima.","Finaliza con pipas."]},
-{id:"me4",cat:"meriendas",n:4,e:"🥛",t:"Copa de leche desnatada con galletas integrales desmigadas y dátiles",
- ing:["Leche desnatada","Galletas integrales","Dátiles","Nueces"],
- prep:["Sirve la leche en un vaso o cuenco.","Desmenuza ligeramente las galletas por encima.","Añade dátiles picados y nueces.","Tómalo al momento o deja que se ablande un poco."]},
-{id:"me5",cat:"meriendas",n:5,e:"🧀",t:"Queso light batido con mermelada y albaricoques",
- ing:["Queso light","Mermelada","Albaricoques secos"],
- prep:["Bate el queso light hasta que quede más cremoso.","Añade una pequeña cantidad de mermelada.","Termina con albaricoques secos troceados.","Sirve frío."]},
-{id:"me6",cat:"meriendas",n:6,e:"🫐",t:"Yogur con nueces, mermelada fina y ciruelas",
- ing:["Yogur descremado","Nueces","Mermelada","Ciruelas pasas"],
- prep:["Sirve el yogur en un vaso.","Añade una pequeña veta de mermelada.","Incorpora nueces y ciruelas troceadas.","Mezcla ligeramente solo al final."]},
-{id:"me7",cat:"meriendas",n:7,e:"🍊",nuevo:true,t:"Macedonia de frutas frescas con zumo de naranja",
- ing:["Manzana","Pera","Naranja","Zumo de naranja natural"],
- prep:["Pela y trocea la manzana, la pera y la naranja en dados.","Mezcla en un cuenco y riega con zumo de naranja natural.","Deja reposar unos minutos en frío para que los sabores se integren.","Sirve sola o con un par de nueces picadas por encima."]},
-{id:"me8",cat:"meriendas",n:8,e:"🍎",nuevo:true,t:"Yogur desnatado con manzana rallada, nueces y canela",
- ing:["Yogur descremado","Manzana","Nueces","Canela (hierba/especia)"],
- prep:["Ralla la manzana directamente sobre el yogur.","Añade nueces picadas.","Espolvorea un toque de canela.","Mezcla ligeramente y sirve al momento."]},
+{id:"me4",cat:"meriendas",n:4,kcal:380,e:"🥛",t:"Copa de leche sin lactosa con galletas integrales y plátano",
+ ing:["Leche desnatada sin lactosa","Galletas integrales","Plátano poco maduro","Nueces"],
+ prep:["Sirve la leche en un vaso o cuenco.","Desmenuza ligeramente las galletas por encima.","Añade rodajas de plátano poco maduro y nueces.","Tómalo al momento o deja que se ablande un poco."]},
+{id:"me5",cat:"meriendas",n:5,kcal:140,e:"🧀",t:"Queso light batido con mermelada y arándanos",
+ ing:["Queso light","Mermelada sin fructosa","Arándanos"],
+ prep:["Bate el queso light hasta que quede más cremoso.","Añade una pequeña cantidad de mermelada.","Termina con arándanos.","Sirve frío."]},
+{id:"me6",cat:"meriendas",n:6,kcal:220,e:"🫐",t:"Yogur con nueces, mermelada fina y frambuesas",
+ ing:["Yogur descremado sin lactosa","Nueces","Mermelada sin fructosa","Frambuesas"],
+ prep:["Sirve el yogur en un vaso.","Añade una pequeña veta de mermelada.","Incorpora nueces y frambuesas.","Mezcla ligeramente solo al final."]},
+{id:"me7",cat:"meriendas",n:7,kcal:250,e:"🍊",nuevo:true,t:"Macedonia de frutas bajas en FODMAP con zumo de naranja",
+ ing:["Kiwi verde","Fresas","Naranja","Piña (2 rodajas)","Zumo de naranja natural"],
+ prep:["Pela y trocea el kiwi, las fresas, la naranja y la piña en dados.","Mezcla en un cuenco y riega con zumo de naranja natural.","Deja reposar unos minutos en frío para que los sabores se integren.","Sirve sola o con un par de nueces picadas por encima."]},
+{id:"me8",cat:"meriendas",n:8,kcal:205,e:"🥝",nuevo:true,t:"Yogur desnatado con kiwi rallado, nueces y canela",
+ ing:["Yogur descremado sin lactosa","Kiwi verde","Nueces","Canela"],
+ prep:["Ralla o trocea el kiwi directamente sobre el yogur.","Añade nueces picadas.","Espolvorea un toque de canela.","Mezcla ligeramente y sirve al momento."]},
+{id:"me9",cat:"meriendas",n:9,kcal:225,e:"🍓",nuevo:true,t:"Bol de fresas con yogur desnatado, nueces y coco rallado",
+ ing:["Fresas frescas","Yogur descremado sin lactosa","Nueces","Coco rallado (1 cucharada)"],
+ prep:["Lava y trocea las fresas en un cuenco.","Añade el yogur por encima.","Esparce las nueces picadas y el coco rallado.","Sirve frío como merienda ligera."]},
+{id:"me10",cat:"meriendas",n:10,kcal:225,e:"🍌",nuevo:true,t:"Batido de plátano poco maduro con leche sin lactosa y canela",
+ ing:["Plátano poco maduro (1)","Leche desnatada sin lactosa","Canela","Nueces picadas, opcional"],
+ prep:["Pela el plátano y bátelo con la leche sin lactosa.","Añade un toque de canela durante el batido.","Sirve frío en un vaso.","Puedes añadir nueces picadas por encima para más textura."]},
 
 /* ---- CENAS ---- */
-{id:"ce1",cat:"cenas",n:1,e:"🐟",t:"Pescado blanco a la plancha con arroz aromático y ensalada verde",
+{id:"ce1",cat:"cenas",n:1,kcal:490,e:"🐟",t:"Pescado blanco a la plancha con arroz aromático y ensalada verde",
  ing:["Pescado blanco","Arroz integral","Lechuga y pepino","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
  prep:["Cuece el arroz integral.","Haz el pescado a la plancha con poco aceite.","Prepara una ensalada sencilla con lechuga y pepino.","Aliña el arroz con hierbas, pimienta y unas gotas de aceite.","Sirve el pescado junto al arroz y la ensalada."]},
-{id:"ce2",cat:"cenas",n:2,e:"🥒",t:"Pescado azul con calabacín a la plancha y alioli moderado",
- ing:["Pescado azul","Calabacín","Alioli, poca cantidad","Hierbas, pimienta y aceite de oliva"],
- prep:["Cocina el pescado azul a la plancha o a la brasa.","Corta el calabacín en rodajas y hazlo a la plancha junto al pescado.","Añade una pequeña cantidad de alioli.","Termina con hierbas y pimienta."]},
-{id:"ce3",cat:"cenas",n:3,e:"🔥",t:"Conejo a la brasa con pan integral tostado, tomate y hierbas",
+{id:"ce2",cat:"cenas",n:2,kcal:420,e:"🥒",t:"Pescado azul con calabacín a la plancha y hierbas",
+ ing:["Pescado azul","Calabacín","Aceite de oliva","Hierbas, pimienta y zumo de limón"],
+ prep:["Cocina el pescado azul a la plancha o a la brasa.","Corta el calabacín en rodajas y hazlo a la plancha junto al pescado.","Aliña con zumo de limón, hierbas y pimienta.","Sirve con un hilo de aceite de oliva."]},
+{id:"ce3",cat:"cenas",n:3,kcal:560,e:"🔥",t:"Conejo a la brasa con pan integral tostado, tomate y hierbas",
  ing:["Conejo (máx. 200 g)","Pan integral","Tomate fresco","Aceite de oliva","Hierbas y pimienta"],
  prep:["Cocina el conejo a la brasa o a la plancha.","Tuesta el pan integral y coloca rodajas de tomate encima.","Adereza el conejo con hierbas y pimienta al final.","Sirve con el pan tostado con tomate."]},
-{id:"ce4",cat:"cenas",n:4,e:"🥫",t:"Atún templado con maíz, tomate cherry y mostaza suave",
- ing:["Atún en lata","Maíz","Tomate","Mostaza","Hierbas, aceite de oliva y pimienta"],
- prep:["Templa el maíz con unas gotas de aceite y el tomate troceado.","Añade el atún al final para que solo tome temperatura.","Integra una pequeña cantidad de mostaza.","Finaliza con hierbas y pimienta."]},
-{id:"ce5",cat:"cenas",n:5,e:"🍣",t:"Salmón ahumado templado con arroz integral, espinacas y hierbas",
+{id:"ce4",cat:"cenas",n:4,kcal:380,e:"🥫",t:"Atún templado con patata, tomate cherry y mostaza suave",
+ ing:["Atún en lata","Patata cocida","Tomate cherry","Mostaza","Hierbas, aceite de oliva y pimienta"],
+ prep:["Cuece la patata y córtala en rodajas.","Templa la patata con unas gotas de aceite y el tomate troceado.","Añade el atún al final para que solo tome temperatura.","Integra una pequeña cantidad de mostaza.","Finaliza con hierbas y pimienta."]},
+{id:"ce5",cat:"cenas",n:5,kcal:425,e:"🍣",t:"Salmón ahumado templado con arroz integral, espinacas y hierbas",
  ing:["Salmón ahumado","Arroz integral","Espinacas frescas","Aceite de oliva","Hierbas y pimienta"],
  prep:["Cuece el arroz integral y mantenlo caliente.","Saltea las espinacas brevemente con unas gotas de aceite.","Mezcla el arroz con las espinacas, hierbas y pimienta.","Templa muy ligeramente el salmón y colócalo encima."]},
-{id:"ce6",cat:"cenas",n:6,e:"🦐",t:"Marisco bivalvo salteado con maíz, pimiento y sofrito",
- ing:["Mejillones, almejas, chirlas u ostras","Maíz","Pimiento","Sofrito","Aceite de oliva, hierbas y pimienta"],
- prep:["Calienta el sofrito con unas gotas de aceite y el pimiento troceado.","Incorpora el marisco bivalvo y cocina bien.","Añade el maíz para que absorba parte del sabor.","Termina con hierbas y pimienta."]},
-{id:"ce7",cat:"cenas",n:7,e:"🥬",t:"Pavo fileteado con ensalada de lechuga, tomate, pepino y mostaza",
+{id:"ce6",cat:"cenas",n:6,kcal:380,e:"🦐",t:"Marisco bivalvo salteado con patata, pimiento y hierbas",
+ ing:["Mejillones, almejas, chirlas u ostras","Patata cocida","Pimiento rojo","Aceite de oliva infusionado con hierbas","Pimienta"],
+ prep:["Cuece la patata y córtala en dados.","Calienta aceite de oliva infusionado con el pimiento troceado.","Incorpora el marisco bivalvo y cocina bien.","Añade la patata para que absorba parte del sabor.","Termina con hierbas y pimienta."]},
+{id:"ce7",cat:"cenas",n:7,kcal:405,e:"🥬",t:"Pavo fileteado con ensalada de lechuga, tomate, pepino y mostaza",
  ing:["Pavo (máx. 200 g)","Lechuga","Tomate","Pepino","Mostaza","Aceite de oliva y pimienta"],
  prep:["Haz el pavo a la plancha con muy poco aceite.","Prepara una ensalada con lechuga, tomate y pepino.","Aliña la ensalada con aceite, mostaza y pimienta.","Sirve el pavo cortado en tiras junto a la ensalada."]},
-{id:"ce8",cat:"cenas",n:8,e:"🥕",t:"Pescado blanco con crema ligera de queso descremado, zanahoria y hierbas",
+{id:"ce8",cat:"cenas",n:8,kcal:315,e:"🥕",t:"Pescado blanco con crema ligera de queso descremado, zanahoria y hierbas",
  ing:["Pescado blanco","Queso descremado","Zanahoria","Hierbas, pimienta y aceite de oliva"],
  prep:["Cocina el pescado blanco a la plancha con una mínima cantidad de aceite.","Cuece o ralla la zanahoria como guarnición.","Mezcla el queso descremado con hierbas y pimienta.","Coloca una cucharada de esa crema sobre el pescado y sirve con la zanahoria."]},
-{id:"ce9",cat:"cenas",n:9,e:"🍳",nuevo:true,t:"Tortilla de claras con espinacas, tomate y queso light",
+{id:"ce9",cat:"cenas",n:9,kcal:200,e:"🍳",nuevo:true,t:"Tortilla de claras con espinacas, tomate y queso light",
  ing:["Claras de huevo (3)","Espinacas frescas","Tomate","Queso light","Aceite de oliva, unas gotas","Pimienta y hierbas"],
  prep:["Saltea las espinacas y el tomate troceado con unas gotas de aceite.","Bate las claras con pimienta y hierbas.","Vierte sobre las verduras y cocina a fuego medio.","Cuando cuaje por abajo, añade el queso light, dobla y sirve.","Acompaña con pan integral si lo deseas."]},
-{id:"ce10",cat:"cenas",n:10,e:"🫛",nuevo:true,t:"Ensalada tibia de judías verdes con atún, tomate y aceite de oliva",
- ing:["Judías verdes","Atún en lata","Tomate","Cebolla","Aceite de oliva","Hierbas y pimienta"],
- prep:["Cuece las judías verdes al vapor o hervidas hasta que estén tiernas pero firmes.","Trocea el tomate y la cebolla.","Mezcla las judías tibias con el tomate, la cebolla y el atún.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve templada como cena ligera y nutritiva."]}
+{id:"ce10",cat:"cenas",n:10,kcal:280,e:"🫛",nuevo:true,t:"Ensalada tibia de judías verdes con atún, tomate y aceite de oliva",
+ ing:["Judías verdes","Atún en lata","Tomate","Tallo verde de cebolleta","Aceite de oliva","Hierbas y pimienta"],
+ prep:["Cuece las judías verdes al vapor o hervidas hasta que estén tiernas pero firmes.","Trocea el tomate y el tallo verde de cebolleta.","Mezcla las judías tibias con el tomate, la cebolleta y el atún.","Aliña con aceite de oliva, hierbas y pimienta.","Sirve templada como cena ligera y nutritiva."]},
+{id:"ce11",cat:"cenas",n:11,kcal:280,e:"🥗",nuevo:true,t:"Pescado blanco al papillote con zanahoria, calabacín y limón",
+ ing:["Pescado blanco","Zanahoria en juliana","Calabacín en rodajas","Zumo de limón","Aceite de oliva","Hierbas frescas y pimienta"],
+ prep:["Coloca el pescado sobre un trozo grande de papel de horno.","Distribuye la zanahoria y el calabacín alrededor.","Aliña con zumo de limón, aceite, hierbas y pimienta.","Cierra el paquete y hornea a 180 °C durante 15–18 minutos.","Sirve directamente abriendo el papillote en el plato."]},
+{id:"ce12",cat:"cenas",n:12,kcal:225,e:"🍆",nuevo:true,t:"Berenjenas a la plancha con tomate, queso light y orégano",
+ ing:["Berenjena","Tomate fresco","Queso light","Orégano","Aceite de oliva","Pimienta"],
+ prep:["Corta la berenjena en rodajas gruesas y hazla a la plancha con unas gotas de aceite.","Coloca rodajas de tomate encima de cada berenjena.","Añade queso light y gratina unos segundos.","Termina con orégano y pimienta.","Sirve como cena ligera con pan integral."]},
+
+/* ---- SOPAS Y CALDOS ---- */
+{id:"so1",cat:"sopas",n:1,kcal:380,e:"🍗",nuevo:true,t:"Caldo depurativo de pollo con zanahoria, nabo y hierbas",
+ ing:["Pollo (carcasa o muslo, máx. 200 g)","Zanahoria (2)","Nabo (1)","Tallo verde de cebolleta","Hierbas frescas (perejil, tomillo)","Pimienta y sal con moderación"],
+ prep:["Pon el pollo en una olla con agua fría y lleva a ebullición.","Retira la espuma y añade la zanahoria y el nabo pelados y troceados.","Agrega el tallo verde de cebolleta y las hierbas.","Cocina a fuego suave durante 45 minutos.","Cuela el caldo, desmenuza algo de pollo y sirve con la verdura."]},
+{id:"so2",cat:"sopas",n:2,kcal:295,e:"🍅",nuevo:true,t:"Sopa de tomate asado con albahaca y pan integral",
+ ing:["Tomates maduros (4–5)","Zanahoria (1)","Tallo verde de cebolleta","Albahaca fresca","Aceite de oliva","Pan integral tostado","Pimienta y sal con moderación"],
+ prep:["Corta los tomates por la mitad y ásalos en el horno a 200 °C durante 20 minutos con la zanahoria.","Saltea el tallo verde de cebolleta con unas gotas de aceite.","Añade los tomates y la zanahoria asados con un poco de agua y tritura todo.","Calienta, rectifica de sal y pimienta.","Sirve con albahaca fresca y pan integral tostado."]},
+{id:"so3",cat:"sopas",n:3,kcal:365,e:"🐟",nuevo:true,t:"Caldo de pescado con patata, pimiento y hierbas",
+ ing:["Pescado blanco (restos o filetes)","Patata (1 mediana)","Pimiento rojo","Tallo verde de cebolleta","Aceite de oliva","Perejil fresco","Pimienta y sal con moderación"],
+ prep:["Hierve el pescado con agua, sal y pimienta durante 15 minutos y retíralo.","En el caldo, añade la patata pelada y troceada y el pimiento.","Cocina hasta que la patata esté tierna.","Desmenuza el pescado y devuélvelo al caldo.","Sirve con un chorrito de aceite de oliva y perejil fresco."]},
+{id:"so4",cat:"sopas",n:4,kcal:640,e:"🍚",nuevo:true,t:"Sopa de arroz integral con pollo desmenuzado y espinacas",
+ ing:["Arroz integral","Pollo (máx. 200 g)","Espinacas frescas","Zanahoria","Aceite de oliva","Hierbas, pimienta y sal con moderación"],
+ prep:["Cuece el pollo en agua con sal y reserva el caldo.","Añade el arroz integral y la zanahoria troceada al caldo.","Cocina hasta que el arroz esté tierno.","Incorpora las espinacas al final para que solo se ablanden.","Desmenuza el pollo y añádelo a la sopa. Sirve caliente."]},
+{id:"so5",cat:"sopas",n:5,kcal:305,e:"🥬",nuevo:true,t:"Minestrone bajo en FODMAP con calabacín, judías verdes y tomate",
+ ing:["Calabacín","Judías verdes","Tomate fresco","Patata (1 pequeña)","Zanahoria","Tallo verde de cebolleta","Aceite de oliva","Albahaca, pimienta y sal"],
+ prep:["Calienta aceite de oliva y saltea el tallo verde de cebolleta.","Añade la zanahoria y la patata troceadas y cubre con agua o caldo.","Cocina 10 minutos y agrega el calabacín, las judías verdes y el tomate.","Deja hervir a fuego suave otros 10–12 minutos.","Sirve caliente con albahaca fresca y un hilo de aceite."]},
+{id:"so6",cat:"sopas",n:6,kcal:320,e:"🥕",nuevo:true,t:"Crema de zanahoria con jengibre y aceite de oliva",
+ ing:["Zanahorias (4)","Patata (1 pequeña)","Jengibre fresco (1 cm)","Aceite de oliva","Pimienta y sal con moderación"],
+ prep:["Pela y trocea las zanahorias y la patata.","Cuécelas en agua o caldo de verduras unos 20 minutos.","Añade el jengibre rallado y tritura todo hasta obtener una crema fina.","Rectifica de sal y pimienta.","Sirve con un hilo de aceite de oliva y pimienta."]},
+{id:"so7",cat:"sopas",n:7,kcal:350,e:"🍲",nuevo:true,t:"Caldo reconfortante de jengibre con zanahoria, nabo y arroz",
+ ing:["Zanahoria (2)","Nabo (1)","Jengibre fresco (1 cm)","Arroz integral (un puñado)","Aceite de oliva","Pimienta y sal"],
+ prep:["Pela y trocea la zanahoria y el nabo.","Ponlos en una olla con agua, el jengibre pelado y el arroz.","Cocina a fuego suave durante 30 minutos.","Retira el trozo de jengibre (o déjalo si te gusta más intenso).","Sirve caliente con un chorrito de aceite de oliva."]},
+{id:"so8",cat:"sopas",n:8,kcal:325,e:"🥦",nuevo:true,t:"Crema de brócoli con patata y queso light",
+ ing:["Brócoli (1 cabeza pequeña)","Patata (1)","Queso light","Aceite de oliva","Pimienta, nuez moscada y sal"],
+ prep:["Cuece el brócoli y la patata troceados en agua con sal durante 15 minutos.","Tritura todo añadiendo parte del agua de cocción hasta la textura deseada.","Incorpora el queso light y mezcla bien.","Rectifica de sal, pimienta y nuez moscada.","Sirve caliente con un hilo de aceite de oliva."]},
+
+/* ---- PURÉS ---- */
+{id:"pu1",cat:"pures",n:1,kcal:265,e:"🥒",nuevo:true,t:"Puré suave de calabacín con patata y aceite de oliva",
+ ing:["Calabacín (2 medianos)","Patata (1)","Aceite de oliva","Pimienta y sal","Hierbas frescas (perejil)"],
+ prep:["Pela y trocea el calabacín y la patata.","Cuécelos en agua con sal hasta que estén tiernos, unos 15 minutos.","Escurre reservando algo de líquido y tritura hasta obtener un puré fino.","Ajusta la textura con el líquido reservado.","Sirve con un hilo de aceite de oliva, pimienta y perejil."]},
+{id:"pu2",cat:"pures",n:2,kcal:345,e:"🥕",nuevo:true,t:"Puré de zanahoria y boniato con jengibre fresco",
+ ing:["Zanahorias (3)","Boniato (1 mediano)","Jengibre fresco (1 cm)","Aceite de oliva","Pimienta y sal"],
+ prep:["Pela y trocea las zanahorias y el boniato.","Cuécelos en agua con sal durante 20 minutos hasta que estén blandos.","Añade el jengibre rallado y tritura todo hasta obtener un puré cremoso.","Ajusta la sal y pimienta.","Sirve caliente con un chorrito de aceite de oliva."]},
+{id:"pu3",cat:"pures",n:3,kcal:275,e:"🥦",nuevo:true,t:"Puré de brócoli con patata y nuez moscada",
+ ing:["Brócoli (1 cabeza)","Patata (1 mediana)","Aceite de oliva","Nuez moscada","Pimienta y sal"],
+ prep:["Cuece el brócoli en ramilletes junto con la patata troceada durante 15 minutos.","Escurre y tritura añadiendo un poco de agua de cocción si es necesario.","Añade la nuez moscada rallada, sal y pimienta.","Remueve bien y sirve caliente con aceite de oliva."]},
+{id:"pu4",cat:"pures",n:4,kcal:265,e:"🎃",nuevo:true,t:"Puré de calabaza japonesa con canela y aceite de oliva",
+ ing:["Calabaza japonesa (kabocha)","Patata (1 pequeña)","Canela","Aceite de oliva","Pimienta y sal"],
+ prep:["Pela y trocea la calabaza japonesa y la patata.","Cuécelas en agua con sal hasta que estén muy tiernas.","Tritura todo hasta obtener una textura suave.","Añade un toque de canela, pimienta y sal.","Sirve caliente con un hilo de aceite de oliva."]},
+{id:"pu5",cat:"pures",n:5,kcal:305,e:"🥬",nuevo:true,t:"Puré de espinacas con patata y aceite de oliva",
+ ing:["Espinacas frescas (200 g)","Patata (1 grande)","Aceite de oliva","Pimienta, nuez moscada y sal"],
+ prep:["Cuece la patata pelada y troceada durante 15 minutos.","Añade las espinacas los últimos 3 minutos de cocción.","Escurre y tritura todo junto hasta obtener un puré verde homogéneo.","Sazona con nuez moscada, pimienta y sal.","Sirve con un chorrito generoso de aceite de oliva."]},
+{id:"pu6",cat:"pures",n:6,kcal:270,e:"🫛",nuevo:true,t:"Puré cremoso de judía verde con patata y hierbas",
+ ing:["Judías verdes (200 g)","Patata (1 mediana)","Aceite de oliva","Hierbas frescas (perejil, eneldo)","Pimienta y sal"],
+ prep:["Cuece las judías verdes y la patata troceada en agua con sal durante 18 minutos.","Escurre reservando líquido y tritura hasta obtener un puré suave.","Ajusta la consistencia con el líquido de cocción.","Añade hierbas frescas picadas, pimienta y sal.","Sirve caliente con aceite de oliva."]},
+{id:"pu7",cat:"pures",n:7,kcal:155,e:"🍆",nuevo:true,t:"Puré de berenjena asada con limón y comino",
+ ing:["Berenjenas (2)","Zumo de limón","Comino","Aceite de oliva","Pimienta y sal"],
+ prep:["Pincha las berenjenas y ásalas en el horno a 200 °C durante 35–40 minutos.","Deja enfriar, pela y tritura la pulpa.","Añade el zumo de limón, el comino, sal y pimienta.","Mezcla bien y sirve con un hilo de aceite de oliva.","Ideal como guarnición o con pan integral tostado."]},
+
+/* ---- RECETAS FRÍAS ---- */
+{id:"fr1",cat:"frias",n:1,kcal:290,e:"🍅",nuevo:true,t:"Gazpacho suave de tomate y pepino bajo en FODMAP",
+ ing:["Tomates maduros (4)","Pepino (½)","Pimiento rojo (½)","Aceite de oliva","Vinagre de vino","Pan integral duro (opcional)","Pimienta y sal"],
+ prep:["Trocea los tomates, el pepino y el pimiento.","Tritura todo junto con aceite de oliva, vinagre, sal y pimienta.","Si usas pan, remójalo antes y añádelo a la mezcla.","Pasa por un colador si prefieres una textura fina.","Sirve muy frío con dados de pepino y pimiento por encima."]},
+{id:"fr2",cat:"frias",n:2,kcal:505,e:"🍚",nuevo:true,t:"Ensalada de arroz integral con atún, tomate y aceitunas",
+ ing:["Arroz integral cocido","Atún en lata","Tomate","Aceitunas verdes","Pepino","Aceite de oliva","Zumo de limón y hierbas"],
+ prep:["Deja enfriar el arroz integral.","Trocea el tomate, el pepino y las aceitunas.","Mezcla todo con el atún escurrido.","Aliña con aceite de oliva, zumo de limón y hierbas.","Sirve frío como ensalada completa."]},
+{id:"fr3",cat:"frias",n:3,kcal:195,e:"🥒",nuevo:true,t:"Carpaccio de calabacín con limón, rúcula y pimienta",
+ ing:["Calabacín (2)","Rúcula","Zumo de limón","Aceite de oliva virgen","Pimienta negra","Queso light rallado, opcional"],
+ prep:["Corta el calabacín en láminas muy finas con mandolina o cuchillo afilado.","Dispón las láminas en un plato formando una capa uniforme.","Aliña con zumo de limón, aceite de oliva y pimienta negra.","Coloca la rúcula por encima y, si quieres, unas virutas de queso light.","Deja macerar 10 minutos en frío antes de servir."]},
+{id:"fr4",cat:"frias",n:4,kcal:420,e:"🥔",nuevo:true,t:"Ensalada de patata con huevo duro, pepino y mostaza",
+ ing:["Patatas (2 medianas)","Huevo duro (1)","Pepino","Mostaza","Aceite de oliva","Hierbas frescas y pimienta"],
+ prep:["Cuece las patatas con piel, pélalas y córtalas en dados cuando estén frías.","Pela y trocea el huevo duro.","Trocea el pepino en medias lunas.","Aliña con mostaza, aceite de oliva, hierbas y pimienta.","Mezcla con cuidado y sirve a temperatura ambiente o frío."]},
+{id:"fr5",cat:"frias",n:5,kcal:360,e:"🌿",nuevo:true,t:"Taboulé de arroz con pepino, tomate cherry y hierbas frescas",
+ ing:["Arroz integral cocido","Pepino","Tomates cherry","Hierbas frescas (perejil, menta)","Zumo de limón","Aceite de oliva","Pimienta y sal"],
+ prep:["Deja enfriar completamente el arroz integral.","Trocea el pepino en dados pequeños y los tomates cherry por la mitad.","Pica las hierbas frescas finamente.","Mezcla todo y aliña con zumo de limón, aceite de oliva, sal y pimienta.","Sirve frío como acompañamiento o plato ligero."]},
+{id:"fr6",cat:"frias",n:6,kcal:185,e:"🥬",nuevo:true,t:"Rollitos de lechuga con salmón ahumado, pepino y queso light",
+ ing:["Hojas grandes de lechuga","Salmón ahumado","Pepino en bastones","Queso light","Hierbas frescas","Pimienta"],
+ prep:["Lava y seca las hojas de lechuga.","Extiende una fina capa de queso light sobre cada hoja.","Coloca una loncha de salmón y bastones de pepino.","Añade hierbas y pimienta.","Enrolla cada hoja con cuidado y sirve frío."]},
+{id:"fr7",cat:"frias",n:7,kcal:210,e:"🍆",nuevo:true,t:"Ensalada de berenjena asada con tomate, aceitunas y hierbas",
+ ing:["Berenjena (1 grande)","Tomate fresco","Aceitunas negras","Aceite de oliva","Vinagre de vino","Albahaca fresca","Pimienta y sal"],
+ prep:["Asa la berenjena entera en el horno a 200 °C hasta que esté blanda.","Deja enfriar, pela y córtala en tiras.","Mezcla con el tomate troceado y las aceitunas.","Aliña con aceite de oliva, vinagre, albahaca, sal y pimienta.","Sirve a temperatura ambiente o fría."]},
+{id:"fr8",cat:"frias",n:8,kcal:310,e:"🥕",nuevo:true,t:"Ensalada de zanahoria rallada con naranja, nueces y limón",
+ ing:["Zanahorias (3)","Naranja (1)","Nueces","Zumo de limón","Aceite de oliva","Pimienta y sal"],
+ prep:["Pela y ralla las zanahorias.","Pela la naranja y córtala en gajos o dados.","Mezcla la zanahoria con la naranja y las nueces troceadas.","Aliña con zumo de limón, aceite de oliva, sal y pimienta.","Sirve fría como entrante o guarnición."]},
+
+/* ---- COCIDOS Y GUISOS ---- */
+{id:"gc1",cat:"guisos",n:1,kcal:660,e:"🍗",nuevo:true,t:"Cocido ligero de pollo con patata, zanahoria y judía verde",
+ ing:["Pollo (máx. 200 g)","Patata (1 mediana)","Zanahoria (2)","Judías verdes","Nabo (1 pequeño)","Aceite de oliva","Pimienta, sal y hierbas"],
+ prep:["Pon el pollo en una olla con agua fría y lleva a ebullición. Retira la espuma.","Añade la patata, zanahoria y nabo pelados y troceados.","Cocina a fuego medio 25 minutos.","Agrega las judías verdes cortadas y cocina 10 minutos más.","Sirve el caldo con las verduras y el pollo troceado, con un chorrito de aceite."]},
+{id:"gc2",cat:"guisos",n:2,kcal:460,e:"🐟",nuevo:true,t:"Estofado de pescado blanco con patata, tomate y pimiento",
+ ing:["Pescado blanco (2 filetes)","Patata (1)","Tomate fresco (2)","Pimiento rojo","Tallo verde de cebolleta","Aceite de oliva","Perejil, pimienta y sal"],
+ prep:["Saltea el tallo verde de cebolleta y el pimiento troceado con aceite de oliva.","Añade el tomate pelado y troceado y cocina 5 minutos.","Incorpora la patata en rodajas finas y cubre con agua.","Cuando la patata esté casi tierna, coloca los filetes de pescado encima.","Cocina 8–10 minutos más a fuego suave. Sirve con perejil fresco."]},
+{id:"gc3",cat:"guisos",n:3,kcal:645,e:"🐰",nuevo:true,t:"Guiso de conejo con zanahoria, nabo y hierbas provenzales",
+ ing:["Conejo troceado (máx. 200 g)","Zanahoria (2)","Nabo (1)","Patata (1)","Tallo verde de cebolleta","Aceite de oliva","Hierbas provenzales, pimienta y sal"],
+ prep:["Dora el conejo en una cazuela con aceite de oliva.","Retira y en la misma cazuela saltea el tallo verde de cebolleta.","Añade la zanahoria, el nabo y la patata troceados.","Devuelve el conejo, cubre con agua y añade las hierbas provenzales.","Cocina a fuego suave 40–45 minutos hasta que todo esté tierno."]},
+{id:"gc4",cat:"guisos",n:4,kcal:600,e:"🦃",nuevo:true,t:"Estofado de pavo con boniato, calabacín y tomillo",
+ ing:["Pavo troceado (máx. 200 g)","Boniato (1)","Calabacín (1)","Tomate fresco (2)","Aceite de oliva","Tomillo, pimienta y sal"],
+ prep:["Dora los trozos de pavo en una cazuela con unas gotas de aceite.","Añade el tomate troceado y cocina unos minutos.","Incorpora el boniato pelado y troceado, cubre con agua.","Cocina 20 minutos y añade el calabacín en rodajas gruesas.","Deja 10 minutos más a fuego suave. Sirve con tomillo fresco."]},
+{id:"gc5",cat:"guisos",n:5,kcal:505,e:"🦪",nuevo:true,t:"Cazuela de marisco con patata y pimiento rojo",
+ ing:["Mejillones y almejas","Patata (2)","Pimiento rojo","Tomate (2)","Tallo verde de cebolleta","Aceite de oliva","Perejil, pimienta y sal"],
+ prep:["Saltea el tallo verde de cebolleta y el pimiento con aceite.","Añade el tomate troceado y cocina 5 minutos.","Incorpora la patata en rodajas y cubre con agua o caldo de pescado.","Cuando la patata esté casi lista, añade el marisco.","Tapa y cocina hasta que el marisco se abra. Sirve con perejil."]},
+{id:"gc6",cat:"guisos",n:6,kcal:710,e:"🥩",nuevo:true,t:"Guiso de ternera con zanahoria, patata y judía verde",
+ ing:["Ternera en dados (máx. 200 g)","Zanahoria (2)","Patata (1)","Judías verdes","Tallo verde de cebolleta","Aceite de oliva","Hierbas, pimienta y sal"],
+ prep:["Dora la ternera en una cazuela con aceite de oliva.","Añade el tallo verde de cebolleta y la zanahoria troceada.","Incorpora la patata y cubre con agua.","Cocina a fuego suave 35–40 minutos.","Añade las judías verdes los últimos 10 minutos. Sirve caliente."]},
+{id:"gc7",cat:"guisos",n:7,kcal:700,e:"🐠",nuevo:true,t:"Marmitako bajo en FODMAP con atún, patata y pimiento",
+ ing:["Atún fresco o en lata","Patatas (2)","Pimiento rojo y verde","Tomate (2)","Tallo verde de cebolleta","Aceite de oliva","Pimienta, pimentón dulce y sal"],
+ prep:["Saltea el tallo verde de cebolleta y los pimientos troceados con aceite.","Añade el tomate pelado y troceado, cocina 5 minutos.","Incorpora las patatas peladas y cascadas, cubre con agua.","Cocina 20 minutos hasta que la patata esté tierna.","Añade el atún en dados los últimos 3–4 minutos. Sirve con pimentón."]},
+{id:"gc8",cat:"guisos",n:8,kcal:410,e:"🍠",nuevo:true,t:"Potaje de boniato con espinacas y huevo",
+ ing:["Boniato (1 grande)","Espinacas frescas (200 g)","Huevo (1)","Tallo verde de cebolleta","Aceite de oliva","Comino, pimienta y sal"],
+ prep:["Pela y trocea el boniato, cuécelo en agua con sal 15 minutos.","Saltea el tallo verde de cebolleta con aceite y un toque de comino.","Añade las espinacas al caldo con el boniato y cocina 5 minutos más.","Casca el huevo directamente en el potaje y deja que cuaje sin remover.","Sirve caliente con pimienta y un chorrito de aceite de oliva."]}
 ];
 
 const BY_ID = Object.fromEntries(R.map(r => [r.id, r]));
@@ -423,30 +576,37 @@ const FREQ = [
   {e:"🍗", t:"Pollo o pavo", d:"Máximo <em>2 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
   {e:"🥩", t:"Carnes rojas sin piel o conejo", d:"Máximo <em>2–3 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
   {e:"🥚", t:"Huevos", d:"Máximo <em>2–3 por semana</em> (enteros). La clara de huevo está permitida sin restricción específica de frecuencia."},
-  {e:"🥛", t:"Lácteos", d:"Desnatados y light <em>todos los días</em>. Evitar lácteos enteros, mantequilla, yogures enteros y quesos grasos."},
-  {e:"🥦", t:"Verduras y frutas", d:"En <em>abundancia</em>, todos los días. Es una de las recomendaciones generales principales del documento."},
-  {e:"💧", t:"Bebidas", d:"Agua mineral como base. Café o té: máx. 3/día. Zumos naturales e infusiones sin límite indicado. Vino: máx. 2/día (desaconsejable con sobrepeso, embarazo o hipertrigliceridemia)."}
+  {e:"🥛", t:"Lácteos", d:"Desnatados, light y <em>sin lactosa</em>, todos los días. Evitar lácteos enteros, mantequilla, yogures enteros y quesos grasos."},
+  {e:"🥦", t:"Verduras y frutas", d:"En <em>abundancia</em>, todos los días. Priorizar las verduras y frutas de la columna BAJO en FODMAP. Evitar ajo, cebolla, champiñones, coliflor, manzana, pera, sandía y frutas desecadas."},
+  {e:"💧", t:"Bebidas", d:"Agua mineral como base. Café o té: máx. 3/día. Zumos naturales e infusiones sin límite indicado. Vino: máx. 2/día (desaconsejable con sobrepeso, embarazo o hipertrigliceridemia)."},
+  {e:"📋", t:"FODMAP – Norma general", d:"Se priorizan alimentos de la columna <em>BAJO</em> en FODMAP. Los de columna MEDIO se consumen con control de cantidad. Los de columna ALTO deben <em>evitarse o limitarse</em> mucho (ajo, cebolla, champiñones, manzana, pera, sandía, dátiles, ciruelas, coliflor, etc.)."}
 ];
 
 const BASES = [
-  {e:"🌾", t:"Ingredientes base", d:"Pan, cereales, arroz integral, maíz, pasta, galletas integrales; frutos secos y frutas secas permitidas; lácteos desnatados y quesos light."},
+  {e:"🌾", t:"Ingredientes base", d:"Pan integral, arroz integral, pasta (de espelta o sin gluten si hay sensibilidad), galletas integrales, boniato, patata; frutos secos; lácteos desnatados sin lactosa y quesos light."},
   {e:"🐠", t:"Proteínas válidas", d:"Pescado blanco y azul, atún en lata, salmón ahumado, marisco bivalvo, clara de huevo, pollo, pavo, conejo y carnes rojas sin piel."},
-  {e:"🥬", t:"Verduras y frutas", d:"Tomate, lechuga, espinacas, calabacín, pimiento, cebolla, zanahoria, judías verdes, manzana, naranja, pera, etc."},
-  {e:"🫒", t:"Condimentos válidos", d:"Aceite de oliva con moderación, pimienta, mostaza, hierbas, sofrito y alioli."}
+  {e:"🥬", t:"Verduras bajas en FODMAP", d:"Tomate, lechuga, espinacas, calabacín, pimiento rojo, zanahoria, judías verdes, pepino, brócoli, berenjena, boniato, kale, berza, rúcula, aceitunas, patata, nabo. Usar tallo verde de cebolleta en lugar de cebolla."},
+  {e:"🍓", t:"Frutas bajas en FODMAP", d:"Fresas, arándanos, frambuesas, kiwi verde, naranja, mandarina, piña, papaya, melón, plátano poco maduro, uva, zumo de limón. Evitar manzana, pera, sandía, ciruela, dátil y frutas desecadas."},
+  {e:"🫒", t:"Condimentos válidos", d:"Aceite de oliva con moderación, pimienta, mostaza, hierbas frescas, jengibre, zumo de limón. Evitar ajo y cebolla (usar aceite infusionado con ajo o tallo verde de cebolleta como alternativa)."}
 ];
 
-/* Plan semanal sugerido, construido respetando la guía de frecuencias:
-   pollo/pavo 2 días · conejo 2 días · pescado o marisco el resto. */
+/* Plan semanal sugerido. Cada día suma ~2000 kcal estimadas (1955–2010) y
+   respeta la guía de frecuencias: pollo/pavo 2 días, conejo/ternera 3 días,
+   una sola ración de carne al día, 1 huevo entero a la semana y un máximo de
+   dos franjas diarias con la misma proteína. */
 const PLAN = [
-  {d:"Lu", full:"Lunes",     s:["de1","co5","me1","ce1"]},
-  {d:"Ma", full:"Martes",    s:["de7","co8","me7","ce10"]},
-  {d:"Mi", full:"Miércoles", s:["de2","co6","me2","ce9"]},
-  {d:"Ju", full:"Jueves",    s:["de8","co3","me8","ce5"]},
-  {d:"Vi", full:"Viernes",   s:["de3","co4","me3","ce2"]},
-  {d:"Sá", full:"Sábado",    s:["de4","co13","me5","ce3"]},
-  {d:"Do", full:"Domingo",   s:["de5","co12","me6","ce8"]}
+  {d:"Lu", full:"Lunes",     s:["de9","te2","co1","me7","so4"]},
+  {d:"Ma", full:"Martes",    s:["de3","te1","co16","me4","ce2"]},
+  {d:"Mi", full:"Miércoles", s:["de7","te4","gc3","me4","ce5"]},
+  {d:"Ju", full:"Jueves",    s:["de4","te8","co7","me9","ce3"]},
+  {d:"Vi", full:"Viernes",   s:["de1","te5","gc7","me2","fr4"]},
+  {d:"Sá", full:"Sábado",    s:["de9","te6","gc6","me6","ce1"]},
+  {d:"Do", full:"Domingo",   s:["de4","te3","gc7","me6","ce1"]}
 ];
-const SLOTS = ["Desayuno","Comida","Merienda","Cena"];
+const SLOTS = ["Desayuno","Tentempié","Comida","Merienda","Cena"];
+const KCAL_OBJETIVO = 2000;
+const kcalDia = i => PLAN[i].s.reduce((a, id) => a + BY_ID[id].kcal, 0);
+
 
 /* ============================ ICONOS ============================ */
 const I = {
@@ -454,6 +614,7 @@ const I = {
   book:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h7M8 11h7"/></svg>',
   cal:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
   chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  flame:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s5 4.5 5 9a5 5 0 0 1-10 0c0-1.6.6-3 1.5-4 0 1.4.8 2.3 1.7 2.3C11.2 10.3 12 8 12 3z"/><path d="M7.5 13.5A6 6 0 0 0 12 21a6 6 0 0 0 4.5-7.5"/></svg>',
   info:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.4"/></svg>',
   back:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   grid:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>',
@@ -486,6 +647,7 @@ function itemCard(r){
       <h3>${esc(r.t)}</h3>
       <span class="meta">
         <i style="color:${c.color};font-weight:700">${c.label} ${r.n}</i>
+        <i class="kcal">${I.flame} ${r.kcal} kcal</i>
         <i>${I.list} ${r.ing.length}</i>
         <i>${I.steps} ${r.prep.length} pasos</i>
         ${r.nuevo ? '<i class="badge-new">nuevo</i>' : ""}
@@ -502,7 +664,7 @@ function listOf(rs, emptyMsg){
 
 /* ---------- HOME ---------- */
 function viewHome(){
-  const featured = ["co13","de7","ce10","co11","me7","te7"].map(id => BY_ID[id]);
+  const featured = ["co13","de7","so2","gc1","fr1","pu1","co16","ce11"].map(id => BY_ID[id]);
   return `
   <div class="searchbar">
     <label class="search-field">
@@ -533,20 +695,20 @@ function viewHome(){
           <button class="feat" style="background:${CATS[r.cat].grad}" data-go="#/r/${r.id}">
             <span class="pill">${I.leaf} ${CATS[r.cat].label}</span>
             <h3>${esc(r.t)}</h3>
-            <span class="pill" style="margin-top:auto">${r.ing.length} ingredientes</span>
+            <span class="pill" style="margin-top:auto">${I.flame} ${r.kcal} kcal</span>
             <span class="emoji">${r.e}</span>
           </button>`).join("")}
       </div>
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Menú de la semana</h2><p>Sugerencia que respeta las frecuencias</p></div></div>
+      <div class="sec-head"><div><h2>Menú de la semana</h2><p>Cada día suma unas ${KCAL_OBJETIVO} kcal y respeta las frecuencias</p></div></div>
       <div class="planner">
         <div class="days" id="days">
           ${PLAN.map((d,i) => `
             <button class="day" data-day="${i}" aria-selected="${i===planDay}">
               <b>${d.d}</b><small>${d.full.slice(0,3)}</small>
-              <span class="dot">${BY_ID[d.s[1]].e}</span>
+              <span class="dot">${BY_ID[d.s[2]].e}</span>
               ${i === (new Date().getDay()+6)%7 ? '<span class="today">✓</span>' : ""}
             </button>`).join("")}
         </div>
@@ -565,14 +727,20 @@ function viewHome(){
 
 function planRows(){
   const day = PLAN[planDay];
-  return day.s.map((id,i) => {
+  const total = kcalDia(planDay);
+  const filas = day.s.map((id,i) => {
     const r = BY_ID[id];
     return `<button class="plan-row" data-go="#/r/${r.id}">
       <span class="slot">${SLOTS[i]}</span>
-      <span class="t">${esc(r.t)}</span>
+      <span class="t">${esc(r.t)}<em>${r.kcal} kcal</em></span>
       <span class="e">${r.e}</span>
     </button>`;
   }).join("");
+  return filas + `<div class="plan-total">
+      <span>Total del día</span>
+      <b>${total} kcal</b>
+      <small>objetivo ~${KCAL_OBJETIVO}</small>
+    </div>`;
 }
 
 function renderResults(){
@@ -611,10 +779,12 @@ function viewRecipe(id){
     </div>
     <h1>${esc(r.t)}</h1>
     <div class="stats">
+      <span class="stat stat-kcal">${I.flame} ${r.kcal} kcal</span>
       <span class="stat">${I.list} ${r.ing.length} ingredientes</span>
       <span class="stat">${I.steps} ${r.prep.length} pasos</span>
       <span class="stat">${I.tag} ${c.label}</span>
     </div>
+    <p class="kcal-nota">Calorías estimadas para una ración, calculadas a partir de los ingredientes en cantidades estándar. Son orientativas.</p>
     <h2 class="block-title">Ingredientes</h2>
     <ul>${r.ing.map(x => `<li class="ing"><span class="dotimg" style="background:${c.soft};color:${c.color}">${I.leaf}</span><span>${esc(x)}</span></li>`).join("")}</ul>
     <h2 class="block-title">Preparación</h2>
@@ -642,18 +812,27 @@ function viewGuia(){
   return `
   <div class="sec-head"><div><h2>Guía</h2><p>Reglas de construcción del recetario</p></div></div>
   ${BASES.map(b => `<div class="card"><h3><span class="ball" style="background:var(--green-soft)">${b.e}</span>${b.t}</h3><p>${b.d}</p></div>`).join("")}
-  <h2 class="block-title">Más combinaciones útiles</h2>
+  <h2 class="block-title">Sobre las calorías</h2>
   <div class="card">
-    <p>Arroz integral con pescado azul, tomate y hierbas; pasta con atún y ensalada verde; pan integral con salmón ahumado, lechuga y queso light; yogur desnatado con nueces, fruta fresca y albaricoques; galletas integrales con queso descremado y mermelada; maíz templado con atún, pimiento y pimienta; conejo con arroz integral y judías verdes; pavo con ensalada variada; marisco bivalvo con pasta, sofrito suave y calabacín; pescado blanco con pan tostado, tomate y mostaza.</p>
+    <h3><span class="ball" style="background:var(--orange-soft)">🔥</span>Cómo están calculadas</h3>
+    <p>Cada receta muestra una estimación para <strong>una ración</strong>, obtenida sumando sus ingredientes en cantidades estándar (por ejemplo: 2 rebanadas de pan integral, 70 g de arroz en crudo, 200 g de carne o pescado, 10 ml de aceite de oliva). No son valores medidos ni analíticos: sirven para comparar platos y componer el día, no para un control clínico estricto. Las cantidades reales que uses harán variar el resultado.</p>
   </div>
   <div class="card">
-    <p>Las <strong>verduras</strong> (lechuga, tomate, espinacas, calabacín, zanahoria, pepino, pimiento, cebolla, judías verdes) y las <strong>frutas frescas</strong> (manzana, pera, naranja) pueden añadirse libremente a cualquier receta, ya que la recomendación general las incluye sin restricción. Las <strong>claras de huevo</strong> son versátiles como base de revueltos, tortillas y cremas ligeras.</p>
+    <h3><span class="ball" style="background:var(--green-soft)">📅</span>El menú de la semana</h3>
+    <p>Los siete días están compuestos para sumar unas <strong>2000 kcal</strong> cada uno (entre 1955 y 2010) repartidas en cinco franjas: desayuno, tentempié, comida, merienda y cena. Respetan los límites del documento médico: pollo o pavo dos días, conejo o ternera tres, una sola ración de carne al día y un huevo entero a la semana. Ninguna receta aparece más de dos veces en la semana.</p>
+  </div>
+  <h2 class="block-title">Más combinaciones útiles</h2>
+  <div class="card">
+    <p>Arroz integral con pescado azul, tomate y hierbas; pasta con atún y ensalada verde; pan integral con salmón ahumado, lechuga y queso light; yogur sin lactosa con nueces y fresas; galletas integrales con queso descremado y mermelada sin fructosa; patata templada con atún, pimiento y pimienta; conejo con arroz integral y judías verdes; pavo con ensalada variada; marisco bivalvo con pasta y calabacín; pescado blanco con pan tostado, tomate y mostaza. Usar siempre tallo verde de cebolleta en lugar de cebolla, y evitar ajo, champiñones, coliflor y frutas altas en FODMAP.</p>
+  </div>
+  <div class="card">
+    <p>Las <strong>verduras bajas en FODMAP</strong> (lechuga, tomate, espinacas, calabacín, zanahoria, pepino, pimiento rojo, judías verdes, brócoli, berenjena, kale) y las <strong>frutas bajas en FODMAP</strong> (fresas, arándanos, kiwi, naranja, piña, frambuesas, plátano poco maduro) pueden añadirse libremente a cualquier receta, ya que la recomendación general las incluye sin restricción. Las <strong>claras de huevo</strong> son versátiles como base de revueltos, tortillas y cremas ligeras.</p>
   </div>
   <div class="card">
     <p>Recuerda siempre respetar la moderación de aceite de oliva y la frecuencia de consumo de las carnes indicada en la sección de frecuencias.</p>
   </div>
   <div class="card" style="text-align:center">
-    <p style="font-size:12.5px">Versión 2 del recetario — revisada con verduras, frutas frescas, claras de huevo y guía de frecuencias semanales.</p>
+    <p style="font-size:12.5px">Versión 3 del recetario — adaptada a dieta baja en FODMAP con purés, sopas, caldos, recetas frías, cocidos y guisos. Basada en tablas FODMAP de Monash University.</p>
   </div>`;
 }
 
