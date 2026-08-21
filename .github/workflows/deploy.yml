@@ -21,7 +21,7 @@ jobs:
 
       - name: Sincronizar con S3
         run: |
-          aws s3 sync . s3://bonituplay --delete --exclude ".git/*" --exclude ".github/*"
+          aws s3 sync . s3://bonituplay --delete --exclude ".git/*" --exclude ".github/*" --exclude "*.md"
 
       - name: Invalidar caché de CloudFront
         run: |
