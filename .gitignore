@@ -3,3 +3,6 @@
 # Materiales de trabajo del recetario: no se publican en el sitio
 recetario/assets/
 recetario/ingredientes/
+
+# Billions: paquete de un solo archivo para publicar como Artifact, no para el site
+billions/build/
