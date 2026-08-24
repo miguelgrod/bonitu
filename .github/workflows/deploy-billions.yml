@@ -1,0 +1,77 @@
+# Despliegue propio de Billions, independiente del de Bonitu.
+#
+# Bonitu se publica con deploy.yml, que sincroniza el repo entero contra el
+# bucket `bonituplay`. Este workflow lleva SÓLO `billions/` a su propio bucket,
+# que es el primer paso para que el proyecto acabe saliendo de aquí: cuando se
+# mude a su repositorio, este archivo se va con él y basta con cambiar la ruta.
+name: Deploy Billions
+
+on:
+  push:
+    branches: [main]
+    paths: ['billions/**', '.github/workflows/deploy-billions.yml']
+  workflow_dispatch:          # para poder lanzarlo a mano la primera vez
+
+env:
+  BUCKET: billions-cine
+  REGION: eu-west-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      # Todo menos index.html se guarda un año. Se puede porque cada <script src>
+      # lleva la huella de su contenido (tools/sella-versiones.py): si un archivo
+      # cambia, cambia su URL, así que nunca hay que invalidar una copia guardada.
+      #
+      # Fuera del bucket: los Excel de origen, los scripts de tools/, la
+      # documentación y el paquete de build. Hoy se sirven en bonitu.es/billions/
+      # y no pintan nada en un sitio web.
+      - name: Sincronizar billions/ con S3
+        run: |
+          aws s3 sync billions/ "s3://${BUCKET}" --delete \
+            --exclude "index.html" \
+            --exclude "*.md" \
+            --exclude "*.xlsx" \
+            --exclude "tools/*" \
+            --exclude "build/*" \
+            --exclude ".DS_Store" \
+            --exclude "*/.DS_Store" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      # index.html es la puerta de entrada y la que trae las huellas nuevas: si
+      # se guardase, el navegador seguiría pidiendo las versiones viejas de todo
+      # lo demás y el despliegue no se notaría.
+      - name: Subir index.html sin caché
+        run: |
+          aws s3 cp billions/index.html "s3://${BUCKET}/index.html" \
+            --cache-control "no-cache, must-revalidate" \
+            --content-type "text/html; charset=utf-8"
+
+      # Se salta mientras no exista la distribución, para que el workflow ya
+      # sirva desde el primer despliegue.
+      - name: Invalidar caché de CloudFront
+        if: ${{ vars.BILLIONS_CF_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.BILLIONS_CF_ID }}" --paths "/*"
+
+      - name: Resumen
+        run: |
+          echo "### Billions desplegado" >> $GITHUB_STEP_SUMMARY
+          echo "- Bucket: \`${BUCKET}\` (${REGION})" >> $GITHUB_STEP_SUMMARY
+          if [ -z "${{ vars.BILLIONS_CF_ID }}" ]; then
+            echo "- CloudFront: sin configurar (falta la variable BILLIONS_CF_ID)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- CloudFront invalidado: \`${{ vars.BILLIONS_CF_ID }}\`" >> $GITHUB_STEP_SUMMARY
+          fi
