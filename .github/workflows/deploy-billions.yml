@@ -30,6 +30,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.REGION }}
 
+      # Mientras no exista el bucket, el workflow termina bien y lo dice, en vez
+      # de dejar un aspa roja en cada push hasta que se cree en la consola.
+      - name: ¿Existe ya el bucket?
+        id: bucket
+        run: |
+          if aws s3api head-bucket --bucket "${BUCKET}" 2>/dev/null; then
+            echo "existe=si" >> $GITHUB_OUTPUT
+          else
+            echo "existe=no" >> $GITHUB_OUTPUT
+            echo "El bucket ${BUCKET} todavía no existe: ver billions/INFRAESTRUCTURA.md" \
+              >> $GITHUB_STEP_SUMMARY
+          fi
+
       # Todo menos index.html se guarda un año. Se puede porque cada <script src>
       # lleva la huella de su contenido (tools/sella-versiones.py): si un archivo
       # cambia, cambia su URL, así que nunca hay que invalidar una copia guardada.
@@ -38,6 +51,7 @@ jobs:
       # documentación y el paquete de build. Hoy se sirven en bonitu.es/billions/
       # y no pintan nada en un sitio web.
       - name: Sincronizar billions/ con S3
+        if: steps.bucket.outputs.existe == 'si'
         run: |
           aws s3 sync billions/ "s3://${BUCKET}" --delete \
             --exclude "index.html" \
@@ -53,6 +67,7 @@ jobs:
       # se guardase, el navegador seguiría pidiendo las versiones viejas de todo
       # lo demás y el despliegue no se notaría.
       - name: Subir index.html sin caché
+        if: steps.bucket.outputs.existe == 'si'
         run: |
           aws s3 cp billions/index.html "s3://${BUCKET}/index.html" \
             --cache-control "no-cache, must-revalidate" \
@@ -61,12 +76,13 @@ jobs:
       # Se salta mientras no exista la distribución, para que el workflow ya
       # sirva desde el primer despliegue.
       - name: Invalidar caché de CloudFront
-        if: ${{ vars.BILLIONS_CF_ID != '' }}
+        if: ${{ steps.bucket.outputs.existe == 'si' && vars.BILLIONS_CF_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
             --distribution-id "${{ vars.BILLIONS_CF_ID }}" --paths "/*"
 
       - name: Resumen
+        if: steps.bucket.outputs.existe == 'si'
         run: |
           echo "### Billions desplegado" >> $GITHUB_STEP_SUMMARY
           echo "- Bucket: \`${BUCKET}\` (${REGION})" >> $GITHUB_STEP_SUMMARY
