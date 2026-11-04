@@ -44,6 +44,8 @@
     --shadow-s:0 2px 8px rgba(16,48,32,.06);
     --shadow-m:0 10px 28px rgba(16,48,32,.10);
     --shadow-l:0 -6px 24px rgba(16,48,32,.08);
+    /* escala tipográfica: pantalla, bloque, destacado, texto, secundario, etiqueta */
+    --fs-1:28px; --fs-2:22px; --fs-3:17px; --fs-4:15px; --fs-5:13px; --fs-6:11.5px;
     --font-display:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
     --r-s:12px; --r-m:18px; --r-l:26px; --r-xl:32px; --r-full:999px;
     --nav-h:74px;
@@ -100,11 +102,11 @@
     display:grid;place-items:center;color:var(--ink);
   }
   .icon-btn:active{transform:scale(.94)}
-  .topbar-title{flex:1;text-align:center;font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .topbar-title{flex:1;text-align:center;font-size:var(--fs-3);font-weight:700;letter-spacing:-.01em}
   .brand{display:flex;align-items:center;justify-content:center;gap:8px;flex:1}
   .brand-mark{width:26px;height:26px}
   .brand-mark svg{display:block;width:100%;height:100%}
-  .brand-name{font-weight:400;letter-spacing:-.01em;font-size:17px;color:var(--ink)}
+  .brand-name{font-weight:400;letter-spacing:-.01em;font-size:var(--fs-3);color:var(--ink)}
   .brand-name b{font-weight:700}
   /* punto naranja de la i del logotipo: se pinta sobre una ı sin punto, con las
      medidas del punto de la i de Plus Jakarta Sans 700 (em desde el área de contenido) */
@@ -132,9 +134,9 @@
   /* ---------- section ---------- */
   .sec{margin-bottom:26px}
   .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
-  .sec-head h2{font-size:19px;font-weight:700;letter-spacing:-.02em}
-  .sec-head p{font-size:13px;color:var(--ink-2)}
-  .link{font-size:13px;font-weight:700;color:var(--green-ink);flex:none}
+  .sec-head h2{font-size:var(--fs-2);font-weight:700;letter-spacing:-.02em}
+  .sec-head p{font-size:var(--fs-5);color:var(--ink-2)}
+  .link{font-size:var(--fs-5);font-weight:700;color:var(--green-ink);flex:none}
 
   /* ---------- featured carousel ---------- */
   .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 18px 6px;margin:0 -18px;scroll-snap-type:x mandatory;scroll-padding-inline:18px;scrollbar-width:none}
@@ -145,9 +147,9 @@
   }
   .feat:active{transform:scale(.97)}
   .feat.ink{color:var(--on-brand)}
-  .feat h3{font-size:15px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+  .feat h3{font-size:var(--fs-3);font-weight:700;line-height:1.25;letter-spacing:-.01em}
   .feat .pill{
-    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;position:relative;z-index:1;
+    display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-6);font-weight:600;position:relative;z-index:1;
     background:rgba(255,255,255,.28);padding:5px 10px;border-radius:var(--r-full);width:fit-content;
     backdrop-filter:blur(3px);
   }
@@ -163,27 +165,27 @@
     flex:none;width:56px;padding:12px 0;border-radius:20px;background:var(--card-2);text-align:center;
     display:grid;gap:2px;justify-items:center;border:2px solid transparent;position:relative;
   }
-  .day b{font-size:15px;font-weight:800}
-  .day small{font-size:11px;color:var(--ink-2)}
-  .day .dot{font-size:17px;margin-top:2px}
+  .day b{font-size:var(--fs-4);font-weight:800}
+  .day small{font-size:var(--fs-6);color:var(--ink-2)}
+  .day .dot{font-size:var(--fs-3);margin-top:2px}
   .day[aria-selected="true"]{border-color:var(--orange);background:var(--orange-soft)}
   .day[aria-selected="true"] small{color:var(--ink)}
-  .day .today{position:absolute;top:-5px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--green-ink);color:var(--app);font-size:10px;display:grid;place-items:center;font-weight:700}
+  .day .today{position:absolute;top:-5px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--green-ink);color:var(--app);font-size:var(--fs-6);display:grid;place-items:center;font-weight:700}
   .plan-list{margin-top:14px;display:grid;gap:2px}
   .plan-row{display:flex;align-items:center;gap:12px;padding:9px 2px;text-align:left;width:100%;border-radius:14px}
   .plan-row + .plan-row{border-top:1px solid var(--line)}
   .plan-row:active{background:var(--card-2)}
-  .plan-row .slot{width:66px;flex:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
-  .plan-row .t{flex:1;font-size:13.5px;font-weight:600;line-height:1.3}
-  .plan-row .t em{display:block;font-style:normal;font-size:11.5px;font-weight:700;color:var(--orange-ink);margin-top:2px}
-  .plan-row .e{font-size:20px}
+  .plan-row .slot{width:66px;flex:none;font-size:var(--fs-6);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
+  .plan-row .t{flex:1;font-size:var(--fs-4);font-weight:600;line-height:1.3}
+  .plan-row .t em{display:block;font-style:normal;font-size:var(--fs-5);font-weight:700;color:var(--orange-ink);margin-top:2px}
+  .plan-row .e{font-size:var(--fs-2)}
   .plan-total{
     display:flex;align-items:baseline;gap:8px;margin-top:10px;padding:11px 14px;border-radius:16px;
     background:var(--green-soft);color:var(--green-ink);
   }
-  .plan-total span{flex:1;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-  .plan-total b{font-size:17px;font-weight:800;letter-spacing:-.01em}
-  .plan-total small{font-size:11px}
+  .plan-total span{flex:1;font-size:var(--fs-6);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .plan-total b{font-size:var(--fs-3);font-weight:800;letter-spacing:-.01em}
+  .plan-total small{font-size:var(--fs-6)}
 
   /* ---------- categories ---------- */
   .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -192,9 +194,9 @@
     box-shadow:var(--shadow-s);text-align:left;
   }
   .cat:active{transform:scale(.97)}
-  .cat .ball{width:44px;height:44px;flex:none;border-radius:15px;display:grid;place-items:center;font-size:22px}
-  .cat b{display:block;font-size:14px;font-weight:700;letter-spacing:-.01em}
-  .cat small{font-size:12px;color:var(--ink-2)}
+  .cat .ball{width:44px;height:44px;flex:none;border-radius:15px;display:grid;place-items:center;font-size:var(--fs-2)}
+  .cat b{display:block;font-size:var(--fs-4);font-weight:700;letter-spacing:-.01em}
+  .cat small{font-size:var(--fs-5);color:var(--ink-2)}
 
   /* ---------- recipe list ---------- */
   .list{display:grid;gap:12px}
@@ -203,18 +205,18 @@
     box-shadow:var(--shadow-s);text-align:left;width:100%;
   }
   .item:active{transform:scale(.98)}
-  .thumb{width:60px;height:60px;flex:none;border-radius:17px;display:grid;place-items:center;font-size:28px}
+  .thumb{width:60px;height:60px;flex:none;border-radius:17px;display:grid;place-items:center;font-size:var(--fs-1)}
   .item .body{flex:1;min-width:0}
-  .item h3{font-size:14.5px;font-weight:700;line-height:1.3;letter-spacing:-.01em}
-  .item .meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
+  .item h3{font-size:var(--fs-3);font-weight:700;line-height:1.3;letter-spacing:-.01em}
+  .item .meta{display:flex;align-items:center;gap:10px;margin-top:5px;font-size:var(--fs-5);color:var(--ink-2);flex-wrap:wrap}
   .item .meta i{font-style:normal;display:inline-flex;align-items:center;gap:4px}
   .item .meta .kcal{color:var(--orange-ink);font-weight:700}
-  .badge-new{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--on-brand);background:var(--orange);padding:3px 7px;border-radius:var(--r-full)}
+  .badge-new{font-size:var(--fs-6);font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--on-brand);background:var(--orange);padding:3px 7px;border-radius:var(--r-full)}
   .item .chev{width:26px;height:26px;flex:none;display:grid;place-items:center;color:var(--ink-2);opacity:.55}
 
   .chips{display:flex;gap:8px;overflow-x:auto;margin:0 -18px 18px;padding:0 18px 2px;scrollbar-width:none}
   .chips::-webkit-scrollbar{display:none}
-  .chip{flex:none;padding:9px 15px;border-radius:var(--r-full);background:var(--card);font-size:13px;font-weight:600;box-shadow:var(--shadow-s);color:var(--ink-2)}
+  .chip{flex:none;padding:9px 15px;border-radius:var(--r-full);background:var(--card);font-size:var(--fs-6);font-weight:600;box-shadow:var(--shadow-s);color:var(--ink-2)}
   .chip[aria-pressed="true"]{background:linear-gradient(150deg,color-mix(in srgb,var(--green-2) 60%,#fff),var(--green-2));color:var(--on-brand);box-shadow:0 6px 14px rgba(22,163,74,.28)}
 
   /* ---------- detail ---------- */
@@ -224,25 +226,25 @@
   }
   .hero .emoji{font-size:96px;filter:drop-shadow(0 10px 16px rgba(0,0,0,.20))}
   .hero::after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:rgba(255,255,255,.16);right:-70px;top:-80px}
-  .hero .tagline{position:absolute;left:16px;bottom:14px;color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.16);padding:6px 12px;border-radius:var(--r-full);backdrop-filter:blur(4px)}
+  .hero .tagline{position:absolute;left:16px;bottom:14px;color:#fff;font-size:var(--fs-6);font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.16);padding:6px 12px;border-radius:var(--r-full);backdrop-filter:blur(4px)}
   .hero.ink .tagline{color:var(--on-brand);background:rgba(255,255,255,.45)}
-  .detail h1{font-size:22px;font-weight:700;letter-spacing:-.025em;line-height:1.22}
+  .detail h1{font-size:var(--fs-1);font-weight:700;letter-spacing:-.025em;line-height:1.22}
   .stats{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-  .stat{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2)}
+  .stat{display:flex;align-items:center;gap:7px;font-size:var(--fs-5);font-weight:600;color:var(--ink-2)}
   .stat svg{color:var(--orange-ink)}
   .stat-kcal{color:var(--orange-ink);font-weight:800}
-  .kcal-nota{font-size:11.5px;line-height:1.5;color:var(--ink-2);margin-top:12px}
-  .block-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin:20px 0 10px}
+  .kcal-nota{font-size:var(--fs-5);line-height:1.5;color:var(--ink-2);margin-top:12px}
+  .block-title{font-size:var(--fs-2);font-weight:700;letter-spacing:-.02em;margin:20px 0 10px}
   .ing{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
-  .ing .dotimg{width:38px;height:38px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:17px}
-  .ing span{font-size:14px;font-weight:600}
+  .ing .dotimg{width:38px;height:38px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:var(--fs-3)}
+  .ing span{font-size:var(--fs-4);font-weight:600}
   .steps{display:grid;gap:12px;counter-reset:s}
   .step{display:flex;gap:12px;align-items:flex-start}
   .step .n{
-    width:27px;height:27px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:800;
+    width:27px;height:27px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:var(--fs-5);font-weight:800;
     background:var(--green-soft);color:var(--green-ink);margin-top:1px;
   }
-  .step p{font-size:14px;line-height:1.55}
+  .step p{font-size:var(--fs-4);line-height:1.55}
 
   .detail-foot{
     display:flex;align-items:center;gap:12px;width:100%;margin:24px 0 6px;padding:15px 16px;
@@ -250,26 +252,26 @@
   }
   .detail-foot:active{transform:scale(.98)}
   .detail-foot .txt{flex:1}
-  .detail-foot small{display:block;font-size:11.5px;color:var(--ink-2)}
-  .detail-foot b{font-size:14.5px;font-weight:800;letter-spacing:-.01em}
+  .detail-foot small{display:block;font-size:var(--fs-6);color:var(--ink-2)}
+  .detail-foot b{font-size:var(--fs-4);font-weight:800;letter-spacing:-.01em}
   .detail-foot .go{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff}
   .detail-foot .go.ink{color:var(--on-brand)}
 
   /* ---------- cards / notes ---------- */
   .card{background:var(--card);border-radius:var(--r-l);padding:16px;box-shadow:var(--shadow-s)}
   .card + .card{margin-top:12px}
-  .card h3{font-size:14.5px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;margin-bottom:6px}
-  .card h3 .ball{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:17px;flex:none}
-  .card p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+  .card h3{font-size:var(--fs-3);font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .card h3 .ball{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:var(--fs-3);flex:none}
+  .card p{font-size:var(--fs-4);color:var(--ink-2);line-height:1.55}
   .card em{font-style:normal;font-weight:700;color:var(--orange-ink)}
   .card strong{color:var(--ink)}
   .card a{color:var(--green-ink);font-weight:700;text-underline-offset:2px}
   .warn{background:var(--orange-soft);box-shadow:none;border:1px solid color-mix(in srgb,var(--orange) 30%,transparent)}
   .warn p{color:var(--ink)}
-  .legal-link{display:block;margin:12px auto 0;font-size:12.5px;color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
+  .legal-link{display:block;margin:12px auto 0;font-size:var(--fs-5);color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
   .empty{text-align:center;padding:56px 20px;color:var(--ink-2)}
   .empty .big{font-size:52px;margin-bottom:10px}
-  .empty p{font-size:14px;max-width:260px;margin-inline:auto}
+  .empty p{font-size:var(--fs-4);max-width:260px;margin-inline:auto}
 
   /* ---------- bottom nav ---------- */
   .nav{
@@ -916,7 +918,7 @@ function viewGuia(){
     <p>Recuerda siempre respetar la moderación de aceite de oliva y la frecuencia de consumo de las carnes indicada en la sección de frecuencias.</p>
   </div>
   <div class="card" style="text-align:center">
-    <p style="font-size:12.5px">ZampiFood, versión 3 — adaptada a dieta baja en FODMAP con purés, sopas, caldos, recetas frías, cocidos y guisos. Basada en tablas FODMAP de Monash University.</p>
+    <p style="font-size:var(--fs-5)">ZampiFood, versión 3 — adaptada a dieta baja en FODMAP con purés, sopas, caldos, recetas frías, cocidos y guisos. Basada en tablas FODMAP de Monash University.</p>
   </div>
   <h2 class="block-title">Fuentes</h2>
   <div class="card">
