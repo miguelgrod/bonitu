@@ -656,11 +656,11 @@ const BY_ID = Object.fromEntries(R.map(r => [r.id, r]));
 
 const FREQ = [
   {e:"🐟", t:"Pescado (blanco y azul)", d:"Todos los días si se desea. El documento recomienda introducirlo <em>frecuentemente</em>, en especial el azul (sardina, trucha, atún, caballa)."},
-  {e:"🍗", t:"Pollo o pavo", d:"Máximo <em>2 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
-  {e:"🥩", t:"Carnes rojas sin piel o conejo", d:"Máximo <em>2–3 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
-  {e:"🥚", t:"Huevos", d:"Máximo <em>2–3 por semana</em> (enteros). La clara de huevo está permitida sin restricción específica de frecuencia."},
+  {e:"🍗", t:"Pollo o pavo", d:"Hasta <em>2 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
+  {e:"🥩", t:"Carnes rojas sin piel o conejo", d:"Hasta <em>2–3 días por semana</em>. Una sola vez al día, no más de 200 g. A la plancha o a la brasa con poco aceite."},
+  {e:"🥚", t:"Huevos", d:"Hasta <em>2–3 por semana</em> (enteros). La clara de huevo está permitida sin restricción específica de frecuencia."},
   {e:"🥛", t:"Lácteos", d:"Desnatados, light y <em>sin lactosa</em>, todos los días. Evitar lácteos enteros, mantequilla, yogures enteros y quesos grasos."},
-  {e:"🥦", t:"Verduras y frutas", d:"En <em>abundancia</em>, todos los días. Priorizar las verduras y frutas de la columna BAJO en FODMAP. Evitar ajo, cebolla, champiñones, coliflor, manzana, pera, sandía y frutas desecadas."},
+  {e:"🥦", t:"Verduras y frutas", d:"En <em>abundancia</em>, todos los días. Priorizar las verduras y frutas de la columna BAJO en FODMAP. Fuera ajo, cebolla, champiñones, coliflor, manzana, pera, sandía y fruta desecada: el tallo verde de la cebolleta y el aceite infusionado con ajo les toman el relevo en la cocina."},
   {e:"💧", t:"Bebidas", d:"Agua mineral como base. Café o té: máx. 3/día. Zumos naturales e infusiones sin límite indicado. Vino: máx. 2/día (desaconsejable con sobrepeso, embarazo o hipertrigliceridemia)."},
   {e:"📋", t:"FODMAP – Norma general", d:"Se priorizan alimentos de la columna <em>BAJO</em> en FODMAP. Los de columna MEDIO se consumen con control de cantidad. Los de columna ALTO deben <em>evitarse o limitarse</em> mucho (ajo, cebolla, champiñones, manzana, pera, sandía, dátiles, ciruelas, coliflor, etc.)."}
 ];
@@ -761,7 +761,7 @@ function viewHome(){
 
   <div id="home-sections">
     <section class="sec">
-      <div class="sec-head"><div><h2>Categorías</h2><p>${R.length} recetas permitidas</p></div></div>
+      <div class="sec-head"><div><h2>Categorías</h2><p>${R.length} recetas que sí puedes comer</p></div></div>
       <div class="cats">
         ${Object.entries(CATS).map(([k,c]) => `
           <button class="cat" data-go="#/cat/${k}">
@@ -838,7 +838,7 @@ function renderResults(){
   if(q) rs = rs.filter(r => (r.t + " " + r.ing.join(" ") + " " + CATS[r.cat].label).toLowerCase().includes(q));
   box.innerHTML = `<div class="sec-head"><div><h2>${rs.length} resultado${rs.length===1?"":"s"}</h2>
     <p>${onlyNew ? "Solo recetas nuevas" : "Coincidencias en título e ingredientes"}</p></div></div>
-    ${listOf(rs, "Ningún plato coincide con esa búsqueda dentro de la lista permitida.")}`;
+    ${listOf(rs, "No hay nada con ese nombre. Prueba con un ingrediente: calabacín, arroz, sardinas…")}`;
 }
 
 /* ---------- CATEGORÍA ---------- */
@@ -849,7 +849,7 @@ function viewCat(key){
     ${Object.entries(CATS).map(([k,c]) => `<button class="chip" data-go="#/cat/${k}" aria-pressed="${k===key}">${c.emoji} ${c.label}</button>`).join("")}
   </div>
   <div class="sec-head"><div><h2>${CATS[key].label}</h2><p>${rs.length} recetas · ${CATS[key].desc}</p></div></div>
-  ${listOf(rs, "No hay recetas en esta categoría.")}`;
+  ${listOf(rs, "Todavía no hay recetas aquí.")}`;
 }
 
 /* ---------- DETALLE ---------- */
@@ -883,7 +883,7 @@ function viewRecipe(id){
 /* ---------- FRECUENCIAS ---------- */
 function viewFreq(){
   return `
-  <div class="sec-head"><div><h2>Frecuencias semanales</h2><p>Límites del documento médico</p></div></div>
+  <div class="sec-head"><div><h2>Frecuencias semanales</h2><p>Lo que dice tu pauta, en cifras</p></div></div>
   ${FREQ.map(f => `<div class="card"><h3><span class="ball" style="background:var(--green-soft)">${f.e}</span>${f.t}</h3><p>${f.d}</p></div>`).join("")}
   <div class="card warn" style="margin-top:12px">
     <h3><span class="ball" style="background:rgba(255,255,255,.55)">⚠️</span>Importante</h3>
