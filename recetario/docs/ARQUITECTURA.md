@@ -152,14 +152,8 @@ home y los chips la recogen automáticamente; el nav inferior es fijo (`NAV`).
 
 ## Deuda conocida
 
-Tras el commit `c1e7eab` ("fuera galletas y marisco, menos queso") quedaron
-referencias huérfanas en los textos informativos, que ya no se corresponden con
-ninguna receta:
-
-- `FREQ` mantiene la tarjeta 🦪 **"Marisco bivalvo — permitido todos los días"**.
-- `BASES` cita **"galletas integrales"** en *Ingredientes base* y **"marisco
-  bivalvo"** en *Proteínas válidas*.
-- `viewGuia()`, en *Más combinaciones útiles*, sugiere **"galletas integrales con
-  queso descremado"** y **"marisco bivalvo con pasta y calabacín"**.
-
-Son textos, no datos: no rompen nada, pero contradicen la lista de recetas.
+Resuelta. Tras el commit `c1e7eab` ("fuera galletas y marisco, menos queso")
+quedaron referencias a galletas integrales y marisco bivalvo en `FREQ`, `BASES` y
+`viewGuia()`; se eliminaron en la puesta a punto de la rama
+`recetario-puesta-a-punto`. Ninguno de los dos aparece ya en `index.html`; el
+motivo de su retirada sigue documentado en [DIETA.md](DIETA.md).
