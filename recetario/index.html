@@ -229,6 +229,7 @@
   .card a{color:var(--green-ink);font-weight:700;text-underline-offset:2px}
   .warn{background:var(--orange-soft);box-shadow:none;border:1px solid color-mix(in srgb,var(--orange) 30%,transparent)}
   .warn p{color:var(--ink)}
+  .legal-link{display:block;margin:12px auto 0;font-size:12.5px;color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
   .empty{text-align:center;padding:56px 20px;color:var(--ink-2)}
   .empty .big{font-size:52px;margin-bottom:10px}
   .empty p{font-size:14px;max-width:260px;margin-inline:auto}
@@ -766,6 +767,7 @@ function viewHome(){
         <h3><span class="ball" style="background:rgba(255,255,255,.55)">⚠️</span>Antes de empezar</h3>
         <p>La dieta debe modificarse en caso de diabetes, obesidad, hiperuricemia o hipertensión. Consulta con tu médico o nutricionista antes de hacer cambios significativos.</p>
       </div>
+      <button class="legal-link" data-go="#/legal">Aviso legal y privacidad</button>
     </section>
   </div>`;
 }
@@ -891,6 +893,33 @@ function viewGuia(){
   <div class="card">
     <h3><span class="ball" style="background:var(--orange-soft)">🍳</span>Recetas</h3>
     <p>Adaptación propia a partir de estas fuentes. Las calorías son estimaciones orientativas.</p>
+  </div>
+  <button class="legal-link" data-go="#/legal">Aviso legal y privacidad</button>`;
+}
+
+/* ---------- AVISO LEGAL ---------- */
+function viewLegal(){
+  return `
+  <div class="sec-head"><div><h2>Aviso legal y privacidad</h2><p>Quién hace ZampiFood y qué hace con tus datos</p></div></div>
+  <div class="card">
+    <h3><span class="ball" style="background:var(--green-soft)">👤</span>Quién está detrás</h3>
+    <p>ZampiFood es un proyecto de Miguel García Rodríguez, desarrollado como proyecto final del Máster de IA para creativos. Contacto: [EMAIL — PENDIENTE].</p>
+  </div>
+  <div class="card">
+    <h3><span class="ball" style="background:var(--orange-soft)">🩺</span>Para qué sirve</h3>
+    <p>Es una recopilación de recetas adaptadas a una dieta baja en FODMAP con control de lípidos. Es información general, <strong>no un consejo médico personalizado</strong>, y no sustituye a tu médico ni a tu nutricionista. Sigue la pauta que te haya dado tu profesional.</p>
+  </div>
+  <div class="card">
+    <h3><span class="ball" style="background:var(--green-soft)">🔒</span>Privacidad</h3>
+    <p>La app no pide registro, no usa cookies ni analítica y no envía ningún dato a ningún servidor. Lo único que guarda, en tu propio navegador, es si prefieres el tema claro u oscuro (clave <code>recetario:tema</code>). Puedes borrarlo limpiando los datos del sitio.</p>
+  </div>
+  <div class="card">
+    <h3><span class="ball" style="background:var(--purple-soft)">✨</span>Uso de inteligencia artificial</h3>
+    <p>Parte de la identidad visual (el logotipo) se creó con herramientas de IA generativa y después se ajustó a mano. Las recetas y los textos se basan en las fuentes citadas en la Guía.</p>
+  </div>
+  <div class="card">
+    <h3><span class="ball" style="background:var(--green-soft)">📚</span>Fuentes</h3>
+    <p>Las fuentes de las recomendaciones, de las tablas FODMAP y de las recetas están detalladas al final de la <a href="#/guia">Guía</a>.</p>
   </div>`;
 }
 
@@ -908,6 +937,7 @@ function route(){
   if(h.startsWith("r/"))    return {view:"recipe", key:h.slice(2)};
   if(h === "frecuencias")   return {view:"freq"};
   if(h === "guia")          return {view:"guia"};
+  if(h === "legal")         return {view:"legal"};
   return {view:"home"};
 }
 
@@ -917,8 +947,8 @@ function themeIcon(){
 
 function render(){
   const {view, key} = route();
-  const back = view === "recipe" || view === "cat";
-  const titles = {recipe:"Receta", cat:CATS[key]?.label || "Recetas", freq:"Frecuencias", guia:"Guía"};
+  const back = view === "recipe" || view === "cat" || view === "legal";
+  const titles = {recipe:"Receta", cat:CATS[key]?.label || "Recetas", freq:"Frecuencias", guia:"Guía", legal:"Aviso legal"};
 
   $("#topbar").innerHTML = `
     ${back
@@ -929,7 +959,7 @@ function render(){
       : `<div class="topbar-title">${titles[view]}</div>`}
     <button class="icon-btn" id="theme" aria-label="Cambiar tema">${themeIcon()}</button>`;
 
-  const screens = {home:viewHome, cat:()=>viewCat(CATS[key]?key:"desayunos"), recipe:()=>viewRecipe(key), freq:viewFreq, guia:viewGuia};
+  const screens = {home:viewHome, cat:()=>viewCat(CATS[key]?key:"desayunos"), recipe:()=>viewRecipe(key), freq:viewFreq, guia:viewGuia, legal:viewLegal};
   $("#screen").innerHTML = screens[view]();
 
   const activeKey = view === "recipe" ? "cat" : view;
