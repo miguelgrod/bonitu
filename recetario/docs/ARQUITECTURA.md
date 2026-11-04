@@ -1,13 +1,21 @@
 # Arquitectura de ZampiFood
 
 Todo vive en [../index.html](../index.html). Sin build, sin dependencias, sin
-peticiones de red. Un solo archivo de ~934 líneas dividido en tres bloques:
+peticiones de red. Un solo archivo de ~1060 líneas (~134 KB) dividido en tres bloques:
 
 | Líneas aprox. | Contenido |
 |---|---|
-| 1–255 | `<head>` + `<style>`: tokens CSS y todos los estilos |
-| 256–262 | `<body>`: tres contenedores vacíos que el JS rellena |
-| 263–933 | `<script>`: datos, iconos, estado, plantillas y render |
+| 1–295 | `<head>` (metadatos, OG) + `<style>`: fuente incrustada, tokens CSS y estilos |
+| 297–302 | `<body>`: tres contenedores vacíos que el JS rellena |
+| 304–1059 | `<script>`: datos, iconos, estado, plantillas y render |
+
+### Metadatos
+
+`description`, Open Graph (`og:type`, `og:locale`, `og:site_name`, `og:title`,
+`og:description`) y `twitter:card` = `summary_large_image`. **Pendiente:**
+`og:url`, `og:image` (1200×630), `og:image:alt` y `twitter:image` están
+comentados en el `<head>` hasta tener imagen y URL definitivas. No hay favicon
+(la carpeta `icons/` está pendiente).
 
 El DOM inicial es mínimo a propósito:
 
@@ -25,6 +33,33 @@ Sistema de tokens en `:root` / `[data-theme="light"]`, redefinidos en
 `[data-theme="dark"]`. Paleta por familias (`--green`, `--orange`, `--purple`,
 `--teal`, `--amber`), cada una con su variante `-soft`; superficies (`--page`,
 `--app`, `--card`), tinta (`--ink`, `--ink-2`), sombras y radios.
+
+**Paleta de marca y contraste (WCAG AA).** Verde `#5DA44C` / `#83B853` y naranja
+`#FE8526` de la identidad. Como color de texto pequeño no sirven (3,05:1 y
+2,44:1 sobre blanco), así que:
+
+- `--green-ink` (`#3F7A32`) y `--orange-ink` (`#B85A12`) son los tonos para texto
+  de color. En tema oscuro coinciden con el color de marca, que ya cumple.
+- `--on-brand` es el color de texto e iconos sobre fondos verdes o naranjas:
+  `--ink` en claro, casi negro en oscuro. **Nunca blanco sobre naranja.**
+- Las categorías `comidas`, `meriendas` y `guisos` tienen `ink:true` en `CATS`:
+  sus degradados son de marca y las tarjetas destacadas, el héroe y el botón del
+  detalle llevan clase `.ink` (texto `--on-brand`). Ámbar, morado y turquesa
+  siguen con texto blanco.
+
+**Tipografía.** Plus Jakarta Sans 400/600/700 (OFL) incrustada como `@font-face`
+WOFF2 en base64 (subset Latin básico + español + `ı`, ~26 KB), en el token
+`--font-display`. Se usa en `h1`–`h3`, nombres de receta del menú y la marca; el
+resto va con la fuente del sistema. Escala de tamaños en tokens: `--fs-1` 28
+(título de pantalla), `--fs-2` 22 (bloque), `--fs-3` 17 (destacado: nombres en
+tarjetas, cabecera), `--fs-4` 15 (texto), `--fs-5` 13 (secundario: kcal,
+contadores), `--fs-6` 11,5 (etiquetas, chips). Solo los emojis grandes (52, 64 y
+96 px) usan tamaños fijos.
+
+**Cabecera.** Símbolo del logotipo como SVG en `I.brand` y nombre «Zampi» 700 +
+«Food» 400; el punto naranja de la i es un `::after` sobre una `ı` sin punto,
+calibrado con las métricas de la fuente (lectores de pantalla leen el texto
+oculto `.sr`).
 
 Diseño **mobile-first**: la app se limita a `max-width:480px` y a partir de
 560px se convierte en una "tarjeta de móvil" centrada con esquinas redondeadas
@@ -107,6 +142,13 @@ día, 1 huevo entero a la semana y ninguna receta más de dos veces por semana.
 | `#/r/<id>` | Detalle de receta | `viewRecipe(id)` |
 | `#/frecuencias` | Frecuencias | `viewFreq()` |
 | `#/guia` | Guía | `viewGuia()` |
+| `#/legal` | Aviso legal y privacidad | `viewLegal()` |
+
+`#/legal` no está en el menú inferior: se enlaza con un `.legal-link` discreto
+bajo la tarjeta «Antes de empezar» de la home y al final de la Guía, que cierra
+con el bloque **Fuentes** (documento de la nutricionista, tablas FODMAP de Monash
+University vía Experto Nutrición, recetas de elaboración propia). Si cambia lo
+que la app guarda o envía, actualiza el texto de privacidad de `viewLegal()`.
 
 `render()` es el único punto de escritura del DOM: reconstruye topbar, pantalla
 y nav en cada cambio de hash y vuelve a enganchar los listeners. La navegación
@@ -130,7 +172,7 @@ repinta solo esa caja, no toda la vista.
 ## Seguridad del render
 
 Todo se construye con plantillas de string e `innerHTML`. Los textos de receta
-pasan por `esc()`; los textos de `FREQ`, `BASES` y `viewGuia()` **no**, porque
+pasan por `esc()`; los textos de `FREQ`, `BASES`, `viewGuia()` y `viewLegal()` **no**, porque
 llevan `<em>`/`<strong>` a propósito. Al añadir contenido nuevo, respeta esa
 distinción.
 
