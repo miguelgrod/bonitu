@@ -38,8 +38,15 @@ Sistema de tokens en `:root` / `[data-theme="light"]`, redefinidos en
 `#FE8526` de la identidad. Como color de texto pequeño no sirven (3,05:1 y
 2,44:1 sobre blanco), así que:
 
-- `--green-ink` (`#3F7A32`) y `--orange-ink` (`#B85A12`) son los tonos para texto
-  de color. En tema oscuro coinciden con el color de marca, que ya cumple.
+- `--green-ink` (`#3F7A32`) y `--orange-ink` (`#A9520F`) son los tonos para texto
+  de color (`--orange-ink` da 5,13:1 sobre `--app`; el anterior `#B85A12` se
+  quedaba en 4,44). En tema oscuro coinciden con el color de marca, que ya cumple.
+- Los colores de categoría tienen también variante para texto: `--amber-ink`
+  (`#8A5A0E`), `--purple-ink` (`#5548C8`) y `--teal-ink` (`#0A6B62`), todos por
+  encima de 5,2:1 sobre `--page`, `--app` y `--card`. En tema oscuro son iguales al
+  color, que ya pasa de 4,5:1. Cada entrada de `CATS` tiene `text` (color para la
+  etiqueta ordinal «Cenas 3» de las fichas) además de `color` (iconos) y `soft`
+  (fondos).
 - `--on-brand` es el color de texto e iconos sobre fondos verdes o naranjas:
   `--ink` en claro, casi negro en oscuro. **Nunca blanco sobre naranja.**
 - Las categorías `comidas`, `meriendas` y `guisos` tienen `ink:true` en `CATS`:
@@ -76,7 +83,7 @@ valor guardado. `toggleTheme()` también actualiza el `<meta name="theme-color">
 
 `desayunos`, `tentempies`, `comidas`, `meriendas`, `cenas`, `sopas`, `pures`,
 `frias`, `guisos`. Cada una define `label`, `emoji`, `color`, `soft`, `grad`
-(degradado para héroes y tarjetas destacadas) y `desc`.
+(degradado para héroes y tarjetas destacadas) y `desc`, más `text` (variante `-ink` para texto) y `ink` (ver CSS).
 
 ### `R` — array de 106 recetas
 

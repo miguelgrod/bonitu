@@ -34,10 +34,10 @@
   /* ---------- tokens ---------- */
   :root, [data-theme="light"]{
     --green:#5DA44C; --green-2:#83B853; --green-soft:#EAF4E6; --green-ink:#3F7A32;
-    --orange:#FE8526; --orange-2:#FFA25C; --orange-soft:#FFEEDF; --orange-ink:#B85A12;
-    --purple:#7b6ef6; --purple-soft:#ece9ff;
-    --teal:#0f9d8f; --teal-soft:#dcf3f0;
-    --amber:#f0a72c; --amber-soft:#fdf0d9;
+    --orange:#FE8526; --orange-2:#FFA25C; --orange-soft:#FFEEDF; --orange-ink:#A9520F;
+    --purple:#7b6ef6; --purple-soft:#ece9ff; --purple-ink:#5548C8;
+    --teal:#0f9d8f; --teal-soft:#dcf3f0; --teal-ink:#0A6B62;
+    --amber:#f0a72c; --amber-soft:#fdf0d9; --amber-ink:#8A5A0E;
     --page:#e9f5ec; --app:#f5fbf6; --card:#ffffff; --card-2:#f4f8f5;
     --ink:#2F3941; --ink-2:#5E6B73; --line:#e3ece6;
     --on-brand:#2F3941; /* texto e iconos sobre fondos verde o naranja: nunca blanco */
@@ -53,9 +53,9 @@
   [data-theme="dark"]{
     --green:#7CC46A; --green-2:#9BD27E; --green-soft:#123522; --green-ink:#7CC46A;
     --orange:#FF9A4D; --orange-2:#FFB477; --orange-soft:#33210f; --orange-ink:#FF9A4D;
-    --purple:#9b90ff; --purple-soft:#211f3d;
-    --teal:#3fbcae; --teal-soft:#12302d;
-    --amber:#e5b055; --amber-soft:#2e2413;
+    --purple:#9b90ff; --purple-soft:#211f3d; --purple-ink:#9b90ff;
+    --teal:#3fbcae; --teal-soft:#12302d; --teal-ink:#3fbcae;
+    --amber:#e5b055; --amber-soft:#2e2413; --amber-ink:#e5b055;
     --page:#0e1512; --app:#141b17; --card:#1b241f; --card-2:#212b25;
     --ink:#e8f0ea; --ink-2:#9db0a5; --line:#2b352e;
     --on-brand:#141b17;
@@ -305,15 +305,15 @@
 
 /* ============================ DATOS ============================ */
 const CATS = {
-  desayunos:{label:"Desayunos", emoji:"🥣", color:"var(--amber)",  soft:"var(--amber-soft)",  grad:"linear-gradient(150deg,#f7bd52,#ef9412)", desc:"Para empezar el día"},
-  tentempies:{label:"Tentempiés", emoji:"🥕", color:"var(--purple)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#8f84f8,#6a5cf0)", desc:"Bocados rápidos"},
-  comidas:{label:"Comidas", emoji:"🍽️", color:"var(--green-ink)", soft:"var(--green-soft)", grad:"linear-gradient(150deg,#A4CF7A,#83B853)", ink:true, desc:"Platos principales"},
-  meriendas:{label:"Meriendas", emoji:"🍎", color:"var(--orange-ink)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#FFB477,#FE8526)", ink:true, desc:"Dulces y cremosas"},
-  cenas:{label:"Cenas", emoji:"🌙", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#2bb9aa,#0d8d80)", desc:"Ligeras para la noche"},
-  sopas:{label:"Sopas y caldos", emoji:"🍲", color:"var(--amber)", soft:"var(--amber-soft)", grad:"linear-gradient(150deg,#e8a848,#c47a10)", desc:"Reconfortantes y calientes"},
-  pures:{label:"Purés", emoji:"🥣", color:"var(--purple)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#a899f9,#7b6ef6)", desc:"Cremosos y suaves"},
-  frias:{label:"Recetas frías", emoji:"🥒", color:"var(--teal)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#4ec9bc,#0f9d8f)", desc:"Frescas y ligeras"},
-  guisos:{label:"Cocidos y guisos", emoji:"🫕", color:"var(--orange-ink)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#FF9433,#FE8526)", ink:true, desc:"Platos de cuchara"}
+  desayunos:{label:"Desayunos", emoji:"🥣", color:"var(--amber)", text:"var(--amber-ink)",  soft:"var(--amber-soft)",  grad:"linear-gradient(150deg,#f7bd52,#ef9412)", desc:"Para empezar el día"},
+  tentempies:{label:"Tentempiés", emoji:"🥕", color:"var(--purple)", text:"var(--purple-ink)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#8f84f8,#6a5cf0)", desc:"Bocados rápidos"},
+  comidas:{label:"Comidas", emoji:"🍽️", color:"var(--green-ink)", text:"var(--green-ink)", soft:"var(--green-soft)", grad:"linear-gradient(150deg,#A4CF7A,#83B853)", ink:true, desc:"Platos principales"},
+  meriendas:{label:"Meriendas", emoji:"🍎", color:"var(--orange-ink)", text:"var(--orange-ink)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#FFB477,#FE8526)", ink:true, desc:"Dulces y cremosas"},
+  cenas:{label:"Cenas", emoji:"🌙", color:"var(--teal)", text:"var(--teal-ink)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#2bb9aa,#0d8d80)", desc:"Ligeras para la noche"},
+  sopas:{label:"Sopas y caldos", emoji:"🍲", color:"var(--amber)", text:"var(--amber-ink)", soft:"var(--amber-soft)", grad:"linear-gradient(150deg,#e8a848,#c47a10)", desc:"Reconfortantes y calientes"},
+  pures:{label:"Purés", emoji:"🥣", color:"var(--purple)", text:"var(--purple-ink)", soft:"var(--purple-soft)", grad:"linear-gradient(150deg,#a899f9,#7b6ef6)", desc:"Cremosos y suaves"},
+  frias:{label:"Recetas frías", emoji:"🥒", color:"var(--teal)", text:"var(--teal-ink)", soft:"var(--teal-soft)", grad:"linear-gradient(150deg,#4ec9bc,#0f9d8f)", desc:"Frescas y ligeras"},
+  guisos:{label:"Cocidos y guisos", emoji:"🫕", color:"var(--orange-ink)", text:"var(--orange-ink)", soft:"var(--orange-soft)", grad:"linear-gradient(150deg,#FF9433,#FE8526)", ink:true, desc:"Platos de cuchara"}
 };
 
 const R = [
@@ -731,7 +731,7 @@ function itemCard(r){
     <span class="body">
       <h3>${esc(r.t)}</h3>
       <span class="meta">
-        <i style="color:${c.color};font-weight:700">${c.label} ${r.n}</i>
+        <i style="color:${c.text};font-weight:700">${c.label} ${r.n}</i>
         <i class="kcal">${I.flame} ${r.kcal} kcal</i>
         <i>${I.list} ${r.ing.length}</i>
         <i>${I.steps} ${r.prep.length} pasos</i>

@@ -39,7 +39,7 @@ concreta (baja en FODMAP + recomendaciones de lípidos). Vive dentro del sitio
    Objetivo: 1970–2025 kcal/día.
 4. **Al eliminar un ingrediente de las recetas, límpialo también de los textos**
    de `FREQ`, `BASES` y `viewGuia()`. Ahí es donde ya se han quedado
-   incoherencias (ver "Deuda conocida" en ARQUITECTURA.md).
+   incoherencias otras veces.
 5. Commits en español con prefijo `Recetario:`.
 6. **Contraste AA.** Nunca texto blanco sobre verde o naranja de marca: usa
    `--on-brand`. Para texto pequeño de color usa `--green-ink` / `--orange-ink`,
